@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Students</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Student Management</h2>
+        <div id="connection-status" class="alert alert-info">Connecting...</div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Roll No</th>
+                    <th>Registered Events</th>
+                    <th>Paid</th>
+                    <th>Transaction ID</th>
+                    <th>UPI ID</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="students-table">
+                {% for student in students %}
+                <tr id="student-{{ student._id }}">
+                    {% for field in ['name', 'email', 'phone', 'rollno', 'transaction_id', 'upi_id'] %}
+                    <td><input type="text" class="form-control" value="{{ student[field] }}" data-field="{{ field }}"></td>
+                    {% endfor %}
+                    <td>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for event, registered in student.registered_events.items() %}
+                            <div class="form-check">
+                                <input class="form-check-input event-checkbox" type="checkbox" 
+                                    data-event="{{ event }}" 
+                                    {{ 'checked' if registered }}>
+                                <label class="form-check-label">{{ event }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input paid-checkbox" type="checkbox" role="switch" 
+                                {{ 'checked' if student.paid }} data-field="paid">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary save-btn" data-id="{{ student._id }}">Save</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const socket = io();
+        const connectionStatus = document.getElementById('connection-status');
+        
+        socket.on('connect', () => {
+            connectionStatus.textContent = 'Connected';
+            connectionStatus.classList.replace('alert-info', 'alert-success');
+        });
+        
+        socket.on('disconnect', () => {
+            connectionStatus.textContent = 'Disconnected';
+            connectionStatus.classList.replace('alert-success', 'alert-danger');
+        });
+
+        document.querySelectorAll('.save-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const studentId = this.dataset.id;
+                const row = document.getElementById(`student-${studentId}`);
+                const data = { id: studentId, registered_events: {} };
+                row.querySelectorAll('[data-field]').forEach(input => {
+                    data[input.dataset.field] = input.type === 'checkbox' ? input.checked : input.value;
+                });
+                row.querySelectorAll('.event-checkbox').forEach(checkbox => {
+                    data.registered_events[checkbox.dataset.event] = checkbox.checked;
+                });
+                socket.emit('individual_edit_student', data);
+            });
+        });
+
+        socket.on('student_updated', updatedStudent => {
+            const row = document.getElementById(`student-${updatedStudent._id}`);
+            if (!row) return;
+            row.querySelectorAll('[data-field]').forEach(input => {
+                if (input.type === 'checkbox') {
+                    input.checked = updatedStudent[input.dataset.field];
+                } else {
+                    input.value = updatedStudent[input.dataset.field];
+                }
+            });
+            Object.entries(updatedStudent.registered_events).forEach(([event, registered]) => {
+                const checkbox = row.querySelector(`[data-event="${event}"]`);
+                if (checkbox) checkbox.checked = registered;
+            });
+        });
+    </script>
+</body>
+</html>

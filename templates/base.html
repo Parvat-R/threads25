@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}" />
+    <title>{% block title %}{% endblock %} - Sona College Of Technology</title>
+    {% endblock %}
+</head>
+<body>
+    <div id="nav">
+        
+    </div>
+    <div id="root">{% block content %}{% endblock %}</div>
+    <div id="footer">
+        {% block footer %}
+        &copy; Copyright 2008 by <a href="">you</a>.
+        {% endblock %}
+    </div>
+</body>
+</html>

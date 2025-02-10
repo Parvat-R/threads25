@@ -1,1 +1,8 @@
 flask
+pymongo
+pymongo
+pydantic
+python-dotenv
+gunicorn
+gevent
+flask_socketio
