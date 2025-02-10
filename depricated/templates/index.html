@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symposium Events</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to the CSE Symposium</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Available Events</h2>
+            <ul>
+                {% for event in events %}
+                    <li>{{ event }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section>
+            <a href="{{ url_for('register') }}" class="btn">Register Now</a>
+            <a href="{{ url_for('admin') }}" class="btn">Admin Login</a>
+        </section>
+    </main>
+</body>
+</html>

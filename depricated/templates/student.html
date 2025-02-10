@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Student Details</h2>
+<table>
+    <tr><th>Name:</th><td>{{ student.name }}</td></tr>
+    <tr><th>Email:</th><td>{{ student.email }}</td></tr>
+    <tr><th>Phone:</th><td>{{ student.phone }}</td></tr>
+    <tr><th>Roll No:</th><td>{{ student.rollno }}</td></tr>
+    <tr><th>Interested Events:</th><td>{{ student.interested_events }}</td></tr>
+    <tr><th>Attended Events:</th><td>{{ student.attended_events }}</td></tr>
+    <tr><th>Paid:</th><td>{{ "Yes" if student.paid else "No" }}</td></tr>
+</table>
+<a href="{{ url_for('index') }}">Back to Home</a>
+{% endblock %}
