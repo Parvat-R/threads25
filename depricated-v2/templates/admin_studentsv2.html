@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Student Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    <!-- Added for better data handling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash/4.17.21/lodash.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-5 right-5 hidden z-50">
+        <div class="flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow">
+            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"/>
+            </div>
+            <div id="toastMessage" class="ml-3 text-sm font-normal"></div>
+            <button onclick="hideToast()" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg p-1.5">
+                <span class="sr-only">Close</span>
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="p-4 sm:p-6 lg:p-8">
+        <div class="mb-6">
+            <!-- Dashboard Header -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold">Student Management</h2>
+                <div class="flex gap-4">
+                    <button id="exportCsv" class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                        Export CSV
+                    </button>
+                    <div class="text-sm text-gray-600">
+                        Total Students: <span id="studentCount" class="font-semibold">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Enhanced Search and Filter Section -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="relative">
+                    <input type="text" 
+                           id="searchInput" 
+                           placeholder="Search students..." 
+                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <button id="clearSearch" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <select id="filterField" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <option value="all">Filter by field</option>
+                    <option value="name">Name</option>
+                    <option value="email">Email</option>
+                    <option value="phone">Phone</option>
+                    <option value="rollno">Roll No</option>
+                    <option value="college">College</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="paid">Payment Status</option>
+                </select>
+
+                <select id="sortField" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <option value="">Sort by...</option>
+                    <option value="name">Name</option>
+                    <option value="email">Email</option>
+                    <option value="college">College</option>
+                    <option value="paid">Payment Status</option>
+                </select>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h3 class="text-lg font-semibold text-gray-700">Total Registered</h3>
+                    <p id="totalRegistered" class="text-2xl font-bold text-blue-600">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h3 class="text-lg font-semibold text-gray-700">Payment Completed</h3>
+                    <p id="paymentCompleted" class="text-2xl font-bold text-green-600">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h3 class="text-lg font-semibold text-gray-700">Pending Payments</h3>
+                    <p id="pendingPayments" class="text-2xl font-bold text-red-600">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h3 class="text-lg font-semibold text-gray-700">Workshop Registrations</h3>
+                    <p id="workshopCount" class="text-2xl font-bold text-purple-600">0</p>
+                </div>
+            </div>
+
+            <!-- Enhanced Students Table -->
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 cursor-pointer hover:bg-gray-100" data-sort="name">
+                                Name
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer hover:bg-gray-100" data-sort="email">
+                                Email
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3">Phone</th>
+                            <th scope="col" class="px-6 py-3">Roll No</th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer hover:bg-gray-100" data-sort="college">
+                                College
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3">Workshop</th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer hover:bg-gray-100" data-sort="paid">
+                                Payment Status
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3">Transaction ID</th>
+                            <th scope="col" class="px-6 py-3">UPI ID</th>
+                            <th scope="col" class="px-6 py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr class="bg-white border-b hover:bg-gray-50 student-row" data-student-id="{{ student._id }}">
+                            <td class="px-6 py-4 font-medium text-gray-900">{{ student.name }}</td>
+                            <td class="px-6 py-4">{{ student.email }}</td>
+                            <td class="px-6 py-4">{{ student.phone }}</td>
+                            <td class="px-6 py-4">{{ student.rollno }}</td>
+                            <td class="px-6 py-4">{{ student.college_name }}</td>
+                            <td class="px-6 py-4">{{ student.workshop or 'N/A' }}</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <input type="checkbox" 
+                                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 payment-status"
+                                           {% if payments[student.email].paid %}checked{% endif %}>
+                                    <span class="ml-2 text-sm font-medium text-gray-900">
+                                        {% if payments[student.email].paid %}Paid{% else %}Pending{% endif %}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <input type="text" 
+                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded p-1.5 w-full transaction-id"
+                                       value="{{ payments[student.email].transaction_id or '' }}"
+                                       placeholder="Enter Transaction ID">
+                            </td>
+                            <td class="px-6 py-4">
+                                <input type="text" 
+                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded p-1.5 w-full upi-id"
+                                       value="{{ payments[student.email].upi_id or '' }}"
+                                       placeholder="Enter UPI ID">
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="save-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const showLoading = () => document.getElementById('loadingOverlay').classList.remove('hidden');
+        const hideLoading = () => document.getElementById('loadingOverlay').classList.add('hidden');
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(hideToast, 3000);
+        }
+
+        function hideToast() {
+            document.getElementById('toast').classList.add('hidden');
+        }
+
+        // Update Statistics
+        function updateStats() {
+            const visibleRows = Array.from(document.querySelectorAll('.student-row')).filter(row => row.style.display !== 'none');
+            const totalRegistered = visibleRows.length;
+            const paymentCompleted = visibleRows.filter(row => row.querySelector('.payment-status').checked).length;
+            const pendingPayments = totalRegistered - paymentCompleted;
+            const workshopCount = visibleRows.filter(row => row.children[5].textContent !== 'N/A').length;
+
+            document.getElementById('totalRegistered').textContent = totalRegistered;
+            document.getElementById('paymentCompleted').textContent = paymentCompleted;
+            document.getElementById('pendingPayments').textContent = pendingPayments;
+            document.getElementById('workshopCount').textContent = workshopCount;
+            document.getElementById('studentCount').textContent = totalRegistered;
+        }
+
+        // Enhanced Search and Filter with Debounce
+        const searchInput = document.getElementById('searchInput');
+        const filterField = document.getElementById('filterField');
+        const sortField = document.getElementById('sortField');
+        const studentRows = document.querySelectorAll('.student-row');
+
+        const debouncedFilter = _.debounce(() => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterValue = filterField.value;
+
+            studentRows.forEach(row => {
+                let text = '';
+                if (filterValue === 'all') {
+                    text = row.textContent.toLowerCase();
+                } else if (filterValue === 'paid') {
+                    text = row.querySelector('.payment-status').checked ? 'paid' : 'unpaid';
+                } else {
+                    const columnIndex = getColumnIndex(filterValue);
+                    text = row.children[columnIndex].textContent.toLowerCase();
+                }
+                
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+
+            updateStats();
+        }, 300);
+
+        function getColumnIndex(field) {
+            const fieldMap = {
+                'name': 0,
+                'email': 1,
+                'phone': 2,
+                'rollno': 3,
+                'college': 4,
+                'workshop': 5
+            };
+            return fieldMap[field] || 0;
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', debouncedFilter);
+        filterField.addEventListener('change', debouncedFilter);
+        
+        document.getElementById('clearSearch').addEventListener('click', () => {
+            searchInput.value = '';
+            debouncedFilter();
+        });
+
+        // Sorting functionality
+        let currentSort = { field: '', direction: 'asc' };
+
+        function sortTable(field) {
+            const rows = Array.from(document.querySelectorAll('.student-row'));
+            const tbody = document.querySelector('tbody');
+            
+            // Toggle sort direction if clicking the same field
+            if (currentSort.field === field) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.field = field;
+                currentSort.direction = 'asc';
+            }
+
+            // Reset all sort icons
+            document.querySelectorAll('.sort-icon').forEach(icon => icon.textContent = '↕');
+            
+            // Update clicked column's sort icon
+            const sortIcon = document.querySelector(`[data-sort="${field}"] .sort-icon`);
+            if (sortIcon) {
+                sortIcon.textContent = currentSort.direction === 'asc' ? '↑' : '↓';
+            }
+
+            // Sort rows
+            rows.sort((a, b) => {
+                let aValue, bValue;
+                
+                if (field === 'paid') {
+                    aValue = a.querySelector('.payment-status').checked;
+                    bValue = b.querySelector('.payment-status').checked;
+                } else {
+                    const columnIndex = getColumnIndex(field);
+                    aValue = a.children[columnIndex].textContent.toLowerCase();
+                    bValue = b.children[columnIndex].textContent.toLowerCase();
+                }
+
+                if (currentSort.direction === 'asc') {
+                    return aValue < bValue ? -1 : 1;
+                } else {
+                    return aValue > bValue ? -1 : 1;
+                }
+            });
+
+            // Reinsert sorted rows
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
+            updateStats();
+        }
+
+        // Add click handlers for sortable columns
+        document.querySelectorAll('th[data-sort]').forEach(th => {
+            th.addEventListener('click', () => sortTable(th.dataset.sort));
+        });
+
+        // Save payment information
+        document.querySelectorAll('.save-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const row = this.closest('.student-row');
+                const studentId = row.dataset.studentId;
+                const paid = row.querySelector('.payment-status').checked;
+                const transactionId = row.querySelector('.transaction-id').value;
+                const upiId = row.querySelector('.upi-id').value;
+
+                showLoading();
+
+                try {
+                    const response = await fetch('/api/update-payment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            studentId,
+                            paid,
+                            transactionId,
+                            upiId
+                        })
+                    });
+
+                    if (!response.ok) throw new Error('Failed to update payment');
+
+                    showToast('Payment information updated successfully');
+                    updateStats();
+                } catch (error) {
+                    showToast('Failed to update payment information', 'error');
+                    console.error('Error:', error);
+                } finally {
+                    hideLoading();
+                }
+            });
+        });
+
+        // Export to CSV functionality
+        document.getElementById('exportCsv').addEventListener('click', function() {
+            const rows = Array.from(document.querySelectorAll('.student-row'))
+                .filter(row => row.style.display !== 'none');
+            
+            const headers = [
+                'Name',
+                'Email',
+                'Phone',
+                'Roll No',
+                'College',
+                'Workshop',
+                'Payment Status',
+                'Transaction ID',
+                'UPI ID'
+            ];
+
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => {
+                    return [
+                        row.children[0].textContent,
+                        row.children[1].textContent,
+                        row.children[2].textContent,
+                        row.children[3].textContent,
+                        row.children[4].textContent,
+                        row.children[5].textContent,
+                        row.querySelector('.payment-status').checked ? 'Paid' : 'Pending',
+                        row.querySelector('.transaction-id').value,
+                        row.querySelector('.upi-id').value
+                    ].map(cell => `"${cell}"`).join(',');
+                })
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'students_export.csv';
+            link.click();
+        });
+
+        // Initialize stats on page load
+        updateStats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
+{% endblock %}
+{% block content %}
+    <form action="" method="post">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <p class="disabled-email">{{email}}</p>
+            <input type="email" id="email" name="email" value="{{email}}" hidden required>
+        </div>
+
+        <div>
+            <label for="otp">OTP:</label>
+            <input type="text" id="otp" name="otp" required>
+        </div>
+        
+        <div class="form-group">
+            <input type="submit" value="Verify">
+        </div>
+    </form>
+    <div class="resend_otp">
+        <button onclick="resendOtp()">Resend OTP</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='verify_email.js') }}" defer></script>
+{% endblock %}

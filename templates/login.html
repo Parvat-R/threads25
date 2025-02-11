@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
+{% endblock %}
+{% block content %}
+    <form action="" method="post">
+        <div class="form-group">
+            <label for="username">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <input type="submit" value="Login">
+        </div>
+    </form>
+{% endblock %}

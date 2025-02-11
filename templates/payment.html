@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+{% endblock %}
+{% block content %}
+    <div class="qrcode">
+        <img src="{{ url_for('static', filename='qrcode.png') }}" alt="GPay Qr Code Image.">
+    </div>
+    <form action="" method="post">
+        <div class="form-group">
+            <p>Enter Transaction Details for {{ email }}</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="transaction_id">Transaction ID:</label>
+            <input type="text" id="transaction_id" name="transaction_id" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="upi_id">UPI ID:</label>
+            <input type="text" id="upi_id" name="upi_id" required>
+        </div>
+        
+        <div class="form-group">
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+{% endblock %}

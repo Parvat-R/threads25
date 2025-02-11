@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+{% endblock %}
+{% block content %}
+    <div class="student">
+        <h2>My ID Card</h2>
+        name: {{ student.name }}<br>
+        email: {{ student.email }}<br>
+        phone: {{ student.phone }}<br>
+        rollno: {{ student.rollno }}<br>
+        workshop: {{ student.workshop }}<br>
+        events: {{ student.events }}<br>
+        college_name: {{ student.college_name }}<br>
+        paid: {{  "yes" if payment.paid else "no" }}<br>
+        transaction_id: {{ payment.transaction_id }}<br>
+        upi_id: {{ payment.upi_id }}
+        <a href="{{ url_for('index') }}">Back to Home</a>
+    </div>
+{% endblock %}

@@ -3,18 +3,49 @@
 <head>
     {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}" />
-    <title>{% block title %}{% endblock %} - Sona College Of Technology</title>
+    <title>{% block title %}{% endblock %} | Threads 25 - Sona College Of Technology</title>
     {% endblock %}
 </head>
 <body>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div id="notifications">
+                {% for message in messages %}
+                    <div class="alert alert-success" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                <script defer>
+                    setTimeout(() => {
+                        const notifications = document.getElementById('notifications');
+                        notifications.remove();
+                    }, 5000);
+                </script>
+            </div>
+        {% endif %}
+    {% endwith %}
+    
     <div id="nav">
-        
+        <div class="nav_bar">
+            <div class="logo">
+                <h3>Threads25</h3>
+            </div>
+            <div class="right">
+                <a href="{{ url_for('index') }}" class="link">home</a>
+                <a href="{{ url_for('about') }}" class="link">about</a>
+                <a href="#contact" class="link">contact</a>
+                {% if "student_id" in session %}
+                    <a href="{{ url_for('myid') }}" class="link">my id</a>
+                {% else %}
+                    <a href="{{ url_for('register') }}" class="link">register</a>
+                {% endif %}
+            </div>
+        </div>
     </div>
+
     <div id="root">{% block content %}{% endblock %}</div>
-    <div id="footer">
-        {% block footer %}
-        &copy; Copyright 2008 by <a href="">you</a>.
-        {% endblock %}
-    </div>
+    
+    <div id="footer"></div>
 </body>
 </html>
