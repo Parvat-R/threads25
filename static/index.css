@@ -1,4 +1,14 @@
+/* Canvas positioning for Three.js */
+#canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
 
+/* Main content styling */
 .content {
     display: flex;
     align-items: center;
@@ -8,17 +18,17 @@
     min-height: 90vh;
     padding: 10vh;
     gap: 5em;
+    position: relative;
+    z-index: 1;
 }
 
-.hero h1 {
-    font-size: 80px;
-    font-family: "Clash Grotesk";
-}
-
-.hero p {
+/* Hero section */
+.hero {
+    padding-top: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    width: 100%;
-    color: #ce9fff !important;
 }
 
 .hero .container {
@@ -28,11 +38,34 @@
     justify-content: center;
 }
 
+.hero h1 {
+    font-size: 80px;
+    font-family: "Clash Grotesk";
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    animation: float 6s ease-in-out infinite;
+}
+
+.hero p {
+    text-align: center;
+    width: 100%;
+    color: #ce9fff !important;
+    font-size: 1.2em;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 10px rgba(206, 159, 255, 0.5);
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Timer section */
 section#timer {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2em 2em;
+    padding: 2em;
+    width: 100%;
 }
 
 div#countdown-container {
@@ -40,99 +73,59 @@ div#countdown-container {
     align-items: center;
     justify-content: center;
     gap: 1em;
+    flex-wrap: wrap;
+}
+
+div#countdown-container > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.5em 1em;
+    width: 10em;
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.27);
+    cursor: default;
+    user-select: none;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+div#countdown-container > div:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 #timer span:not(.unit) {
     font-size: 120px;
     font-family: "Clash Grotesk";
     font-weight: bold;
-}
-
-div#countdown-container>div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    background: #ffffff03;
-    padding: .5em 1em;
-    width: 10em;
-    border-radius: 25px;
-    backdrop-filter: blur(10px);
-    border: 1px solid #fff4;
-    cursor: default;
-    user-select: none;
-}
-
-section.hero {
-    padding-top: 10vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: linear-gradient(45deg, #fff, #ce9fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 span.unit {
     font-size: 18px;
     text-transform: capitalize;
     font-family: 'Satoshi';
-    letter-spacing: .03em;
-    color: #fff7;
+    letter-spacing: 0.03em;
+    color: rgba(255, 255, 255, 0.7);
 }
 
-section#events {
+/* Register button */
+#register_now {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    gap: 10em;
-    padding: 3em 0;
+    position: relative;
+    z-index: 2;
 }
 
-#tech-events, #nontech-events {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 2em;
-}
-
-#events .container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 2em;
-    padding: 1em;
-}
-
-#events .event {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    width: 322px;
-    backdrop-filter: blur(10px);
-    background: #ffffff03;
-    border: 1px solid #fff3;
-    border-radius: 25px;
-    padding: 1em 1.5em;
-    gap: 1em;
-    aspect-ratio: 1/1;
-}
-
-.event .title {
-    font-size: 1.4em;
-    display: flex;
-    border-bottom: 2px solid #fff7;
-    justify-content: space-between;
-}
-
-#events h2 {
-    font-size: 3em;
-    font-family: "Clash Grotesk";
-}
 #register_now a {
-    border: 1px solid #fff3;
-    background: #fff1;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.06);
     padding: 1em;
     width: 15em;
     border-radius: 55px;
@@ -144,48 +137,586 @@ section#events {
     color: #ffe66c;
     backdrop-filter: blur(10px);
     overflow: hidden;
-    transition: .3s;
-    box-shadow: 0 0 0px #fff0;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
-div#register_now {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#register_now a::before {
-    position: absolute;
-    content: "";
-    width: 50px;
-    height: 50px;
-    background: #ffe66c;
-    z-index: -1;
-    filter: blur(20px);
-    bottom: -70%;
-    left: 0;
-    transition: .3s;
-}
-
+#register_now a::before,
 #register_now a::after {
     position: absolute;
     content: "";
     width: 50px;
     height: 50px;
-    background: #f86cff;
     z-index: -1;
     filter: blur(20px);
+    transition: all 0.5s ease;
+}
+
+#register_now a::before {
+    background: #ffe66c;
+    bottom: -70%;
+    left: 0;
+}
+
+#register_now a::after {
+    background: #f86cff;
     bottom: 90%;
     right: 0;
-    transition: .5s;
 }
-#register_now a:hover::before {
-    width: 100%;
+
+#register_now a:hover {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 30px rgba(255, 230, 108, 0.1);
 }
+
+#register_now a:hover::before,
 #register_now a:hover::after {
     width: 100%;
 }
 
-#register_now a:hover {
-    scale: 1.05;
+/* Events section */
+section#events {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10em;
+    padding: 3em 0;
+    position: relative;
+    z-index: 1;
+}
+
+#tech-events,
+#nontech-events {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2em;
+    width: 100%;
+}
+
+#events h2 {
+    font-size: 3em;
+    font-family: "Clash Grotesk";
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+#events .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2em;
+    padding: 1em;
+    max-width: 1200px;
+}
+
+#events .event {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 322px;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 1.5em;
+    gap: 1em;
+    aspect-ratio: 1/1;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#events .event:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Original event card styles */
+#events .event {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 322px;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 1.5em;
+    gap: 1em;
+    /* Changed from aspect-ratio: 1/1 to min-height for better content fitting */
+    min-height: 400px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Modified event title styles for better fitting */
+.event .title {
+    font-size: 1.4em;
+    display: flex;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 0.5em;
+    /* Added these properties for better title handling */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+.event .title h3 {
+    /* Added these properties for better title handling */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-right: 1em; /* Space for icon */
+}
+
+.event .icon {
+    transition: transform 0.3s ease;
+}
+
+.event:hover .icon {
+    transform: translate(5px, -5px);
+}
+
+.event .floater {
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 50px;
+    }
+    
+    #timer span:not(.unit) {
+        font-size: 60px;
+    }
+    
+    div#countdown-container > div {
+        width: 8em;
+    }
+    
+    #events .event {
+        width: 100%;
+        max-width: 322px;
+    }
+    
+    .content {
+        padding: 5vh;
+    }
+}
+
+/* Events section styling */
+section#events {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10em;
+    padding: 3em 0;
+    position: relative;
+    z-index: 1;
+}
+
+#tech-events, #nontech-events {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2em;
+    width: 100%;
+    max-width: 1400px;
+}
+
+#events h2 {
+    font-size: 3em;
+    font-family: "Clash Grotesk";
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    margin-bottom: 1em;
+}
+
+#events .container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2em;
+    padding: 1em;
+    width: 100%;
+}
+
+/* Event card styling */
+.event {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    padding: 1.5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5em;
+    min-height: 350px;
+    transition: all 0.3s ease;
+}
+
+.event:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Event title */
+.event .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 0.8em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1em;
+}
+
+.event .title h3 {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+}
+
+.event .icon {
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+}
+
+.event:hover .icon {
+    transform: translate(5px, -5px);
+    color: #ffe66c;
+}
+
+/* Event details */
+.event-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.description {
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+    font-size: 0.95em;
+}
+
+.prize-pool, .team-size {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: 0.9em;
+}
+
+.label {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.value {
+    color: #ffe66c;
+    font-weight: 500;
+}
+
+/* Event footer */
+.event-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin-top: auto;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+
+.tag {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.3em 0.8em;
+    border-radius: 15px;
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.learn-more {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffe66c;
+    padding: 0.8em 1.5em;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.learn-more:hover {
+    background: rgba(255, 230, 108, 0.1);
+    border-color: #ffe66c;
+    transform: translateY(-2px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #events .container {
+        grid-template-columns: 1fr;
+        padding: 1em;
+    }
+
+    .event {
+        min-height: auto;
+    }
+
+    #events h2 {
+        font-size: 2em;
+    }
+}
+
+/* Original event card styles */
+#events .event {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 322px;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 1.5em;
+    gap: 1em;
+    /* Changed from aspect-ratio: 1/1 to min-height for better content fitting */
+    min-height: 400px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    
+}
+
+/* Modified event title styles for better fitting */
+.event .title {
+    font-size: 1.4em;
+    display: flex;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 0.5em;
+    /* Added these properties for better title handling */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+.event .title h3 {
+    /* Added these properties for better title handling */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-right: 1em; /* Space for icon */
+}
+
+/* Horizontal scrolling container */
+.horizontal-scroll-section {
+    position: relative;
+    padding: 5em 0;
+    overflow: hidden;
+}
+
+.scroll-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10em;
+}
+
+.events-track {
+    display: flex;
+    position: relative;
+    padding: 2em 0;
+}
+
+.events-wrapper {
+    display: flex;
+    gap: 2em;
+    padding-left: calc(50vw - 161px); /* Half of viewport - half of card width */
+    padding-right: calc(50vw - 161px);
+}
+
+/* Modified events section */
+section#events {
+    position: relative;
+    z-index: 1;
+}
+
+#tech-events,
+#nontech-events {
+    width: 100%;
+}
+
+#events h2 {
+    font-size: 3em;
+    font-family: "Clash Grotesk";
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    padding-left: calc(50vw - 161px);
+    margin-bottom: 1em;
+}
+
+/* Event card styling */
+#events .event {
+    flex: 0 0 auto;
+    width: 322px;
+    min-height: 400px;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 1.5em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Keep other event card styles the same */
+.event:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .events-wrapper {
+        padding-left: 2em;
+        padding-right: 2em;
+    }
+    
+    #events h2 {
+        padding-left: 2em;
+        font-size: 2em;
+    }
+}
+
+/* Horizontal scrolling section */
+.horizontal-scroll-section {
+    position: relative;
+    padding: 5em 0;
+    overflow: hidden;
+}
+
+.scroll-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10em;
+}
+
+/* Track and wrapper styles */
+.events-track {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -ms-overflow-style: none;  /* Hide scrollbar IE and Edge */
+    scrollbar-width: none;     /* Hide scrollbar Firefox */
+}
+
+.events-track::-webkit-scrollbar {
+    display: none;  /* Hide scrollbar Chrome, Safari and Opera */
+}
+
+.events-wrapper {
+    display: flex;
+    gap: 2em;
+    padding-left: calc(50vw - 161px);
+    padding-right: calc(50vw - 161px);
+    min-height: min-content;
+}
+
+/* Section headers */
+#events h2 {
+    font-size: 3em;
+    font-family: "Clash Grotesk";
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    padding-left: calc(50vw - 161px);
+    margin-bottom: 1em;
+}
+
+/* Event card styles */
+.event {
+    flex: 0 0 auto;
+    width: 322px;
+    min-height: 400px;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 1.5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.event-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+/* Keep your existing event card internal styling */
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding-bottom: 0.8em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.title h3 {
+    font-size: 1.4em;
+    margin: 0;
+    padding-right: 1em;
+}
+
+.event:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.event:hover .icon {
+    transform: translate(5px, -5px);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .events-wrapper {
+        padding-left: 2em;
+        padding-right: 2em;
+    }
+    
+    #events h2 {
+        padding-left: 2em;
+        font-size: 2em;
+    }
+    
+    .event {
+        width: 300px;
+    }
 }

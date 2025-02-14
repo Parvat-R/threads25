@@ -42,12 +42,8 @@
         </div>
         
         <div class="form-group">
-            {%  for event in events %}
-                <label>
-                    <input type="checkbox" name="events" value="{{ event }}">
-                    {{ event }}
-                </label>
-            {% endfor %}
+            <input type="checkbox" name="events" id="events" value="Participate in Events">
+            <label for="events">Participate In Events</label>
         </div>
         
         <div class="form-group">
@@ -55,7 +51,7 @@
             <input type="text" id="college_name" name="college_name" required>
         </div>
         
-        <button type="submit">Submit</button>
+        <button type="submit" class="submit-button">Submit</button>
     </form>
 </div>
 {% endblock %}
