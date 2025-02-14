@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}About - Threads'25{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+.about-section {
+    min-height: 100vh;
+    padding: 6em 2em;
+    position: relative;
+    color: #fff;
+    background: #1a1a1a00;
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.about-container::before {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(45deg, #ffe66c20, #f86cff20);
+    border-radius: 50%;
+    filter: blur(100px);
+    top: -50px;
+    right: -100px;
+    z-index: 0;
+    animation: float 6s ease-in-out infinite;
+}
+
+.about-header {
+    text-align: center;
+    margin-bottom: 4em;
+}
+
+.about-header h1 {
+    font-size: 3.5em;
+    font-family: "Clash Grotesk", sans-serif;
+    background: linear-gradient(45deg, #ffe66c, #f86cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradientFlow 8s ease infinite;
+    margin-bottom: 0.5em;
+}
+
+.about-header p {
+    color: #ffffffaa;
+    font-size: 1.2em;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2em;
+    margin-top: 4em;
+}
+
+.info-card {
+    background: #ffffff05;
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    border: 1px solid #ffffff1a;
+    padding: 2em;
+    transition: transform 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+}
+
+.info-card h3 {
+    color: #ffe66c;
+    font-size: 1.5em;
+    margin-bottom: 1em;
+}
+
+.info-card p {
+    color: #ffffffcc;
+    line-height: 1.6;
+}
+
+.highlight {
+    color: #f86cff;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .about-header h1 {
+        font-size: 2.5em;
+    }
+    
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="about-section">
+    <div class="about-container">
+        <div class="about-header">
+            <h1>THREADS'25</h1>
+            <p>A National Level Technical Symposium by the Department of Information Technology, Sona College of Technology</p>
+        </div>
+        
+        <div class="about-grid">
+            <div class="info-card">
+                <h3>About the Event</h3>
+                <p>Threads'25 is a premier technical symposium that brings together the brightest minds in technology. With a focus on innovation, creativity, and technical excellence, we provide a platform for students to showcase their skills and compete in various challenging events.</p>
+            </div>
+            
+            <div class="info-card">
+                <h3>What to Expect</h3>
+                <p>Experience a day filled with <span class="highlight">technical competitions</span>, <span class="highlight">workshops</span>, and <span class="highlight">non-technical events</span>. From coding challenges to project presentations, Threads'25 offers diverse opportunities for participants to excel and win exciting prizes.</p>
+            </div>
+            
+            <div class="info-card">
+                <h3>Theme</h3>
+                <p>Under the banner of <span class="highlight">HACK · CREATE · DOMINATE</span>, Threads'25 encourages participants to push their boundaries, innovate solutions, and emerge victorious in their chosen domains.</p>
+            </div>
+            
+            <div class="info-card">
+                <h3>Venue & Date</h3>
+                <p>Join us on <span class="highlight">February 27, 2025</span> at Sona College of Technology, Salem. Experience state-of-the-art facilities and participate in events designed to challenge and inspire.</p>
+            </div>
+            
+            <div class="info-card">
+                <h3>Prize Pool</h3>
+                <p>Compete for substantial prize pools across various events. Showcase your skills and win recognition along with exciting rewards. Each event offers unique opportunities to prove your expertise.</p>
+            </div>
+            
+            <div class="info-card">
+                <h3>Why Participate</h3>
+                <p>Gain valuable experience, network with fellow tech enthusiasts, learn from experts, and get a chance to win attractive prizes. Threads'25 is your platform to showcase innovation and technical prowess.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
