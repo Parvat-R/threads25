@@ -3,6 +3,7 @@
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+<link rel="script" href="{{ url_for('static', filename='sample.js') }}">
 {% endblock %}
 {% block content %}
 <div id="canvas"></div>
@@ -37,41 +38,107 @@
     </section>
 </div>
 
-<section id="events">
-    <div id="tech-events">
-        <h2>Technical Events</h2>
-        <div class="container">
-            {% for event in tech_events %}
-            <div class="event">
-                <div class="title">
-                    <h3>{{ event.event_name }}</h3>
-                    <div class="icon">
-                        ↗
+<section id="events" class="horizontal-scroll-section">
+    <div class="scroll-container">
+        <!-- Technical Events -->
+        <div id="tech-events">
+            <h2>Technical Events</h2>
+            <div class="events-track">
+                <div class="events-wrapper">
+                    {% for event in tech_events %}
+                    <div class="event">
+                        <div class="event-content">
+                            <div class="title">
+                                <h3>{{ event.event_name }}</h3>
+                                <div class="icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                                        <polyline points="7 7 17 7 17 17"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="event-details">
+                                <div class="description">{{ event.event_description }}</div>
+                                {% if event.prize_pool %}
+                                <div class="prize-pool">
+                                    <span class="label">Prize Pool:</span>
+                                    <span class="value">₹{{ event.prize_pool }}</span>
+                                </div>
+                                {% endif %}
+                                {% if event.team_size %}
+                                <div class="team-size">
+                                    <span class="label">Team Size:</span>
+                                    <span class="value">{{ event.team_size }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="event-footer">
+                            <div class="tags">
+                                {% if event.tags %}
+                                    {% for tag in event.tags %}
+                                    <span class="tag">{{ tag }}</span>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <button class="learn-more">Learn More</button>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                <div class="floater">{{ event.event_description }}</div>
             </div>
-            {% endfor %}
         </div>
-    </div>
-    <div id="nontech-events">
-        <h2>Non-Technical Events</h2>
-        <div class="container">
-            {% for event in non_tech_events %}
-            <div class="event">
-                <div class="title">
-                    <h3>{{ event.event_name }}</h3>
-                    <div class="icon">
-                        ↗
+
+        <!-- Non-Technical Events -->
+        <div id="nontech-events">
+            <h2>Non-Technical Events</h2>
+            <div class="events-track">
+                <div class="events-wrapper">
+                    {% for event in non_tech_events %}
+                    <div class="event">
+                        <div class="event-content">
+                            <div class="title">
+                                <h3>{{ event.event_name }}</h3>
+                                <div class="icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                                        <polyline points="7 7 17 7 17 17"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="event-details">
+                                <div class="description">{{ event.event_description }}</div>
+                                {% if event.prize_pool %}
+                                <div class="prize-pool">
+                                    <span class="label">Prize Pool:</span>
+                                    <span class="value">₹{{ event.prize_pool }}</span>
+                                </div>
+                                {% endif %}
+                                {% if event.team_size %}
+                                <div class="team-size">
+                                    <span class="label">Team Size:</span>
+                                    <span class="value">{{ event.team_size }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="event-footer">
+                            <div class="tags">
+                                {% if event.tags %}
+                                    {% for tag in event.tags %}
+                                    <span class="tag">{{ tag }}</span>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <button class="learn-more">Learn More</button>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                <div class="floater">{{ event.event_description }}</div>
             </div>
-            {% endfor %}
         </div>
     </div>
 </section>
-    
 
 
 <script defer>
@@ -116,4 +183,6 @@
     // Update the countdown every second
     setInterval(updateCountdown, 1000);
 </script>
+
+
 {% endblock %}
