@@ -19,12 +19,30 @@ workshops = [
     "Workshop 3"
 ]
 
+tech_events = [
+    {"event_name": "Capture the Flag (CTF) - Cybersecurity Showdown", "event_description": "Solve cybersecurity challenges, exploit vulnerabilities, and capture hidden flags. Compete in ethical hacking, cryptography, and forensics to claim victory!"},
+    {"event_name": "Logix - The Ultimate Logic Challenge", "event_description": "A two-round competition featuring a logic-based quiz followed by an interactive coding challenge with a unique twist! Roll the dice, solve problems, and climb to the top."},
+    {"event_name": "Tech-Quest - Decode, Quiz & Debug", "event_description": "Decode Morse code, tackle a rapid-fire tech quiz, and debug programs in record time! Compete in teams of two and prove your tech supremacy."},
+    {"event_name": "Paper Presentation - Innovate & Present", "event_description": "Showcase your research and innovative ideas in fields like AI, ML, Cybersecurity, IoT, Blockchain, and more. Present your findings in front of expert judges."},
+    {"event_name": "Pixel Perfect - UI/UX Design Challenge", "event_description": "Recreate a web page design with precision using Figma, Adobe XD, or Sketch—no coding required! The most accurate and aesthetic design wins."},
+    {"event_name": "Code Clash - Crack the Code", "event_description": "Analyze code snippets, predict outputs, and solve coding problems in a competitive MCQ format. Compete solo or in teams, and prove your coding prowess."}
+]
+
+non_tech_events = [
+    {"event_name": "Treasure Hunt - Solve & Conquer", "event_description": "Follow cryptic clues, decode puzzles, and race against time to uncover the hidden treasure. Strategy and teamwork will lead you to victory!"},
+    {"event_name": "Karaoke - Sing Your Heart Out", "event_description": "Step up to the mic and showcase your singing talent in a fun-filled music battle. No matter your genre, this is your chance to shine!"},
+    {"event_name": "Filmography - Movie Mania", "event_description": "Put your film knowledge to the test! Guess movies, identify iconic scenes, and reenact dialogues in this ultimate cinematic showdown."},
+    {"event_name": "Snap Fusion - Photography Challenge", "event_description": "Capture and creatively blend images based on a given theme. Show off your photography and editing skills to create stunning visual stories."}
+]
+
+
+
 @app.route("/")
 def index():
+    name = None
     if "student_id" in session:
         name = db.get_student_by_id(session["student_id"])["name"]
-        return render_template("index.html", name=name)
-    return render_template("index.html")
+    return render_template("index.html", name=name, tech_events=tech_events, non_tech_events=non_tech_events)
 
 
 @app.route("/about")
@@ -52,7 +70,7 @@ def register():
 @app.post("/register")
 def register_post():
     name = request.form["name"]
-    email = request.form["email"]
+    email = request.form.get("email", "").strip().lower()
     phone = request.form["phone"]
     rollno = request.form["rollno"]
     workshop = request.form.get("workshop", None)
@@ -81,9 +99,10 @@ def register_post():
     otp = emails.send_otp(email)
     db.create_payment_entry({
         "email": email,
-        "opt": str(otp),
-        "verified": False
+        "paid": False
     })
+    db.create_login_otp(email, str(otp))
+    emails.send_id_mail(student_data, request.url_root + "myid")
     if otp:
         flash("OTP sent successfully!", "success")
         return redirect("verify_email")
@@ -119,6 +138,10 @@ def login_post():
             db.update_otp(email, otp)
         else:
             db.create_login_otp(email, str(otp))
+
+        # send the otp
+        # unverify the user
+        db.unverify_email(email)    
         flash("OTP sent successfully!", "success")
         return redirect("verify_email")
     
@@ -167,19 +190,25 @@ def verify_email_post():
         flash("Email already verified", "success")
         return redirect("myid")
 
-    if db.verify_otp(email, otp):
-        db.verify_email(email, otp) # change the verified field to true
+    if db.verify_email(email, otp):
 
         flash("Email verified successfully!", "success")
+        payment_detail = db.get_payment_by_email(email) 
+        if payment_detail is None:
         # ask the student for payment if they are not
         # from sona college of technology 
-        if not email.endswith("@sonatech.ac.in"):
-            db.create_payment_entry({"email": email})
-            return redirect(url_for("payment"))
-        
-        # make the paid column true
-        # if they are from sona college
-        db.create_payment_entry({"email": email, "paid": True})
+            if not email.endswith("@sonatech.ac.in"):
+                db.create_payment_entry({"email": email, "paid": False})
+                return redirect(url_for("payment"))
+            
+            # make the paid column true
+            # if they are from sona college
+            db.create_payment_entry({"email": email, "paid": True})
+        else:
+            if email.endswith("@sonatech.ac.in") or payment_detail["paid"]:
+                return redirect(url_for("myid"))
+            else:
+                return redirect(url_for("payment"))
         return redirect(url_for("myid"))
     
     # if the otp is invalid
@@ -231,6 +260,7 @@ def myid():
     # if the student id is not in the database
     if not student:
         flash("Error: Student not found!", "danger")
+        session.clear()
         return redirect(url_for("register"))
     
     # if the student is not verified
@@ -257,7 +287,7 @@ def myid():
 
 
 @app.get("/payment")
-def payment_get():
+def payment():
     if "student_id" not in session:
         flash("You are not logged in!", "danger")
         return redirect(url_for("login"))
@@ -304,7 +334,8 @@ def payment_post():
         return redirect(url_for("verify_email"))
     
     # if the paid is true in the payment_and_otp collection
-    if db.get_payment_by_email(student["email"]):
+    detail = db.get_payment_by_email(student["email"])
+    if detail["paid"]:
         flash("You have already paid!", "success")
         return redirect(url_for("myid"))
     
@@ -336,7 +367,7 @@ def admin_login():
 def admin_login_post():
     username = request.form["username"]
     password = request.form["password"]
-    if db.match_admin_password(password):
+    if db.match_admin_password(username, password):
         session["admin_username"] = username
         return redirect(url_for("admin"))
     else:
@@ -347,8 +378,9 @@ def admin_login_post():
 @app.get("/admin/students")
 def admin_students():
     if "admin_username" in session and db.admin_exists(session["admin_username"]):
-        students = db.get_all_students()  # We need to add this function
-        payments = db.get_all_payments()
+        students = db.get_all_students()
+        payments = {payment["email"]: payment for payment in db.get_all_payments()}
+        # print(students, payments, db.get_all_payments())
         return render_template("admin_students.html", students=students, payments=payments)
     
     return redirect(url_for("index"))
@@ -368,12 +400,13 @@ def admin_student(student_id):
 def admin_student_edit(student_id):
     if "admin_username" in session and db.admin_exists(session["admin_username"]):
         student = db.get_student_by_id(student_id)
+        payment_detail = db.get_payment_by_email(student["email"])
         if student:
-            student["name"] = request.form.get("name")
-            student["paid"] = request.form.get("paid")
-            student["transaction_id"] = request.form.get("transaction_id")
-            student["upi_id"] = request.form.get("upi_id")
-            db.edit_student(student_id, student)
+            payment_detail["paid"] = request.form.get("paid") == "true"
+            payment_detail["transaction_id"] = request.form.get("transaction_id")
+            payment_detail["upi_id"] = request.form.get("upi_id")
+            print(student["email"], payment_detail)
+            print(db.edit_payment(student["email"], payment_detail))
             return {
                 "success": True,
                 "message": "Student updated successfully!"

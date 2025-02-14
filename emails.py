@@ -7,6 +7,7 @@ import base64
 import dotenv
 import os
 from utils import generate_qr_code, generate_otp
+import _thread
 
 dotenv.load_dotenv()
 EMAIL = os.getenv("EMAIL")
@@ -23,7 +24,7 @@ def send_email(subject, to, body, subtype='html'):
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(EMAIL, EMAIL_PASSWORD)
-        server.sendmail(EMAIL, EMAIL, msg.as_string())
+        server.sendmail(EMAIL, to, msg.as_string())
         server.quit()
         return True
     except Exception as e:
@@ -69,9 +70,9 @@ def send_otp(email: str) -> int:
     </body>
     </html>
     """
-    if send_email("OTP Verification", email, body):
-        return otp
-    return False
+
+    _thread.start_new_thread(send_email, ("OTP Verification", email, body))
+    return otp
 
 
 def send_id_mail(student_data, event_url):
@@ -115,6 +116,7 @@ def send_id_mail(student_data, event_url):
             </div>
         </div>
     </body>
-    </html>    
+    </html>
     """
-    return send_email("Your Event ID Card", student_data['email'], body)
+    _thread.start_new_thread(send_email, ("Your Event ID Card", student_data['email'], body))
+    return True

@@ -1,0 +1,125 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: linear-gradient(180deg, #120025 60%, #090012);
+    max-width: 100vw;
+    min-height: 100vh;
+    font-family: "satoshi", sans-serif;
+    font-size: 18px;
+    font-family: "satoshi", sans-serif;
+    overflow-x: hidden;
+    color: #fff;
+}
+
+div#nav {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .5em 1em;
+    width: 100%;
+}
+
+.nav_bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: fit-content;
+    border: 1px solid #fff2;
+    padding: .3em .4em;
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    color: white;
+    gap: 4em;
+    overflow: hidden;
+}
+
+#nav .right {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#nav a.link {
+    position: relative;
+    padding: .5em 1em;
+    color: #fcd7ff99;
+    text-decoration: none;
+    text-transform: capitalize;
+    border-radius: 3px;
+    border: 1px solid #fff0;
+    transition: .3s;
+    font-size: 16px;
+}
+
+
+#nav .logo {
+    padding: 0 1em;
+    cursor: default;
+    user-select: none;
+}
+
+#nav a.link:hover {
+    /* background: #ffffff05; */
+    /* border: 1px solid #fff7; */
+    color: #fcd7ff;
+}
+
+#nav a.link:last-child {
+    border-radius: 3px 30px 30px 3px;
+}
+
+#nav a.link:first-child {
+    border-radius: 30px 3px 3px 30px;
+}
+
+div#canvas {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    z-index: -1;
+}
+
+.nav_bar::before {
+    content: "";
+    background: #ffffff;
+    width: 150px;
+    height: 130px;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    z-index: -101;
+    filter: blur(30px);
+    opacity: .3;
+}
+
+.nav_bar::after {
+    content: "";
+    background: #ffffff;
+    width: 50px;
+    height: 130px;
+    position: absolute;
+    top: -80%;
+    right: 10%;
+    z-index: -101;
+    filter: blur(30px);
+    opacity: .2;
+}
+
+div#root {
+    display: flex;
+    min-width: 100vw;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+}

@@ -55,7 +55,7 @@ class StudentModel(BaseModel):
     events: bool
     college_name: str
 
-class PaymentAndOtpModel(BaseModel):
+class PaymentModel(BaseModel):
     email: EmailStr
     paid: bool = False
     transaction_id: str | None = None
@@ -144,12 +144,6 @@ class StudentModel(BaseModel):
     events: bool
     college_name: str
 
-class PaymentAndOtpModel(BaseModel):
-    email: EmailStr
-    opt: str  # to verify the email
-    paid: bool = False
-    transaction_id: str | None = None
-    upi_id: str | None = None
 
 # Convert BSON to JSON
 def bson_to_json(data):
@@ -186,7 +180,7 @@ def get_student_by_phone(phone: str):
 def edit_student(student_id: str, update_data: dict):
     if not students_collection:
         return None
-    students_collection.update_one({"_id": ObjectId(student_id)}, {"$set": update_data})
+    print(students_collection.update_one({"email": update_data["email"]}, {"$set": update_data}).modified_count)
     return get_student_by_id(student_id)
 
 def student_exists(email: str = None, phone: str = None, rollno: str = None):
@@ -217,7 +211,7 @@ def get_student_by_email(email: str):
 def create_payment_entry(payment_data: dict):
     if not payment_and_otp_collection:
         return None
-    payment = PaymentAndOtpModel(**payment_data)
+    payment = PaymentModel(**payment_data)
     inserted_id = payment_and_otp_collection.insert_one(payment.model_dump()).inserted_id
     return str(inserted_id)
 
@@ -241,49 +235,37 @@ def update_payment_status(email: str, transaction_id: str, upi_id: str | None = 
     )
     return get_payment_by_email(email)
 
-def verify_otp(email: str, otp: str):
-    if not payment_and_otp_collection:
-        return False
-    payment = payment_and_otp_collection.find_one({
-        "email": email,
-        "opt": otp
-    })
-    return payment is not None
-
 def update_otp(email: str, new_otp: str):
-    if not payment_and_otp_collection:
-        return None
-    payment_and_otp_collection.update_one(
+    # update the otp in the login and otp collection
+    if not login_otp_collection:
+        return False
+    login_otp_collection.update_one(
         {"email": email},
-        {"$set": {"opt": new_otp}}
+        {"$set": {"otp": new_otp}}
     )
-    return get_payment_by_email(email)
+    return True
 
 def verify_email(email: str, otp: str):
-    if not payment_and_otp_collection:
+    # change the verified status in the login and otp collection
+    if not login_otp_collection:
         return False
-    payment = payment_and_otp_collection.find_one({
-        "email": email,
-        "opt": otp        
-    })
-    if payment is not None:
-        # set the verified param to true
-        payment_and_otp_collection.update_one(
-            {"email": email},
-            {"$set": {"verified": True}}
-        )
-        return True
-    return False
+    login_otp_collection.update_one(
+        {"email": email},
+        {"$set": {"verified": True}}
+    )
+    return True
 
 def email_is_verified(email: str):
-    if not payment_and_otp_collection:
+    # check the verification from the LoginAndOtp class
+    if not login_otp_collection:
         return False
-    payment = payment_and_otp_collection.find_one({
-        "email": email,
-        "verified": True
-    })
-    return payment is not None
-
+    otp_doc = login_otp_collection.find_one({"email": email})
+    if not otp_doc:
+        create_login_otp(email, "123456")
+    otp_doc = login_otp_collection.find_one({"email": email})
+    return otp_doc.get("verified")
+    
+    
 def delete_payment_entry(email: str):
     if not payment_and_otp_collection:
         return False
@@ -310,3 +292,51 @@ def match_admin_password(username, password):
     if admin is None:
         return False
     return admin["password"] == password
+
+
+def unverify_email(email: str):
+    # make the user unverified in the login and otp class
+    if not login_otp_collection:
+        return False
+    login_otp_collection.update_one(
+        {"email": email},
+        {"$set": {"verified": False}}
+    )
+    return True
+
+
+def create_admin(username, password):
+    if not admin_collection:
+        return False
+    admin = AdminModel(username=username, password=password)
+    inserted_id = admin_collection.insert_one(admin.model_dump()).inserted_id
+    return str(inserted_id)
+
+
+def delete_admin(username):
+    if not admin_collection:
+        return False
+    result = admin_collection.delete_one({"username": username})
+    return result.deleted_count > 0
+
+def edit_payment(email: str, payment_data: dict):
+    if not payment_and_otp_collection:
+        return None
+
+    # Ensure payment_data does not include "_id"
+    if "_id" in payment_data:
+        del payment_data["_id"]
+
+    # Convert payment_data to a dictionary if it's a Pydantic model
+    if isinstance(payment_data, PaymentModel):
+        payment_data = payment_data.model_dump()
+
+    res = payment_and_otp_collection.update_one(
+        {"email": email},
+        {"$set": payment_data}
+    )
+
+    print(f"Matched: {res.matched_count}, Modified: {res.modified_count}")
+    return res.modified_count > 0  # Returns True if a document was modified
+
+# create_admin("admin", "admin")

@@ -1,0 +1,56 @@
+form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 600px;
+    background: #ffffff02;
+    backdrop-filter: blur(10px);
+    border: 1px solid #fff0;
+    padding: 2em;
+    border-radius: 25px;
+    margin: auto;
+    gap: 1em;
+}
+
+.form-group {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    width: 350px;
+}
+
+input {
+    width: 100%;
+    font-size: 18px;
+    border-radius: 15px;
+    padding: .3em 1em;
+    outline: none;
+    border: 1px solid #fff2;
+    background: #fff1;
+    color: #fff;
+}
+
+select#workshops {
+      appearance: none; /* Removes default OS styles */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+    width: 100%;
+    text-align: center;
+    border-radius: 25px;
+    font-size: 18px;
+    padding: .5em 1em;
+    background: #0003;
+    color: #fff;
+}
+
+select:-internal-list-box {
+    background: #fff;
+}
+
+select#workshops option {
+    background: #fff0;
+    border: 1px solid #fff3;
+}
+

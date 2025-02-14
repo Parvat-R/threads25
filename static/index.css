@@ -1,0 +1,124 @@
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    min-height: 90vh;
+    padding: 10vh;
+}
+
+.hero h1 {
+    font-size: 80px;
+    font-family: "Clash Grotesk";
+}
+
+.hero p {
+    text-align: center;
+    width: 100%;
+    color: #ce9fff !important;
+}
+
+.hero .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+section#timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7em 2em;
+}
+
+div#countdown-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+
+#timer span:not(.unit) {
+    font-size: 120px;
+    font-family: "Clash Grotesk";
+    font-weight: bold;
+}
+
+div#countdown-container>div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: #ffffff03;
+    padding: .5em 1em;
+    width: 10em;
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid #fff4;
+}
+
+section.hero {
+    padding-top: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+span.unit {
+    font-size: 18px;
+    text-transform: capitalize;
+    font-family: 'Satoshi';
+    letter-spacing: .03em;
+    color: #fff7;
+}
+
+section#events {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10em;
+}
+
+#tech-events, #nontech-events {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2em;
+}
+
+#events .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2em;
+}
+
+#events .event {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 300px;
+    backdrop-filter: blur(10px);
+    background: #ffffff03;
+    border: 1px solid #fff3;
+    border-radius: 25px;
+    padding: 1em;
+    gap: 1em;
+}
+
+.event .title {
+    font-size: 1.4em;
+    border-bottom: 2px solid #fff7;
+}
+
+#events h2 {
+    font-size: 3em;
+    font-family: "Clash Grotesk";
+}

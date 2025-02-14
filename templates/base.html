@@ -1,31 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     {% block head %}
+    <style>
+        @font-face {
+            font-family: "Amulya";
+            src: url("static/fonts/Amulya-Variable.ttf");
+            ;
+        }
+
+        @font-face {
+            font-family: "Amulya Italic";
+            src: url("static/fonts/Amulya-VariableItalic.ttf");
+            ;
+        }
+
+        @font-face {
+            font-family: "Clash Grotesk";
+            src: url("static/fonts/ClashGrotesk-Variable.ttf");
+            ;
+        }
+
+        @font-face {
+            font-family: "Satoshi";
+            src: url("static/fonts/Satoshi-Variable.ttf");
+            ;
+        }
+
+        @font-face {
+            font-family: "Satoshi Italic";
+            src: url("static/fonts/Satoshi-VariableItalic.ttf");
+            ;
+        }
+    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}" />
     <title>{% block title %}{% endblock %} | Threads 25 - Sona College Of Technology</title>
     {% endblock %}
 </head>
+
 <body>
-    
+
     {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div id="notifications">
-                {% for message in messages %}
-                    <div class="alert alert-success" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-                <script defer>
-                    setTimeout(() => {
-                        const notifications = document.getElementById('notifications');
-                        notifications.remove();
-                    }, 5000);
-                </script>
-            </div>
-        {% endif %}
+    {% if messages %}
+    <div id="notifications">
+        {% for message in messages %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+        <script defer>
+            setTimeout(() => {
+                const notifications = document.getElementById('notifications');
+                notifications.remove();
+            }, 5000);
+        </script>
+    </div>
+    {% endif %}
     {% endwith %}
-    
+
     <div id="nav">
         <div class="nav_bar">
             <div class="logo">
@@ -36,16 +69,18 @@
                 <a href="{{ url_for('about') }}" class="link">about</a>
                 <a href="#contact" class="link">contact</a>
                 {% if "student_id" in session %}
-                    <a href="{{ url_for('myid') }}" class="link">my id</a>
+                <a href="{{ url_for('myid') }}" class="link">my id</a>
                 {% else %}
-                    <a href="{{ url_for('register') }}" class="link">register</a>
+                <a href="{{ url_for('register') }}" class="link">register</a>
                 {% endif %}
             </div>
         </div>
     </div>
-
+    <div id="canvas"></div>
     <div id="root">{% block content %}{% endblock %}</div>
-    
+
     <div id="footer"></div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="{{ url_for('static', filename='waves.js') }}"></script>
 </html>

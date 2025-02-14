@@ -1,12 +1,116 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block head %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 {% endblock %}
 {% block content %}
-    <h1>Index</h1>
-    <p class="important">
-      Welcome to my awesome homepage.
-    </p>
+<div id="canvas"></div>
+<div class="content">
+    <section class="hero">
+        <div class="container">
+            <h1>THREADS'25</h1>
+            <p>HACK · CREATE · DOMINATE</p>
+        </div>
+    </section>
+    <section id="timer">
+        <div id="countdown-container">
+            <div id="days-container">
+                <span id="days">0</span> <span class="unit">days</span>
+            </div>
+            <div id="hours-container">
+                <span id="hours">0</span> <span class="unit">hours</span>
+            </div>
+            <div id="minutes-container">
+                <span id="minutes">0</span> <span class="unit">minutes</span>
+            </div>
+            <div id="seconds-container">
+                <span id="seconds">0</span> <span class="unit">seconds</span>
+            </div>
+        </div>
+        <div id="expired-message" style="display: none;">
+            The event has ended!
+        </div>
+    </section>
+</div>
+
+<section id="events">
+    <div id="tech-events">
+        <h2>Technical Events</h2>
+        <div class="container">
+            {% for event in tech_events %}
+            <div class="event">
+                <div class="title">
+                    <h3>{{ event.event_name }}</h3>
+                    <div class="icon">
+                        ↗
+                    </div>
+                </div>
+                <div class="floater">{{ event.event_description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div id="nontech-events">
+        <h2>Non-Technical Events</h2>
+        <div class="container">
+            {% for event in non_tech_events %}
+            <div class="event">
+                <div class="title">
+                    <h3>{{ event.event_name }}</h3>
+                    <div class="icon">
+                        ↗
+                    </div>
+                </div>
+                <div class="floater">{{ event.event_description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+    
+
+
+<script defer>
+    // Set the target date (format: Year, Month (0-11), Day, Hour, Minute, Second)
+    // Example: January 1, 2026 at 00:00:00
+    const targetDate = new Date(2025, 1, 27, 8, 30, 0);
+    
+    // Display the target date in a readable format
+    // document.getElementById('target-date').textContent = targetDate.toLocaleString();
+    
+    // Update the countdown every second
+    function updateCountdown() {
+        // Get current date and time
+        const currentDate = new Date();
+        
+        // Calculate the difference in milliseconds
+        const difference = targetDate - currentDate;
+        
+        // Check if the target date has passed
+        if (difference < 0) {
+            document.getElementById('countdown-container').style.display = 'none';
+            document.getElementById('expired-message').style.display = 'block';
+            return;
+        }
+        
+        // Calculate days, hours, minutes, and seconds
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+        
+        // Update each element with its corresponding value
+        document.getElementById('days').textContent = days;
+        document.getElementById('hours').textContent = hours;
+        document.getElementById('minutes').textContent = minutes;
+        document.getElementById('seconds').textContent = seconds;
+    }
+    
+    // Initial call to display the countdown immediately
+    updateCountdown();
+    
+    // Update the countdown every second
+    setInterval(updateCountdown, 1000);
+</script>
 {% endblock %}
