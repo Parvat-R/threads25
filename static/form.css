@@ -1,79 +1,228 @@
-form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    max-width: 800px;
-    background: #ffffff02;
-    backdrop-filter: blur(10px);
-    border: 1px solid #fff0;
-    padding: 2em;
-    border-radius: 25px;
-    margin: auto;
-    gap: 1em;
-}
-
-.form-group {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    flex-direction: column;
-    max-width: 350px;
-}
-
-input {
-    width: 100%;
-    font-size: 18px;
-    border-radius: 15px;
-    padding: .3em 1em;
-    outline: none;
-    border: 1px solid #fff5;
-    background: #ffffff03;
-    color: #fff;
-}
-
-select#workshops {
-      appearance: none; /* Removes default OS styles */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-    width: 100%;
-    text-align: center;
-    border-radius: 25px;
-    font-size: 18px;
-    padding: .5em 1em;
-    background: #0003;
-    color: #fff;
-}
-
-select:-internal-list-box {
-    background: #fff;
-}
-
-select#workshops option {
-    background: #fff0;
-    border: 1px solid #fff3;
-}
-
+/* Container and Content Styles */
 .container {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    margin: auto;
-    padding: 6em;
+    min-height: 100vh;
+    padding: 2em;
+    position: relative;
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(45deg, #ffe66c20, #f86cff20);
+    border-radius: 50%;
+    filter: blur(80px);
+    top: 0;
+    right: 0;
+    z-index: 0;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(10deg); }
 }
 
 .content {
-    width: 500px;
-    align-items: center;
+    width: 100%;
+    max-width: 600px;
     text-align: center;
-}
-
-.desc {
-    color: #ffffffaa;
+    margin-bottom: 2em;
+    position: relative;
+    z-index: 1;
 }
 
 h2 {
     font-size: 2.5em;
-    font-family: "Clash Grotesk";
+    font-family: "Clash Grotesk", sans-serif;
+    margin-bottom: 0.5em;
+    background: linear-gradient(45deg, #ffe66c, #f86cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradientFlow 8s ease infinite;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.desc {
+    color: #ffffffaa;
+    line-height: 1.6;
+    margin-bottom: 2em;
+}
+
+.desc span {
+    color: #ffe66c;
+    font-weight: 500;
+}
+
+/* Form Styles */
+form {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    background: #ffffff05;
+    backdrop-filter: blur(10px);
+    padding: 2em;
+    border-radius: 25px;
+    border: 1px solid #ffffff1a;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: 100%;
+}
+
+/* Special styling for checkbox group */
+.form-group:has(input[type="checkbox"]) {
+    flex-direction: row;
+    align-items: center;
+    gap: 1em;
+}
+
+label {
+    color: #ffffff;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+input[type="text"],
+input[type="email"],
+select#workshops {
+    width: 100%;
+    padding: 0.8em 1em;
+    border-radius: 12px;
+    border: 1px solid #ffffff1a;
+    background: #ffffff0a;
+    color: #fff;
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+select#workshops:focus {
+    border-color: #ffe66c;
+    box-shadow: 0 0 15px rgba(255, 230, 108, 0.1);
+    outline: none;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #ffe66c;
+    cursor: pointer;
+}
+
+select#workshops {
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1em center;
+    background-size: 1em;
+}
+
+select#workshops option {
+    background: #2a2a2a;
+    color: #fff;
+    padding: 0.5em;
+}
+
+.submit-button {
+    margin-top: 1em;
+    padding: 1em 2em;
+    border-radius: 55px;
+    border: none;
+    background: linear-gradient(45deg, #ffe66c, #f86cff);
+    color: #000;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, #ffffff50, transparent);
+    transition: 0.5s;
+}
+
+.submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 230, 108, 0.2);
+}
+
+.submit-button:hover::before {
+    left: 100%;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 1em;
+    }
+    
+    form {
+        padding: 1.5em;
+    }
+    
+    h2 {
+        font-size: 2em;
+    }
+}
+
+/* Loading State */
+.submit-button.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.submit-button.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
