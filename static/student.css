@@ -1,0 +1,42 @@
+.student {
+    padding: 4em 0;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: .21em;
+    text-align: center;
+}
+
+.student > div {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 300px;
+    border-radius: 30px;
+    padding: .4em .4em;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 1em;
+    max-width: 700px;
+    border-bottom: 1px solid #fff2;
+}
+
+.field {
+    text-transform: capitalize;
+    border: 1px solid #fff3;
+    padding: .3em 2em;
+    border-radius: 30px;
+}
+
+.detail {
+    position: relative;
+    justify-self: center;
+    text-wrap: auto;
+}
+.student a {
+    color: #ffe66caa;
+    text-decoration: none;
+}

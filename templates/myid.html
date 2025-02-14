@@ -3,20 +3,58 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='student.css') }}">
 {% endblock %}
 {% block content %}
     <div class="student">
         <h2>My ID Card</h2>
-        name: {{ student.name }}<br>
-        email: {{ student.email }}<br>
-        phone: {{ student.phone }}<br>
-        rollno: {{ student.rollno }}<br>
-        workshop: {{ student.workshop }}<br>
-        events: {{ student.events }}<br>
-        college_name: {{ student.college_name }}<br>
-        paid: {{  "yes" if payment.paid else "no" }}<br>
-        transaction_id: {{ payment.transaction_id }}<br>
-        upi_id: {{ payment.upi_id }}
+        <div>
+            <div class="field">name</div>
+            <div class="detail">{{ student.name }}</div>
+        </div>
+        <div>
+            <div class="field">email</div>
+            <div class="detail">{{ student.email }}</div>
+        </div>
+        <div>
+            <div class="field">phone</div>
+            <div class="detail">{{ student.phone }}</div>
+        </div>
+        <div>
+            <div class="field">rollno</div>
+            <div class="detail">{{ student.rollno }}</div>
+        </div>
+        <div>
+            <div class="field">workshop</div>
+            <div class="detail">{{ student.workshop }}</div>
+        </div>
+        <div>
+            <div class="field">events</div>
+            <div class="detail">{{ student.events }}</div>
+        </div>
+        <div>
+            <div class="field">college_name</div>
+            <div class="detail">{{ student.college_name }}</div>
+        </div>
+        <div>
+            <div class="field">paid</div>
+            <div class="detail">{{  "yes" if payment.paid else "no" }}</div>
+        </div>
+        <div>
+            <div class="field">is cash</div>
+            <div class="detail">{{  "yes" if payment.is_cash else "no" }}</div>
+        </div>
+        <div>
+            <div class="field">transaction_id</div>
+            <div class="detail">{{ payment.transaction_id }}</div>
+        </div>
+        <div>
+            <div class="field">upi_id</div>
+            <div class="detail">{{ payment.upi_id }}</div>
+        </div>
+
+        <a href="{{ url_for('verify_email') }}">Get ID in Email.</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
         <a href="{{ url_for('index') }}">Back to Home</a>
     </div>
 {% endblock %}

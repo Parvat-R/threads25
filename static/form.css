@@ -115,6 +115,7 @@ label {
 
 input[type="text"],
 input[type="email"],
+input[type="password"],
 select#workshops {
     width: 100%;
     padding: 0.8em 1em;

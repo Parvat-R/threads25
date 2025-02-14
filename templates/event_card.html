@@ -1,0 +1,29 @@
+<div class="event">
+    <div class="event-content">
+        <div class="title">
+            <h3>{{ event.event_name }}</h3>
+            <div class="icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+            </div>
+        </div>
+        <div class="event-details">
+            <div class="description">{{ event.event_description }}</div>
+            {% if event.prize_pool %}
+            <div class="prize-pool">
+                <span class="label">Prize Pool:</span>
+                <span class="value">₹{{ event.prize_pool }}</span>
+            </div>
+            {% endif %}
+            {% if event.team_size %}
+            <div class="team-size">
+                <span class="label">Team Size:</span>
+                <span class="value">{{ event.team_size }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <button class="learn-more">Learn More</button>
+</div>

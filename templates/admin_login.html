@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block head %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+{{ super() }} 
+<link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
 {% endblock %}
 {% block content %}
+<div class="container">
+    <div class="content">
+        <h2>Admin Login</h2>
+        <div class="desc">Enter the username and password provided for you.</div>
+    </div>
     <form action="" method="post">
         <div class="form-group">
             <label for="username">Username:</label>
@@ -15,9 +20,8 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
         </div>
-        
-        <div class="form-group">
-            <input type="submit" value="Login">
-        </div>
+
+        <button type="submit">Submit</button>
     </form>
+</div>
 {% endblock %}

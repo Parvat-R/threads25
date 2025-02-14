@@ -1,4 +1,6 @@
-
+* {
+    transition: .3s;
+}
 .content {
     display: flex;
     align-items: center;
@@ -7,7 +9,7 @@
     width: 100%;
     min-height: 90vh;
     padding: 10vh;
-    gap: 5em;
+    gap: 3em;
 }
 
 .hero h1 {
@@ -105,9 +107,10 @@ section#events {
 }
 
 #events .event {
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     flex-direction: column;
     width: 322px;
     backdrop-filter: blur(10px);
@@ -152,6 +155,8 @@ div#register_now {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    gap: .5em;
 }
 
 #register_now a::before {
@@ -188,4 +193,96 @@ div#register_now {
 
 #register_now a:hover {
     scale: 1.05;
+}
+
+.events-wrapper {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5em;
+}
+
+.title {
+    padding: .5em 0;
+}
+
+.event-details {
+    padding: .5em 0;
+}
+
+button.learn-more {
+    position: relative;
+    border: 1px solid #fff2;
+    background: #fff0;
+    color: #f0fa;
+    font-size: 18px;
+    outline: none;
+    padding: .5em 2em;
+    border-radius: 25px;
+    justify-self: flex-end;
+    cursor: pointer;
+    transition: .3s;
+}
+
+button.learn-more:hover {
+    border: 1px solid #fff4;
+    background: #fff1;
+    color: #f0f;
+}
+
+div#register_now a[href^="#"] {
+    background: #fff0;
+    border: 0px;
+    padding: 0;
+    color: #fff7;
+    &::before,&::after {
+        display: none;
+    }
+    &:hover {
+        scale: 1;
+        color: #fff;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    .hero h1 {
+        font-size: 6em;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    body {
+        font-size: 14px;
+    }
+    #timer span:not(.unit) {
+        font-size: 80px;
+    }
+    div#countdown-container>div {
+        width: 9em;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    body {
+        font-size: 14px;
+    }
+    #nav a.link:nth-child(1), #nav a.link:nth-child(2), #nav a.link:nth-child(4) {
+        display: none;
+    }
+    .hero h1 {
+        font-size: 4em;
+    }
+    #timer span:not(.unit) {
+        font-size: 50px;
+    }
+    #timer .unit {
+        font-size: 12px;
+    }
+    div#countdown-container>div {
+        width: 6em;
+    }
+    #events h2 {
+        font-size: 2.5em;
+    }
 }

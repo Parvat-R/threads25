@@ -1,30 +1,130 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}Payment{% endblock %}
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
+    <style>
+        div#root {
+    padding: 5em 0em;
+}
+
+#root h3 {
+    font-size: 2em;
+}
+
+
+.form-group {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+}
+        .payment-options {
+            margin-bottom: 20px;
+        }
+        .option-container {
+            margin-top: 15px;
+        }
+        .online-payment {
+            display: block;
+        }
+        .cash-payment {
+            display: none;
+        }
+
+        .form-group:has( input[type="submit"]) {
+    align-items: center;
+}
+
+input[type="submit"] {
+    display: flex;
+    font-size: 18px;
+    padding: .5em 2em;
+    border-radius: 25px;
+    outline: none;
+    border: 1px solid #fff7;
+    background: #fff1;
+    color: #ffe66c;
+    cursor: pointer;
+}
+    </style>
 {% endblock %}
 {% block content %}
-    <div class="qrcode">
-        <img src="{{ url_for('static', filename='qrcode.png') }}" alt="GPay Qr Code Image.">
+    <div class="payment-options">
+        <h3>Select Payment Method</h3>
+        <div>
+            <input type="radio" id="online-option" name="payment-type" value="online" checked>
+            <label for="online-option">Online Payment (UPI)</label>
+        </div>
+        <div>
+            <input type="radio" id="cash-option" name="payment-type" value="cash">
+            <label for="cash-option">Cash Payment</label>
+        </div>
     </div>
-    <form action="" method="post">
-        <div class="form-group">
-            <p>Enter Transaction Details for {{ email }}</p>
+
+    <div id="online-container" class="option-container online-payment">
+        <div class="qrcode">
+            <img src="{{ url_for('static', filename='qrcode.png') }}" alt="GPay Qr Code Image.">
         </div>
-        
-        <div class="form-group">
-            <label for="transaction_id">Transaction ID:</label>
-            <input type="text" id="transaction_id" name="transaction_id" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="upi_id">UPI ID:</label>
-            <input type="text" id="upi_id" name="upi_id" required>
-        </div>
-        
-        <div class="form-group">
-            <input type="submit" value="Submit">
-        </div>
-    </form>
+        <form action="{{ url_for('payment_post') }}" method="post" id="online-form">
+            <div class="form-group">
+                <p>Enter Transaction Details for {{ student.email }}</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="transaction_id">Transaction ID:</label>
+                <input type="text" id="transaction_id" name="transaction_id" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="upi_id">UPI ID:</label>
+                <input type="text" id="upi_id" name="upi_id" required>
+            </div>
+            
+            <input type="hidden" name="is_cash" value="false">
+            
+            <div class="form-group">
+                <input type="submit" value="Submit Transaction">
+            </div>
+        </form>
+    </div>
+
+    <div id="cash-container" class="option-container cash-payment">
+        <form action="{{ url_for('payment_post') }}" method="post" id="cash-form">
+            <div class="form-group">
+                <p>Cash Payment for {{ student.email }}</p>
+                <p>Please submit your cash payment to the designated staff member at the registration desk.</p>
+            </div>
+            
+            <input type="hidden" name="is_cash" value="true">
+            
+            <div class="form-group">
+                <input type="submit" value="Record Cash Payment">
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const onlineOption = document.getElementById('online-option');
+            const cashOption = document.getElementById('cash-option');
+            const onlineContainer = document.getElementById('online-container');
+            const cashContainer = document.getElementById('cash-container');
+            
+            onlineOption.addEventListener('change', function() {
+                if (this.checked) {
+                    onlineContainer.style.display = 'block';
+                    cashContainer.style.display = 'none';
+                }
+            });
+            
+            cashOption.addEventListener('change', function() {
+                if (this.checked) {
+                    onlineContainer.style.display = 'none';
+                    cashContainer.style.display = 'block';
+                }
+            });
+        });
+    </script>
 {% endblock %}

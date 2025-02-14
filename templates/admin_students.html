@@ -22,7 +22,6 @@
                     <option value="name">Name</option>
                     <option value="email">Email</option>
                     <option value="phone">Phone</option>
-                    <option value="rollno">Roll No</option>
                     <option value="paid">Payment Status</option>
                 </select>
             </div>
@@ -35,10 +34,10 @@
                             <th scope="col" class="px-6 py-3">Name</th>
                             <th scope="col" class="px-6 py-3">Email</th>
                             <th scope="col" class="px-6 py-3">Phone</th>
-                            <th scope="col" class="px-6 py-3">Roll No</th>
                             <th scope="col" class="px-6 py-3">College</th>
                             <th scope="col" class="px-6 py-3">Workshop</th>
-                            <th scope="col" class="px-6 py-3">Payment Status</th>
+                            <th scope="col" class="px-6 py-3">Paid?</th>
+                            <th scope="col" class="px-6 py-3">Cash?</th>
                             <th scope="col" class="px-6 py-3">Transaction ID</th>
                             <th scope="col" class="px-6 py-3">UPI ID</th>
                             <th scope="col" class="px-6 py-3">Actions</th>
@@ -50,13 +49,17 @@
                             <td class="px-6 py-4">{{ student.name }}</td>
                             <td class="px-6 py-4">{{ student.email }}</td>
                             <td class="px-6 py-4">{{ student.phone }}</td>
-                            <td class="px-6 py-4">{{ student.rollno }}</td>
                             <td class="px-6 py-4">{{ student.college_name }}</td>
                             <td class="px-6 py-4">{{ student.workshop or 'N/A' }}</td>
                             <td class="px-6 py-4">
                                 <input type="checkbox" 
                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 payment-status"
                                        {% if payments[student.email].paid %}checked{% endif %}>
+                            </td>
+                            <td class="px-6 py-4">
+                                <input type="checkbox" 
+                                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 payment-method"
+                                       {% if payments[student.email].is_cash %}checked{% endif %}>
                             </td>
                             <td class="px-6 py-4">
                                 <input type="text" 
@@ -99,6 +102,8 @@
                     text = row.textContent.toLowerCase();
                 } else if (filterValue === 'paid') {
                     text = row.querySelector('.payment-status').checked ? 'paid' : 'unpaid';
+                } else if (filterValue === 'is_cash') {
+                    text = row.querySelector('.payment-method').checked ? 'cash' : 'upi';
                 } else {
                     text = row.children[getColumnIndex(filterValue)].textContent.toLowerCase();
                 }
@@ -111,8 +116,7 @@
             const fieldMap = {
                 'name': 0,
                 'email': 1,
-                'phone': 2,
-                'rollno': 3
+                'phone': 2
             };
             return fieldMap[field] || 0;
         }
@@ -126,6 +130,7 @@
                 const row = this.closest('.student-row');
                 const studentId = row.dataset.studentId;
                 const paid = row.querySelector('.payment-status').checked;
+                const method = row.querySelector('.payment-method').checked;
                 const transactionId = row.querySelector('.transaction-id').value;
                 const upiId = row.querySelector('.upi-id').value;
 
@@ -137,6 +142,7 @@
                         },
                         body: new URLSearchParams({
                             'paid': paid,
+                            'is_cash': method,
                             'transaction_id': transactionId,
                             'upi_id': upiId
                         })

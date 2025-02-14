@@ -98,7 +98,7 @@ def process_bank_statement(filepath, admin_email):
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+# socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # List of workshops. Should be updated.
 workshops = [
@@ -233,7 +233,7 @@ def register_post():
         "is_cash": False  # Default to non-cash payment
     })
     db.create_login_otp(email, str(otp))
-    emails.send_id_mail(student_data, request.url_root + "myid")
+    emails.send_id_mail(student_data, request.url_root + "/admin/student/" + session["student_id"])
     if otp:
         flash("OTP sent successfully!", "success")
         return redirect("verify_email")
@@ -293,7 +293,9 @@ def verify_email():
         
         # check if the email is already verified
         if db.email_is_verified(email):
-            flash("Email already verified", "success")
+            student_data = db.get_student_by_email(email)
+            emails.send_id_mail(student_data, request.url_root + "/admin/student/" + session["student_id"])
+            flash("Email already verified. ID sent to you mail.", "success")
             return redirect("myid")
         
         # display the enter otp page
@@ -315,13 +317,15 @@ def verify_email_post():
         flash("Error: Email does not exist!", "danger")
         return redirect(url_for("login"))
 
+    student_data = db.get_student_by_email(email)
+
     # if the email is already verified
     if db.email_is_verified(email):
-        flash("Email already verified", "success")
+        emails.send_id_mail(student_data, request.url_root + "/admin/student/" + session["student_id"])
+        flash("Email already verified! ID sent to you mail.", "success")
         return redirect("myid")
 
     if db.verify_email(email, otp):
-
         flash("Email verified successfully!", "success")
         payment_detail = db.get_payment_by_email(email) 
         if payment_detail is None:
@@ -336,9 +340,12 @@ def verify_email_post():
             db.create_payment_entry({"email": email, "paid": True})
         else:
             if email.endswith("@sonatech.ac.in") or payment_detail["paid"]:
+                emails.send_id_mail(student_data, request.url_root + "/admin/student/" + session["student_id"])
                 return redirect(url_for("myid"))
             else:
                 return redirect(url_for("payment"))
+            
+        emails.send_id_mail(student_data, request.url_root + "/admin/student/" + session["student_id"])
         return redirect(url_for("myid"))
     
     # if the otp is invalid
@@ -555,7 +562,8 @@ def admin_student(student_id):
     if "admin_username" in session and db.admin_exists(session["admin_username"]):
         student = db.get_student_by_id(student_id)
         if student:
-            return render_template("admin_student.html", student=student)
+            payment = db.get_payment_by_email(student["email"])
+            return render_template("myid.html", student=student, payment=payment)
         flash("Student not found!", "danger")
         return redirect(url_for("admin_students"))
     return redirect(url_for("admin_login"))

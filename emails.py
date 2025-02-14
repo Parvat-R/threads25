@@ -77,6 +77,8 @@ def send_otp(email: str) -> int:
 
 def send_id_mail(student_data, event_url):
     qr_code_data = generate_qr_code(event_url)
+    with open("sample_qr.png", "wb") as f:
+        f.write(base64.b64decode(qr_code_data))
     body = f"""
     <html>
     <head>
@@ -109,10 +111,10 @@ def send_id_mail(student_data, event_url):
             </div>
             <h1 class="title">Your Event ID Card</h1>
             <div class="student-info">
+                <p>id: {event_url.split("/")[-1]}</p>
                 <p>Name: {student_data['name']}</p>
                 <p>Email: {student_data['email']}</p>
-                <p>Phone: {student_data['phone']}</p>
-                <p>Roll No: {student_data['rollno']}</p>                
+                <p>Phone: {student_data['phone']}</p>             
             </div>
         </div>
     </body>

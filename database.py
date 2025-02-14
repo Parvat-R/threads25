@@ -1,8 +1,10 @@
 import os
 import json
+import uuid
+from bson import ObjectId
 from datetime import datetime
 from pymongo import MongoClient, errors
-from pydantic import BaseModel, EmailStr, Field, field_validator, validator
+from pydantic import BaseModel, EmailStr, Field, ValidationInfo, field_validator, validator
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
 
@@ -19,6 +21,7 @@ try:
     payment_and_otp_collection = db.payment_and_otp
     login_otp_collection = db.login_otp  # New collection for login OTPs
     admin_collection = db.admins
+    bot_verified_payment = db.bot_verified_payment
 
     # Ensure indexes for students collection
     students_collection.create_index("email", unique=True)
@@ -59,13 +62,17 @@ class PaymentModel(BaseModel):
     is_cash: bool = False  # New field for cash payments
     transaction_id: str | None = None
     upi_id: str | None = None
-
     @field_validator('transaction_id', 'upi_id')
-    def validate_payment_details(cls, v, values):
-        if values.get('is_cash', False):
+    def validate_payment_details(cls, v, info: ValidationInfo):
+        # Get the data from ValidationInfo
+        data = info.data
+        
+        if data.get('is_cash', False):
             return None  # If cash payment, these fields should be None
-        if values.get('paid', False) and not values.get('is_cash', False) and not v:
+        
+        if data.get('paid', False) and not data.get('is_cash', False) and not v:
             raise ValueError('transaction_id and upi_id are required for non-cash payments')
+        
         return v
 
 class LoginOtpModel(BaseModel):
@@ -225,7 +232,7 @@ def create_payment_entry(payment_data: dict):
     
     # Handle cash payments
     if payment_data.get('is_cash', False):
-        payment_data['transaction_id'] = None
+        payment_data['transaction_id'] = f"cash-{str(ObjectId())}"
         payment_data['upi_id'] = None
     
     payment = PaymentModel(**payment_data)
