@@ -162,20 +162,18 @@ def register():
 #     name = request.form["name"]
 #     email = request.form.get("email", "").strip().lower()
 #     phone = request.form["phone"]
-#     rollno = request.form["rollno"]
 #     workshop = request.form.get("workshop", None)
 #     events = request.form.get("events", False)
 #     college_name = request.form["college_name"]
 
-#     if db.student_exists(email, phone, rollno):
-#         flash("Error: Email, Phone, or Roll Number already exists!", "danger")
+#     if db.student_exists(email, phone):
+#         flash("Error: Email, Phone Number already exists!", "danger")
 #         return redirect(url_for("register"))
 
 #     student_data = {
 #         "name": name,
 #         "email": email,
 #         "phone": phone,
-#         "rollno": rollno,
 #         "workshop": workshop,
 #         "events": False,
 #         "college_name": college_name
@@ -206,20 +204,18 @@ def register_post():
     name = request.form["name"]
     email = request.form.get("email", "").strip().lower()
     phone = request.form["phone"]
-    rollno = request.form["rollno"]
     workshop = request.form.get("workshop", None)
     selected_events = request.form.getlist("events")  # Changed to getlist for multiple events
     college_name = request.form["college_name"]
 
-    if db.student_exists(email, phone, rollno):
-        flash("Error: Email, Phone, or Roll Number already exists!", "danger")
+    if db.student_exists(email, phone):
+        flash("Error: Email, Phone already exists!", "danger")
         return redirect(url_for("register"))
 
     student_data = {
         "name": name,
         "email": email,
         "phone": phone,
-        "rollno": rollno,
         "workshop": workshop,
         "events": selected_events,  # Now it's a list
         "college_name": college_name

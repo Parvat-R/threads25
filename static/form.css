@@ -5,9 +5,9 @@
     justify-content: center;
     flex-direction: column;
     min-height: 100vh;
-    padding: 2em;
+    padding: 6em 0;
     position: relative;
-    background: #1a1a1a;
+    background: #1a1a1a00;
     color: #fff;
 }
 
@@ -74,6 +74,7 @@ form {
     display: flex;
     flex-direction: column;
     gap: 1.5em;
+    align-items: center;
     background: #ffffff05;
     backdrop-filter: blur(10px);
     padding: 2em;
@@ -102,6 +103,7 @@ form:hover {
     flex-direction: row;
     align-items: center;
     gap: 1em;
+    flex-wrap: wrap;
 }
 
 label {
@@ -189,10 +191,32 @@ select#workshops option {
     left: 100%;
 }
 
+button {
+    padding: .7em 3em;
+    font-size: 18px;
+    border-radius: 25px;
+    width: fit-content;
+    text-align: center;
+    border: 1px solid #fff7;
+    background: #ffffff03;
+    color: #ffe66c;
+    cursor: pointer;
+    outline: none;
+    transition: .3s;
+}
+
+button:hover {
+    background: #fff3;
+}
+
+button:active {
+    scale: .95;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .container {
-        padding: 1em;
+        padding: 6em 2em;
     }
     
     form {

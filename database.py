@@ -23,7 +23,6 @@ try:
     # Ensure indexes for students collection
     students_collection.create_index("email", unique=True)
     students_collection.create_index("phone", unique=True)
-    students_collection.create_index("rollno", unique=True)
 
     # Ensure indexes for payment_and_otp collection
     payment_and_otp_collection.create_index("email", unique=True)
@@ -50,7 +49,6 @@ class StudentModel(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr
     phone: str = Field(..., min_length=10, max_length=15)
-    rollno: str = Field(..., min_length=4, max_length=20)
     workshop: str | None
     events: list[str]  # Changed from bool to list of strings
     college_name: str
@@ -147,15 +145,6 @@ def is_otp_valid(email: str):
     
     return bool(otp_doc)
 
-# Pydantic Models for Data Validation
-class StudentModel(BaseModel):
-    name: str = Field(..., min_length=2, max_length=100)
-    email: EmailStr
-    phone: str = Field(..., min_length=10, max_length=15)
-    rollno: str = Field(..., min_length=4, max_length=20)
-    workshop: str | None
-    events: bool
-    college_name: str
 
 
 # Convert BSON to JSON
@@ -186,11 +175,6 @@ def get_student_by_id(student_id: str):
     student = students_collection.find_one({"_id": ObjectId(student_id)})
     return bson_to_json(student)
 
-def get_student_by_rollno(rollno: str):
-    if not students_collection:
-        return None
-    student = students_collection.find_one({"rollno": rollno})
-    return bson_to_json(student)
 
 def get_student_by_phone(phone: str):
     if not students_collection:
@@ -212,7 +196,7 @@ def edit_student(student_id: str, update_data: dict):
     print(students_collection.update_one({"email": update_data["email"]}, {"$set": update_data}).modified_count)
     return get_student_by_id(student_id)
 
-def student_exists(email: str = None, phone: str = None, rollno: str = None):
+def student_exists(email: str = None, phone: str = None):
     if not students_collection:
         return False
     query = {"$or": []}
@@ -220,8 +204,6 @@ def student_exists(email: str = None, phone: str = None, rollno: str = None):
         query["$or"].append({"email": email})
     if phone:
         query["$or"].append({"phone": phone})
-    if rollno:
-        query["$or"].append({"rollno": rollno})
     return students_collection.find_one(query) is not None if query["$or"] else False
 
 def get_all_students():
