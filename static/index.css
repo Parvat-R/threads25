@@ -7,6 +7,7 @@
     width: 100%;
     min-height: 90vh;
     padding: 10vh;
+    gap: 5em;
 }
 
 .hero h1 {
@@ -31,7 +32,7 @@ section#timer {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 7em 2em;
+    padding: 2em 2em;
 }
 
 div#countdown-container {
@@ -58,6 +59,8 @@ div#countdown-container>div {
     border-radius: 25px;
     backdrop-filter: blur(10px);
     border: 1px solid #fff4;
+    cursor: default;
+    user-select: none;
 }
 
 section.hero {
@@ -81,6 +84,7 @@ section#events {
     justify-content: center;
     flex-direction: column;
     gap: 10em;
+    padding: 3em 0;
 }
 
 #tech-events, #nontech-events {
@@ -97,6 +101,7 @@ section#events {
     justify-content: center;
     flex-wrap: wrap;
     gap: 2em;
+    padding: 1em;
 }
 
 #events .event {
@@ -104,21 +109,83 @@ section#events {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    width: 300px;
+    width: 322px;
     backdrop-filter: blur(10px);
     background: #ffffff03;
     border: 1px solid #fff3;
     border-radius: 25px;
-    padding: 1em;
+    padding: 1em 1.5em;
     gap: 1em;
+    aspect-ratio: 1/1;
 }
 
 .event .title {
     font-size: 1.4em;
+    display: flex;
     border-bottom: 2px solid #fff7;
+    justify-content: space-between;
 }
 
 #events h2 {
     font-size: 3em;
     font-family: "Clash Grotesk";
+}
+#register_now a {
+    border: 1px solid #fff3;
+    background: #fff1;
+    padding: 1em;
+    width: 15em;
+    border-radius: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 18px;
+    color: #ffe66c;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    transition: .3s;
+    box-shadow: 0 0 0px #fff0;
+}
+
+div#register_now {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#register_now a::before {
+    position: absolute;
+    content: "";
+    width: 50px;
+    height: 50px;
+    background: #ffe66c;
+    z-index: -1;
+    filter: blur(20px);
+    bottom: -70%;
+    left: 0;
+    transition: .3s;
+}
+
+#register_now a::after {
+    position: absolute;
+    content: "";
+    width: 50px;
+    height: 50px;
+    background: #f86cff;
+    z-index: -1;
+    filter: blur(20px);
+    bottom: 90%;
+    right: 0;
+    transition: .5s;
+}
+#register_now a:hover::before {
+    width: 100%;
+}
+#register_now a:hover::after {
+    width: 100%;
+}
+
+#register_now a:hover {
+    scale: 1.05;
 }

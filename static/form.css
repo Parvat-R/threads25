@@ -3,7 +3,7 @@ form {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    width: 600px;
+    max-width: 800px;
     background: #ffffff02;
     backdrop-filter: blur(10px);
     border: 1px solid #fff0;
@@ -18,7 +18,7 @@ form {
     align-items: flex-start;
     justify-content: center;
     flex-direction: column;
-    width: 350px;
+    max-width: 350px;
 }
 
 input {
@@ -27,8 +27,8 @@ input {
     border-radius: 15px;
     padding: .3em 1em;
     outline: none;
-    border: 1px solid #fff2;
-    background: #fff1;
+    border: 1px solid #fff5;
+    background: #ffffff03;
     color: #fff;
 }
 
@@ -54,3 +54,26 @@ select#workshops option {
     border: 1px solid #fff3;
 }
 
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: auto;
+    padding: 6em;
+}
+
+.content {
+    width: 500px;
+    align-items: center;
+    text-align: center;
+}
+
+.desc {
+    color: #ffffffaa;
+}
+
+h2 {
+    font-size: 2.5em;
+    font-family: "Clash Grotesk";
+}

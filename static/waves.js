@@ -1,10 +1,9 @@
-// static/js/waves.js
-
 let scene, camera, renderer, points;
 let mouseX = 0, mouseY = 0;
 let targetX = 0, targetY = 0;
 let windowHalfX = window.innerWidth / 2;
 let windowHalfY = window.innerHeight / 2;
+let originalPositions = []; // Store original positions
 
 function init() {
     // Scene setup
@@ -29,6 +28,9 @@ function init() {
         positions[i] = x;
         positions[i + 1] = y;
         positions[i + 2] = z;
+        
+        // Store original positions
+        originalPositions.push(x, y, z);
 
         // Create gradient from pink to cyan
         const vx = (x / n) + 0.5;
@@ -94,13 +96,26 @@ function animate() {
     const time = Date.now() * 0.0001;
 
     for (let i = 0; i < positions.length; i += 3) {
-        const x = positions[i];
-        const y = positions[i + 1];
-        const z = positions[i + 2];
-
-        // Create wave effect influenced by mouse position
-        positions[i + 1] = y + Math.sin(time * 5 + x * 0.005 + mouseX * 0.001) * 2;
-        positions[i] = x + Math.cos(time * 5 + y * 0.005 + mouseY * 0.001) * 2;
+        const origX = originalPositions[i];
+        const origY = originalPositions[i + 1];
+        const origZ = originalPositions[i + 2];
+        
+        // Calculate current position using original wave pattern
+        let newY = origY + Math.sin(time * 5 + origX * 0.005 + mouseX * 0.001) * 2;
+        let newX = origX + Math.cos(time * 5 + origY * 0.005 + mouseY * 0.001) * 2;
+        
+        // Apply soft constraint to keep particles from drifting too far
+        const maxDrift = 20;
+        if (Math.abs(newX - origX) > maxDrift) {
+            newX = origX + (Math.sign(newX - origX) * maxDrift);
+        }
+        if (Math.abs(newY - origY) > maxDrift) {
+            newY = origY + (Math.sign(newY - origY) * maxDrift);
+        }
+        
+        positions[i] = newX;
+        positions[i + 1] = newY;
+        positions[i + 2] = origZ;
     }
 
     points.geometry.attributes.position.needsUpdate = true;
