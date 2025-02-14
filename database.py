@@ -2,7 +2,7 @@ import os
 import json
 from datetime import datetime
 from pymongo import MongoClient, errors
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator, validator
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
 
@@ -52,14 +52,23 @@ class StudentModel(BaseModel):
     phone: str = Field(..., min_length=10, max_length=15)
     rollno: str = Field(..., min_length=4, max_length=20)
     workshop: str | None
-    events: bool
+    events: list[str]  # Changed from bool to list of strings
     college_name: str
 
 class PaymentModel(BaseModel):
     email: EmailStr
     paid: bool = False
+    is_cash: bool = False  # New field for cash payments
     transaction_id: str | None = None
     upi_id: str | None = None
+
+    @field_validator('transaction_id', 'upi_id')
+    def validate_payment_details(cls, v, values):
+        if values.get('is_cash', False):
+            return None  # If cash payment, these fields should be None
+        if values.get('paid', False) and not values.get('is_cash', False) and not v:
+            raise ValueError('transaction_id and upi_id are required for non-cash payments')
+        return v
 
 class LoginOtpModel(BaseModel):
     email: EmailStr
@@ -69,6 +78,10 @@ class LoginOtpModel(BaseModel):
 class AdminModel(BaseModel):
     username: str
     password: str
+
+class BotVerifiedPaymentModel(BaseModel):
+    email: EmailStr
+    verified: bool
 
 # Login OTP Collection Functions
 def create_login_otp(email: str, otp: str):
@@ -155,11 +168,19 @@ def bson_to_json(data):
 def create_student(student_data: dict):
     if not students_collection:
         return None
+    
+    # Ensure events is a list
+    if isinstance(student_data.get('events'), bool):
+        student_data['events'] = []
+    elif not isinstance(student_data.get('events'), list):
+        student_data['events'] = [student_data.get('events')] if student_data.get('events') else []
+    
     student = StudentModel(**student_data)
     inserted_id = students_collection.insert_one(student.model_dump()).inserted_id
     return str(inserted_id)
 
 def get_student_by_id(student_id: str):
+    
     if not students_collection:
         return None
     student = students_collection.find_one({"_id": ObjectId(student_id)})
@@ -180,6 +201,14 @@ def get_student_by_phone(phone: str):
 def edit_student(student_id: str, update_data: dict):
     if not students_collection:
         return None
+    
+    # Ensure events is a list
+    if 'events' in update_data:
+        if isinstance(update_data['events'], bool):
+            update_data['events'] = []
+        elif not isinstance(update_data['events'], list):
+            update_data['events'] = [update_data['events']] if update_data['events'] else []
+    
     print(students_collection.update_one({"email": update_data["email"]}, {"$set": update_data}).modified_count)
     return get_student_by_id(student_id)
 
@@ -211,6 +240,12 @@ def get_student_by_email(email: str):
 def create_payment_entry(payment_data: dict):
     if not payment_and_otp_collection:
         return None
+    
+    # Handle cash payments
+    if payment_data.get('is_cash', False):
+        payment_data['transaction_id'] = None
+        payment_data['upi_id'] = None
+    
     payment = PaymentModel(**payment_data)
     inserted_id = payment_and_otp_collection.insert_one(payment.model_dump()).inserted_id
     return str(inserted_id)
@@ -221,14 +256,21 @@ def get_payment_by_email(email: str):
     payment = payment_and_otp_collection.find_one({"email": email})
     return bson_to_json(payment)
 
-def update_payment_status(email: str, transaction_id: str, upi_id: str | None = None):
+def update_payment_status(email: str, transaction_id: str | None = None, upi_id: str | None = None, is_cash: bool = False):
     if not payment_and_otp_collection:
         return None
+    
     update_data = {
         "paid": True,
-        "transaction_id": transaction_id,
-        "upi_id": upi_id
+        "is_cash": is_cash
     }
+    
+    if not is_cash:
+        update_data.update({
+            "transaction_id": transaction_id,
+            "upi_id": upi_id
+        })
+    
     payment_and_otp_collection.update_one(
         {"email": email},
         {"$set": update_data}
@@ -323,12 +365,18 @@ def edit_payment(email: str, payment_data: dict):
     if not payment_and_otp_collection:
         return None
 
-    # Ensure payment_data does not include "_id"
+    # Remove _id if present
     if "_id" in payment_data:
         del payment_data["_id"]
 
-    # Convert payment_data to a dictionary if it's a Pydantic model
-    if isinstance(payment_data, PaymentModel):
+    # Handle cash payments
+    if payment_data.get('is_cash', False):
+        payment_data['transaction_id'] = None
+        payment_data['upi_id'] = None
+
+    # Convert to Pydantic model for validation
+    if not isinstance(payment_data, PaymentModel):
+        payment_data = PaymentModel(**payment_data)
         payment_data = payment_data.model_dump()
 
     res = payment_and_otp_collection.update_one(
@@ -337,6 +385,6 @@ def edit_payment(email: str, payment_data: dict):
     )
 
     print(f"Matched: {res.matched_count}, Modified: {res.modified_count}")
-    return res.modified_count > 0  # Returns True if a document was modified
+    return res.modified_count > 0
 
 # create_admin("admin", "admin")

@@ -6,100 +6,12 @@ from flask import (
 import database as db
 import emails 
 from flask_socketio import SocketIO, emit, send, join_room
-import tabula
-import pandas as pd
-from werkzeug.utils import secure_filename
-import os
-from threading import Thread
-import tempfile
-
-UPLOAD_FOLDER = tempfile.gettempdir()  # Use system temp directory
-ALLOWED_EXTENSIONS = {'pdf'}
-
-
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def process_bank_statement(filepath, admin_email):
-    try:
-        # Read PDF using tabula
-        tables = tabula.read_pdf(filepath, pages='all')
-        
-        # Combine all tables into one DataFrame
-        combined_df = pd.concat(tables, ignore_index=True)
-        
-        # Get all payments from database
-        all_payments = db.get_all_payments()
-        verified_count = 0
-        unverified_count = 0
-        
-        # Process each payment
-        for payment in all_payments:
-            if payment.get('paid') and not payment.get('is_cash'):
-                transaction_id = payment.get('transaction_id')
-                upi_id = payment.get('upi_id')
-                
-                # Search for transaction in the bank statement
-                transaction_found = combined_df.apply(
-                    lambda row: any(
-                        str(transaction_id) in str(cell) or 
-                        str(upi_id) in str(cell) 
-                        for cell in row
-                    ),
-                    axis=1
-                ).any()
-                
-                if transaction_found:
-                    db.add_payment_verified(payment['email'])
-                    verified_count += 1
-                else:
-                    unverified_count += 1
-        
-        # Send email to admin with results
-        email_body = f"""
-        Bank Statement Processing Complete
-
-        Results:
-        - Total payments processed: {len(all_payments)}
-        - Verified transactions: {verified_count}
-        - Unverified transactions: {unverified_count}
-
-        Please check the admin dashboard for detailed results.
-        """
-        
-        emails.send_mail(
-            to_email=admin_email,
-            subject="Bank Statement Processing Complete",
-            body=email_body
-        )
-        
-    except Exception as e:
-        error_message = f"""
-        Error Processing Bank Statement
-
-        An error occurred while processing the bank statement:
-        {str(e)}
-
-        Please try uploading the statement again.
-        """
-        
-        emails.send_mail(
-            to_email=admin_email,
-            subject="Bank Statement Processing Error",
-            body=error_message
-        )
-    
-    finally:
-        # Clean up the temporary file
-        if os.path.exists(filepath):
-            os.remove(filepath)
 
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 # List of workshops. Should be updated.
 workshops = [
     "Workshop 1",
@@ -123,8 +35,6 @@ non_tech_events = [
     {"event_name": "Snap Fusion - Photography Challenge", "event_description": "Capture and creatively blend images based on a given theme. Show off your photography and editing skills to create stunning visual stories."}
 ]
 
-
-events = [i["event_name"] for i in tech_events]+[i["event_name"] for i in non_tech_events]
 
 
 @app.route("/")
@@ -154,7 +64,7 @@ def register():
     if "student_id" in session:
         flash("You are already registered!", "danger")
         return redirect(url_for("myid"))
-    return render_template("register.html", workshops=workshops, events=events)
+    return render_template("register.html", workshops=workshops)
 
 
 # @app.post("/register")
@@ -615,51 +525,6 @@ def admin_student_edit(student_id):
         flash("Student not found!", "danger")
         return redirect(url_for("admin_students"))
     return redirect(url_for("index"))
-
-
-@app.route('/admin/upload-bank-statement', methods=['GET', 'POST'])
-def upload_bank_statement():
-    if "admin_username" not in session or not db.admin_exists(session["admin_username"]):
-        return redirect(url_for("admin_login"))
-    
-    if request.method == 'GET':
-        return render_template('admin_upload_statement.html')
-    
-    if 'bank_statement' not in request.files:
-        flash('No file selected', 'danger')
-        return redirect(request.url)
-    
-    file = request.files['bank_statement']
-    
-    if file.filename == '':
-        flash('No file selected', 'danger')
-        return redirect(request.url)
-    
-    if file and allowed_file(file.filename):
-        try:
-            # Save file to temporary location
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-            
-            # Start background processing
-            admin_email = db.get_admin_email(session["admin_username"])  # You'll need to implement this
-            processing_thread = Thread(
-                target=process_bank_statement,
-                args=(filepath, admin_email)
-            )
-            processing_thread.start()
-            
-            flash('File uploaded successfully. Processing started. You will receive an email when complete.', 'success')
-            return redirect(url_for('admin'))
-            
-        except Exception as e:
-            flash(f'Error processing file: {str(e)}', 'danger')
-            return redirect(request.url)
-    
-    flash('Invalid file type. Please upload a PDF file.', 'danger')
-    return redirect(request.url)
-
 
 if __name__ == "__main__": 
     app.run(debug=True)
