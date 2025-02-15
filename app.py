@@ -152,6 +152,10 @@ def about():
             name = None
     return render_template("about.html")
 
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
 
 @app.route("/logout")
 def logout():

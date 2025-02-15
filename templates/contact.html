@@ -1,0 +1,163 @@
+<!-- contact.html -->
+{% extends "base.html" %}
+{% block title %}Contact{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+.contact-container {
+    min-height: 100vh;
+    padding: 8rem 2rem;
+    color: #fff;
+    font-family: "Satoshi", sans-serif;
+}
+
+.contact-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.contact-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.contact-header h1 {
+    font-family: "Clash Grotesk", sans-serif;
+    font-size: 4rem;
+    background: linear-gradient(45deg, #ffe66c, #f86cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.contact-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease;
+    text-align: center;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+}
+
+.contact-card h3 {
+    color: #ffe66c;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-family: "Clash Grotesk", sans-serif;
+}
+
+.contact-info {
+    color: #ffffffcc;
+    line-height: 1.6;
+}
+
+.contact-info p {
+    margin: 0.5rem 0;
+}
+
+.contact-info a {
+    color: #f86cff;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.contact-info a:hover {
+    opacity: 0.8;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.social-links a {
+    color: #ffe66c;
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: #f86cff;
+}
+
+@media (max-width: 768px) {
+    .contact-header h1 {
+        font-size: 2.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-container">
+    <div class="contact-content">
+        <div class="contact-header">
+            <h1>Contact Us</h1>
+        </div>
+        
+        <div class="contact-grid">
+            <div class="contact-card">
+                <h3>Event Coordinators</h3>
+                <div class="contact-info">
+                    <p>John Doe</p>
+                    <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+                    <p>Jane Smith</p>
+                    <p><a href="tel:+919876543211">+91 98765 43211</a></p>
+                </div>
+            </div>
+            <div class="contact-card">
+                <h3>Event Coordinators</h3>
+                <div class="contact-info">
+                    <p>John Doe</p>
+                    <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+                    <p>Jane Smith</p>
+                    <p><a href="tel:+919876543211">+91 98765 43211</a></p>
+                </div>
+            </div>
+            <div class="contact-card">
+                <h3>Event Coordinators</h3>
+                <div class="contact-info">
+                    <p>John Doe</p>
+                    <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+                    <p>Jane Smith</p>
+                    <p><a href="tel:+919876543211">+91 98765 43211</a></p>
+                </div>
+            </div>
+            <div class="contact-card">
+                <h3>Event Coordinators</h3>
+                <div class="contact-info">
+                    <p>John Doe</p>
+                    <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+                    <p>Jane Smith</p>
+                    <p><a href="tel:+919876543211">+91 98765 43211</a></p>
+                </div>
+            </div>
+            <div class="contact-card">
+                <h3>Event Coordinators</h3>
+                <div class="contact-info">
+                    <p>John Doe</p>
+                    <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+                    <p>Jane Smith</p>
+                    <p><a href="tel:+919876543211">+91 98765 43211</a></p>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
