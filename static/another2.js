@@ -1,41 +1,32 @@
-let scene, camera, renderer, grid, gridVertices;
-let container;
+let scene, camera, renderer, grid;
+let SEPARATION = 100, AMOUNTX = 50, AMOUNTY = 50;
 
 function init() {
-    // Get container reference
-    container = document.getElementById('canvas');
-    
-    // Ensure container has relative or absolute positioning
-    if (getComputedStyle(container).position === 'static') {
-        container.style.position = 'relative';
-    }
-
     scene = new THREE.Scene();
     
-    // Set up renderer with better quality and contained positioning
     renderer = new THREE.WebGLRenderer({ 
-        alpha: true,
         antialias: true,
         powerPreference: "high-performance"
     });
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     
-    // Position the renderer within the container
-    renderer.domElement.style.position = 'absolute';
-    renderer.domElement.style.top = '0';
-    renderer.domElement.style.left = '0';
-    renderer.domElement.style.width = '100%';
-    renderer.domElement.style.height = '100%';
-    renderer.domElement.style.zIndex = '-1'; // Place behind container content
+    const container = document.getElementById('canvas');
+    if (!container) return;
     
-    // Set initial size based on container
-    updateSize();
+    container.style.position = 'fixed';
+    container.style.top = '0';
+    container.style.left = '0';
+    container.style.width = '100%';
+    container.style.height = '100%';
+    container.style.zIndex = '-1';
+    
+    updateRendererSize();
     container.appendChild(renderer.domElement);
-    
-    // Camera setup based on container dimensions
+
+    // Camera setup
     const aspectRatio = container.clientWidth / container.clientHeight;
-    camera = new THREE.PerspectiveCamera(60, aspectRatio, 0.1, 1000);
-    camera.position.set(0, 30, 70);
+    camera = new THREE.PerspectiveCamera(75, aspectRatio, 1, 10000);
+    camera.position.set(0, 1000, 1500);
     camera.lookAt(0, 0, 0);
 
     // Create gradient background
@@ -45,7 +36,7 @@ function init() {
     canvas.height = 2;
     
     const gradient = context.createLinearGradient(0, 0, 0, 2);
-    gradient.addColorStop(0, '#120025');
+    gradient.addColorStop(0, '#1a0033');
     gradient.addColorStop(1, '#000066');
     context.fillStyle = gradient;
     context.fillRect(0, 0, 1, 2);
@@ -53,116 +44,124 @@ function init() {
     const texture = new THREE.CanvasTexture(canvas);
     scene.background = texture;
 
-    // Create responsive grid based on container size
-    const gridSize = Math.max(200, container.clientWidth / 10);
-    createMainGrid(gridSize);
-    createSecondaryGrid(gridSize);
+    createGrid();
 }
 
-function createMainGrid(gridSize) {
-    const material = new THREE.LineBasicMaterial({ 
-        color: 0xff1493,
-        linewidth: 1.5,
+function createGrid() {
+    const isMobile = window.innerWidth < 768;
+    // Adjust grid density based on device
+    AMOUNTX = isMobile ? 30 : 50;
+    AMOUNTY = isMobile ? 30 : 50;
+    SEPARATION = isMobile ? 80 : 100;
+
+    // Create grid geometry
+    const geometry = new THREE.BufferGeometry();
+    const material = new THREE.LineBasicMaterial({
+        color: 0xff1493, // Deep pink color
         opacity: 0.8,
         transparent: true
     });
-    
-    const geometry = new THREE.BufferGeometry();
-    const vertices = [];
 
-    for (let i = -gridSize / 2; i <= gridSize / 2; i += 2) {
-        for (let j = -gridSize / 2; j <= gridSize / 2; j += 2) {
-            vertices.push(i*2, 0, j*2);
+    const positions = [];
+    const indices = [];
+    let vertexIndex = 0;
+
+    // Create vertices
+    for (let iy = 0; iy < AMOUNTY; iy++) {
+        for (let ix = 0; ix < AMOUNTX; ix++) {
+            const x = ix * SEPARATION - ((AMOUNTX * SEPARATION) / 2);
+            const z = iy * SEPARATION - ((AMOUNTY * SEPARATION) / 2);
+            positions.push(x, 0, z);
+            
+            // Create horizontal lines
+            if (ix < AMOUNTX - 1) {
+                indices.push(vertexIndex, vertexIndex + 1);
+            }
+            // Create vertical lines
+            if (iy < AMOUNTY - 1) {
+                indices.push(vertexIndex, vertexIndex + AMOUNTX);
+            }
+            
+            vertexIndex++;
         }
     }
 
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setIndex(indices);
+
     grid = new THREE.LineSegments(geometry, material);
     scene.add(grid);
-    gridVertices = geometry.attributes.position.array;
-}
-
-function createSecondaryGrid(gridSize) {
-    const horizonMaterial = new THREE.LineBasicMaterial({
-        color: 0x00ffff,
-        opacity: 0.5,
-        transparent: true
-    });
-    
-    const horizonGeometry = new THREE.BufferGeometry();
-    const horizonVertices = [];
-    
-    for (let i = -gridSize / 2; i <= gridSize / 2; i += 4) {
-        horizonVertices.push(-gridSize, 0, i);
-        horizonVertices.push(gridSize, 0, i);
-    }
-    
-    horizonGeometry.setAttribute('position', new THREE.Float32BufferAttribute(horizonVertices, 3));
-    const horizonGrid = new THREE.LineSegments(horizonGeometry, horizonMaterial);
-    scene.add(horizonGrid);
 }
 
 function animate() {
     requestAnimationFrame(animate);
-
+    
+    const positions = grid.geometry.attributes.position.array;
     const time = Date.now() * 0.001;
     
-    // Wave animation
-    for (let i = 0; i < gridVertices.length; i += 3) {
-        const x = gridVertices[i];
-        const z = gridVertices[i + 2];
-        gridVertices[i + 1] = 
-            Math.sin(time + x * 0.08) * 2 + 
-            Math.cos(time + z * 0.08) * 2 +
-            Math.sin(Math.sqrt(x * x + z * z) * 0.05 + time) * 1.5;
+    let i = 1; // y-coordinate index
+    for (let ix = 0; ix < AMOUNTX; ix++) {
+        for (let iy = 0; iy < AMOUNTY; iy++) {
+            positions[i] = (Math.sin((ix + time) * 0.3) * 50) +
+                          (Math.sin((iy + time) * 0.5) * 50);
+            i += 3;
+        }
     }
 
     grid.geometry.attributes.position.needsUpdate = true;
     
-    // Subtle camera movement
-    camera.position.y = 30 + Math.sin(time * 0.5) * 2;
-    camera.lookAt(0, 0, 0);
+    // Smooth camera movement
+    camera.position.x = Math.sin(time * 0.1) * 200;
+    camera.position.z = 1500 + Math.sin(time * 0.1) * 200;
+    camera.lookAt(scene.position);
     
     renderer.render(scene, camera);
 }
 
-function updateSize() {
+function updateRendererSize() {
+    const container = document.getElementById('canvas');
+    if (!container) return;
+    
     const width = container.clientWidth;
     const height = container.clientHeight;
+    
+    if (camera) {
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+    }
+    
     renderer.setSize(width, height);
+    
+    // Recreate grid with appropriate density for device
+    if (grid) {
+        scene.remove(grid);
+        createGrid();
+    }
 }
 
-function onWindowResize() {
-    // Update camera
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
-    
-    // Update renderer
-    updateSize();
-    
-    // Update grid size based on new container size
-    const newGridSize = Math.max(100, container.clientWidth / 10);
-    scene.remove(grid);
-    createMainGrid(newGridSize);
+const onWindowResize = debounce(updateRendererSize, 250);
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
-// Create a ResizeObserver to watch container size changes
-const resizeObserver = new ResizeObserver(() => {
-    onWindowResize();
-});
+window.addEventListener('resize', onWindowResize);
+window.addEventListener('orientationchange', onWindowResize);
 
-// Start animation when everything is loaded
 document.addEventListener('DOMContentLoaded', () => {
     init();
     animate();
-    
-    // Start observing the container for size changes
-    resizeObserver.observe(container);
 });
 
-// Cleanup function
 function cleanup() {
-    resizeObserver.disconnect();
     window.removeEventListener('resize', onWindowResize);
     renderer.dispose();
     scene.clear();
