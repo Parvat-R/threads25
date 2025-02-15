@@ -2,35 +2,84 @@ import smtplib
 import qrcode
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
 from io import BytesIO
 import base64
 import dotenv
 import os
+import time
 from utils import generate_qr_code, generate_otp
 import _thread
+import logging
+import threading
+import queue
 
 dotenv.load_dotenv()
-EMAIL = os.getenv("EMAIL")
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+EMAIL = os.getenv("GMAIL")
+EMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD")
+# EMAIL = os.getenv("SONATECH_MAIL")
+# EMAIL_PASSWORD = os.getenv("SONATECH_PASSWORD")
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-def send_email(subject, to, body, subtype='html'):
+# Email queue and worker thread
+email_queue = queue.Queue()
+stop_event = threading.Event()
+
+def email_worker():
+    """Worker thread that processes emails from the queue with rate limiting"""
+    server = None
     try:
-        msg = MIMEMultipart()
-        msg['From'] = EMAIL
-        msg['To'] = to
-        msg['Subject'] = subject
-        msg.attach(MIMEText(body, subtype))
-        server = smtplib.SMTP('smtp.gmail.com', 587)
+        # server = smtplib.SMTP('smtp.gmail.com', 587)
+        server = smtplib.SMTP('smtp.office365.com', 587)
         server.starttls()
         server.login(EMAIL, EMAIL_PASSWORD)
-        server.sendmail(EMAIL, to, msg.as_string())
-        server.quit()
-        return True
-    except Exception as e:
-        print(e)
-        return False
+        logger.info("Email worker started and logged in")
+        
+        while not stop_event.is_set() or not email_queue.empty():
+            try:
+                message = email_queue.get(timeout=1)
+                server.send_message(message)
+                logger.info(f"Sent email to {message['To']}")
+                email_queue.task_done()
+                
+                # Rate limiting - pause between emails
+                time.sleep(1)  # Adjust this value based on your needs
+                
+            except queue.Empty:
+                continue
+            except Exception as e:
+                logger.error(f"Error sending email: {e}")
+                # If we encounter an error, try to reconnect
+                try:
+                    if server:
+                        server.quit()
+                    server = smtplib.SMTP('smtp.gmail.com', 587)
+                    server.starttls()
+                    server.login(EMAIL, EMAIL_PASSWORD)
+                    logger.info("Reconnected to SMTP server")
+                except Exception as reconnect_error:
+                    logger.error(f"Failed to reconnect: {reconnect_error}")
+                    time.sleep(30)  # Wait before trying again
+    finally:
+        if server:
+            try:
+                server.quit()
+            except:
+                pass
+        logger.info("Email worker stopped")
 
+# Start the email worker thread
+worker_thread = threading.Thread(target=email_worker)
+worker_thread.daemon = True
+worker_thread.start()
+
+def enqueue_email(msg):
+    """Add an email to the sending queue"""
+    email_queue.put(msg)
+    return True
 
 def send_otp(email: str) -> int:
     otp = generate_otp()
@@ -71,14 +120,30 @@ def send_otp(email: str) -> int:
     </html>
     """
 
-    _thread.start_new_thread(send_email, ("OTP Verification", email, body))
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL
+    msg['To'] = email
+    msg['Subject'] = "OTP Verification"
+    msg.attach(MIMEText(body, 'html'))
+    
+    enqueue_email(msg)
     return otp
-
 
 def send_id_mail(student_data, event_url):
     qr_code_data = generate_qr_code(event_url)
-    with open("sample_qr.png", "wb") as f:
-        f.write(base64.b64decode(qr_code_data))
+    qr_code_binary = base64.b64decode(qr_code_data)
+    
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL
+    msg['To'] = student_data['email']
+    msg['Subject'] = "Your Event ID Card"
+    
+    # Attach the QR code image
+    qr_image = MIMEImage(qr_code_binary)
+    qr_image.add_header('Content-ID', '<qrcode>')
+    qr_image.add_header('Content-Disposition', 'inline', filename='qrcode.png')
+    msg.attach(qr_image)
+    
     body = f"""
     <html>
     <head>
@@ -107,7 +172,7 @@ def send_id_mail(student_data, event_url):
     <body>
         <div class="id-card">
             <div class="qr-code">
-                <img src="data:image/png;base64,{qr_code_data}" alt="QR Code">
+                <img src="cid:qrcode" alt="QR Code">
             </div>
             <h1 class="title">Your Event ID Card</h1>
             <div class="student-info">
@@ -120,5 +185,19 @@ def send_id_mail(student_data, event_url):
     </body>
     </html>
     """
-    _thread.start_new_thread(send_email, ("Your Event ID Card", student_data['email'], body))
+    
+    html_part = MIMEText(body, 'html')
+    msg.attach(html_part)
+    
+    enqueue_email(msg)
     return True
+
+# Cleanup function to stop the worker thread
+import atexit
+
+def cleanup():
+    stop_event.set()
+    worker_thread.join(timeout=60)
+    logger.info("Email system shutdown complete")
+
+atexit.register(cleanup)

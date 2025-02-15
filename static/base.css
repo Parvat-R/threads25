@@ -3,7 +3,9 @@
     margin: 0;
     box-sizing: border-box;
 }
-
+a {
+    color: #fcd7ff;
+}
 body {
     background-image: linear-gradient(180deg, #120025 60%, #090012);
     max-width: 100vw;
@@ -122,4 +124,24 @@ div#root {
     min-height: 100vh;
     flex-direction: column;
     align-items: center;
+}
+
+@media only screen and (max-width: 600px) {
+    #canvas {
+        display: none;
+    }
+    body {
+        font-size: 14px;
+    }
+    #nav a.link:nth-child(1), #nav a.link:nth-child(2), #nav a.link:nth-child(5) {
+        display: none;
+    }
+}
+@media only screen and (max-width: 450px) {
+    #nav a.link:nth-child(3), #nav a.link:nth-child(5) {
+        display: none;
+    }
+    #nav a.link:nth-child(4) {
+        display: flex;
+    }
 }

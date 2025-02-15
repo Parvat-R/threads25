@@ -3,8 +3,28 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
+    <style>
+        .content {
+    margin: 0;
+}
+
+.resend_otp div {
+    color: #fff2b196;
+    cursor: pointer;
+    transition: .3s;
+}
+.resend_otp div:hover {
+    color: #fff2b1;
+    cursor: pointer;
+}
+    </style>
 {% endblock %}
 {% block content %}
+<div class="container">
+    <div class="content">
+        <h2>Verify Your Email.</h2>
+        <div class="desc">An has been sent to you email. Please enter the OTP to verify your email.</div>
+    </div>
     <form action="" method="post">
         <div class="form-group">
             <label for="email">Email:</label>
@@ -17,13 +37,13 @@
             <input type="text" id="otp" name="otp" required>
         </div>
         
-        <div class="form-group">
-            <input type="submit" value="Verify">
-        </div>
+            <button type="submit" value="Verify">Verify</button>
+
     </form>
     <div class="resend_otp">
-        <button onclick="resendOtp()">Resend OTP</button>
+        <div onclick="resendOtp()">Resend OTP</button>
     </div>
+</div>
 
     <script src="{{ url_for('static', filename='verify_email.js') }}" defer></script>
 {% endblock %}

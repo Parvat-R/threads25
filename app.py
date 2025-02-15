@@ -131,15 +131,25 @@ events = [i["event_name"] for i in tech_events]+[i["event_name"] for i in non_te
 def index():
     name = None
     if "student_id" in session:
-        name = db.get_student_by_id(session["student_id"])["name"]
+        student = db.get_student_by_id(session["student_id"])
+        if student:
+            name = student["name"]
+        else:
+            session.clear()
+            name = None
     return render_template("index.html", name=name, tech_events=tech_events, non_tech_events=non_tech_events)
 
 
 @app.route("/about")
 def about():
+    name = None
     if "student_id" in session:
-        name = db.get_student_by_id(session["student_id"])["name"]
-        return render_template("index.html", name=name)
+        student = db.get_student_by_id(session["student_id"])
+        if student:
+            name = student["name"]
+        else:
+            session.clear()
+            name = None
     return render_template("about.html")
 
 
@@ -610,12 +620,17 @@ def admin_student_edit(student_id):
             if "events" in request.form:
                 student["events"] = request.form.getlist("events")
                 db.edit_student(student_id, student)
-            
-            db.edit_payment(student["email"], payment_detail)
-            return {
-                "success": True,
-                "message": "Student updated successfully!"
-            }
+            try:
+                db.edit_payment(student["email"], payment_detail)
+                return {
+                    "success": True,
+                    "message": "Student updated successfully!"
+                }
+            except ValueError as e:
+                return {
+                    "success": False,
+                    "message": "Transaction id should not be null"
+                }
         flash("Student not found!", "danger")
         return redirect(url_for("admin_students"))
     return redirect(url_for("index"))

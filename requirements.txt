@@ -8,3 +8,5 @@ python-dotenv
 gunicorn
 gevent
 flask_socketio
+waitress
+uvicorn

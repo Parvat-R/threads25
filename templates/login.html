@@ -5,14 +5,17 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
 {% endblock %}
 {% block content %}
+<div class="container">
+    <div class="content">
+        <h2>Login Now!</h2>
+        <div class="desc">If you have already registered, you can enter your email to login. If not <a href="{{ url_for('register') }}">click here</a> to register</div>
+    </div>
     <form action="" method="post">
         <div class="form-group">
             <label for="username">Email:</label>
             <input type="email" id="email" name="email" required>
         </div>
-        
-        <div class="form-group">
-            <input type="submit" value="Login">
-        </div>
+        <button type="submit" value="Login">Login</button>
     </form>
+</div>
 {% endblock %}

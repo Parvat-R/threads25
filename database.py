@@ -68,7 +68,7 @@ class PaymentModel(BaseModel):
         data = info.data
         
         if data.get('is_cash', False):
-            return None  # If cash payment, these fields should be None
+            return f"cash-{str(ObjectId())}"  # If cash payment, these fields should be None
         
         if data.get('paid', False) and not data.get('is_cash', False) and not v:
             raise ValueError('transaction_id and upi_id are required for non-cash payments')
@@ -230,11 +230,11 @@ def create_payment_entry(payment_data: dict):
     if not payment_and_otp_collection:
         return None
     
+    payment_data['transaction_id'] = f"cash-{str(ObjectId())}"
     # Handle cash payments
     if payment_data.get('is_cash', False):
-        payment_data['transaction_id'] = f"cash-{str(ObjectId())}"
         payment_data['upi_id'] = None
-    
+
     payment = PaymentModel(**payment_data)
     inserted_id = payment_and_otp_collection.insert_one(payment.model_dump()).inserted_id
     return str(inserted_id)
@@ -360,7 +360,7 @@ def edit_payment(email: str, payment_data: dict):
 
     # Handle cash payments
     if payment_data.get('is_cash', False):
-        payment_data['transaction_id'] = None
+        payment_data['transaction_id'] = f"cash-{str(ObjectId())}"
         payment_data['upi_id'] = None
 
     # Convert to Pydantic model for validation

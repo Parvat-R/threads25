@@ -71,7 +71,7 @@
                 {% if "student_id" in session %}
                 <a href="{{ url_for('myid') }}" class="link">my id</a>
                 {% else %}
-                <a href="{{ url_for('register') }}" class="link">login</a>
+                <a href="{{ url_for('login') }}" class="link">login</a>
                 <a href="{{ url_for('register') }}" class="link">register</a>
                 {% endif %}
             </div>
