@@ -32,8 +32,8 @@ def email_worker():
     """Worker thread that processes emails from the queue with rate limiting"""
     server = None
     try:
-        # server = smtplib.SMTP('smtp.gmail.com', 587)
-        server = smtplib.SMTP('smtp.office365.com', 587)
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        # server = smtplib.SMTP('smtp.office365.com', 587)
         server.starttls()
         server.login(EMAIL, EMAIL_PASSWORD)
         logger.info("Email worker started and logged in")
@@ -129,7 +129,7 @@ def send_otp(email: str) -> int:
     enqueue_email(msg)
     return otp
 
-def send_id_mail(student_data, event_url):
+def send_id_mail(student_data, payment_data, event_url):
     qr_code_data = generate_qr_code(event_url)
     qr_code_binary = base64.b64decode(qr_code_data)
     
@@ -180,6 +180,9 @@ def send_id_mail(student_data, event_url):
                 <p>Name: {student_data['name']}</p>
                 <p>Email: {student_data['email']}</p>
                 <p>Phone: {student_data['phone']}</p>             
+                <p>Phone: {student_data['events']}</p>             
+                <p>Phone: {payment_data['paid']}</p>             
+                <p>Phone: {payment_data['is_cash']}</p>             
             </div>
         </div>
     </body>

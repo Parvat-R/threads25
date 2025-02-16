@@ -63,6 +63,7 @@ def register_post():
         "upi_id": upi_id
     }
     db.create_student(student_data)
+    payment_data = db.get_payment_by_email(email)
     send_id_mail(student_data)
     
     session["student_id"] = db.get_student_by_email(email)["id"]

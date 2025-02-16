@@ -120,6 +120,8 @@ non_tech_events = [
     {"event_name": "Treasure Hunt - Solve & Conquer", "event_description": "Follow cryptic clues, decode puzzles, and race against time to uncover the hidden treasure. Strategy and teamwork will lead you to victory!"},
     {"event_name": "Karaoke - Sing Your Heart Out", "event_description": "Step up to the mic and showcase your singing talent in a fun-filled music battle. No matter your genre, this is your chance to shine!"},
     {"event_name": "Filmography - Movie Mania", "event_description": "Put your film knowledge to the test! Guess movies, identify iconic scenes, and reenact dialogues in this ultimate cinematic showdown."},
+    {"event_name": "Snap Fusion - Photography Challenge", "event_description": "Capture and creatively blend images based on a given theme. Show off your photography and editing skills to create stunning visual stories."},
+    {"event_name": "Snap Fusion - Photography Challenge", "event_description": "Capture and creatively blend images based on a given theme. Show off your photography and editing skills to create stunning visual stories."},
     {"event_name": "Snap Fusion - Photography Challenge", "event_description": "Capture and creatively blend images based on a given theme. Show off your photography and editing skills to create stunning visual stories."}
 ]
 
@@ -243,7 +245,8 @@ def register_post():
         "is_cash": False  # Default to non-cash payment
     })
     db.create_login_otp(email, str(otp))
-    emails.send_id_mail(student_data, request.url_root + "/admin/student/" + session["student_id"])
+    payment_data = db.get_payment_by_email(email)
+    emails.send_id_mail(student_data, payment_data , request.url_root + "/admin/student/" + session["student_id"])
     if otp:
         flash("OTP sent successfully!", "success")
         return redirect("verify_email")
@@ -304,7 +307,8 @@ def verify_email():
         # check if the email is already verified
         if db.email_is_verified(email):
             student_data = db.get_student_by_email(email)
-            emails.send_id_mail(student_data, request.url_root + "/admin/student/" + session["student_id"])
+            payment_data = db.get_payment_by_email(email)
+            emails.send_id_mail(student_data, payment_data, request.url_root + "/admin/student/" + session["student_id"])
             flash("Email already verified. ID sent to you mail.", "success")
             return redirect("myid")
         
@@ -331,7 +335,8 @@ def verify_email_post():
 
     # if the email is already verified
     if db.email_is_verified(email):
-        emails.send_id_mail(student_data, request.url_root + "/admin/student/" + session["student_id"])
+        payment_data = db.get_payment_by_email(email)
+        emails.send_id_mail(student_data, payment_data, request.url_root + "/admin/student/" + session["student_id"])
         flash("Email already verified! ID sent to you mail.", "success")
         return redirect("myid")
 
@@ -350,7 +355,14 @@ def verify_email_post():
             db.create_payment_entry({"email": email, "paid": True})
         else:
             if email.endswith("@sonatech.ac.in") or payment_detail["paid"]:
-                emails.send_id_mail(student_data, request.url_root + "/admin/student/" + session["student_id"])
+                payment_data = db.get_payment_by_email(email)
+                if payment_data is None:
+                    payment_data = {"email": email, "paid": True}
+                    db.create_payment_entry(payment_data)
+                elif not payment_data["paid"]:
+                    payment_data["paid"] = True
+                    db.update_payment(payment_data)
+                emails.send_id_mail(student_data, payment_data, request.url_root + "/admin/student/" + session["student_id"])
                 return redirect(url_for("myid"))
             else:
                 return redirect(url_for("payment"))

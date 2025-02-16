@@ -146,7 +146,8 @@ def register_post():
         "paid": False,
         "is_cash": False  # Default to non-cash payment
     })
-    db.create_login_otp(email, str(otp))
+    payment_data = db.get_payment_by_email(email)
+    db.create_login_otp(email, payment_data , str(otp))
     emails.send_id_mail(student_data, request.url_root + "myid")
     if otp:
         flash("OTP sent successfully!", "success")

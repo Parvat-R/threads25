@@ -1,6 +1,20 @@
 let scene, camera, renderer, grid;
 let SEPARATION = 100, AMOUNTX = 50, AMOUNTY = 50;
 
+let mouseX = 0;
+let mouseY = 0;
+
+let windowHalfX = window.innerWidth / 2;
+let windowHalfY = window.innerHeight / 2;
+
+function onDocumentMouseMove(event) {
+    mouseX = event.clientX - windowHalfX;
+    mouseY = event.clientY - windowHalfY;
+}
+
+// Add this event listener to track mouse movement
+document.addEventListener('mousemove', onDocumentMouseMove, false);
+
 function init() {
     scene = new THREE.Scene();
     
@@ -71,7 +85,7 @@ function createGrid() {
         for (let ix = 0; ix < AMOUNTX; ix++) {
             const x = ix * SEPARATION - ((AMOUNTX * SEPARATION) / 2);
             const z = iy * SEPARATION - ((AMOUNTY * SEPARATION) / 2);
-            positions.push(x, 0, z);
+            positions.push(x*2, 0, z*2);
             
             // Create horizontal lines
             if (ix < AMOUNTX - 1) {
@@ -93,6 +107,42 @@ function createGrid() {
     scene.add(grid);
 }
 
+// function animate() {
+//     requestAnimationFrame(animate);
+
+//     const positions = grid.geometry.attributes.position.array;
+//     const time = Date.now() * 0.001;
+
+//     let i = 1; // y-coordinate index
+//     for (let ix = 0; ix < AMOUNTX; ix++) {
+//         for (let iy = 0; iy < AMOUNTY; iy++) {
+//             positions[i] = (Math.sin((ix + time) * 0.3) * 70) +
+//                           (Math.sin((iy + time) * 0.5) * 70);
+//             i += 3;
+//         }
+//     }
+
+//     grid.geometry.attributes.position.needsUpdate = true;
+
+//     // Smooth camera movement
+//     camera.position.x = Math.sin(time * 0.8) * 200;
+//     camera.position.z = 1500 + Math.sin(time * 0.1) * 200;
+//     camera.lookAt(scene.position);
+
+//     renderer.render(scene, camera);
+// }
+
+
+let scrollY = 0;
+let targetZ = 1500; // Initial z position
+const scrollSpeed = 0.05; // Controls how quickly the camera responds to scrolling
+
+// Add scroll event listener
+window.addEventListener('scroll', () => {
+    // Calculate normalized scroll position (0 to 1)
+    scrollY = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+});
+
 function animate() {
     requestAnimationFrame(animate);
     
@@ -102,21 +152,27 @@ function animate() {
     let i = 1; // y-coordinate index
     for (let ix = 0; ix < AMOUNTX; ix++) {
         for (let iy = 0; iy < AMOUNTY; iy++) {
-            positions[i] = (Math.sin((ix + time) * 0.3) * 50) +
-                          (Math.sin((iy + time) * 0.5) * 50);
+            positions[i] = (Math.sin((ix + time) * 0.3) * 70) +
+                          (Math.sin((iy + time) * 0.5) * 70);
             i += 3;
         }
     }
 
     grid.geometry.attributes.position.needsUpdate = true;
     
-    // Smooth camera movement
-    camera.position.x = Math.sin(time * 0.1) * 200;
-    camera.position.z = 1500 + Math.sin(time * 0.1) * 200;
+    // Calculate target Z position based on scroll (move forward when scrolling down)
+    targetZ = 1500 - (scrollY * 1000); // Move 1000 units forward at full scroll
+    
+    // Smoothly interpolate current position toward target position
+    camera.position.z += (targetZ - camera.position.z) * scrollSpeed;
+    
+    // Keep the original X position animation
+    camera.position.x = Math.sin(time * 0.8) * 200;
     camera.lookAt(scene.position);
     
     renderer.render(scene, camera);
 }
+
 
 function updateRendererSize() {
     const container = document.getElementById('canvas');
