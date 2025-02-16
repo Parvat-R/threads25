@@ -195,46 +195,51 @@ def register():
 
 @app.post("/register")
 def register_post():
-    name = request.form["name"]
-    email = request.form.get("email", "").strip().lower()
-    phone = request.form["phone"]
-    workshop = request.form.get("workshop", None)
-    selected_events = request.form.getlist("events")  # Changed to getlist for multiple events
-    college_name = request.form["college_name"]
+    try:
+        name = request.form["name"]
+        email = request.form.get("email", "").strip().lower()
+        phone = request.form["phone"]
+        workshop = request.form.get("workshop", None)
+        selected_events = request.form.getlist("events")  # Changed to getlist for multiple events
+        college_name = request.form["college_name"]
 
-    if db.student_exists(email, phone):
-        flash("Error: Email, Phone already exists!", "danger")
-        return redirect(url_for("register"))
+        if db.student_exists(email, phone):
+            flash("Error: Email, Phone already exists! Try logging in.", "danger")
+            return redirect(url_for("register"))
 
-    student_data = {
-        "name": name,
-        "email": email,
-        "phone": phone,
-        "workshop": workshop,
-        "events": selected_events,  # Now it's a list
-        "college_name": college_name
-    }
+        student_data = {
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "workshop": workshop,
+            "events": selected_events,  # Now it's a list
+            "college_name": college_name
+        }
 
-    db.create_student(student_data)
-    
-    session["student_id"] = db.get_student_by_email(email)["_id"]
-    flash("Registration successful!", "success")
+        db.create_student(student_data)
+        
+        session["student_id"] = db.get_student_by_email(email)["_id"]
+        flash("Registration successful!", "success")
 
-    otp = emails.send_otp(email)
-    db.create_payment_entry({
-        "email": email,
-        "paid": False,
-        "is_cash": False  # Default to non-cash payment
-    })
-    db.create_login_otp(email, str(otp))
-    payment_data = db.get_payment_by_email(email)
-    emails.send_id_mail(student_data, payment_data , request.url_root + "/admin/student/" + session["student_id"])
-    if otp:
-        flash("OTP sent successfully!", "success")
+        otp = emails.send_otp(email)
+        db.create_payment_entry({
+            "email": email,
+            "paid": False,
+            "is_cash": False  # Default to non-cash payment
+        })
+        db.create_login_otp(email, str(otp))
+        payment_data = db.get_payment_by_email(email)
+        emails.send_id_mail(student_data, payment_data , request.url_root + "/admin/student/" + session["student_id"])
+        if otp:
+            flash("OTP sent successfully!", "success")
+            return redirect("verify_email")
+        else:
+            flash("Error sending OTP! Try logging in.", "danger")
         return redirect("verify_email")
-    else:
-        flash("Error sending OTP! Try logging in.", "danger")
-    return redirect("verify_email")
+
+    except Exception as e:
+        flash(f"Error registering [{e}]! Try again.", "danger")
+        return redirect("register")
 
 @app.get("/login")
 def login():

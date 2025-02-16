@@ -215,7 +215,7 @@ window.addEventListener('orientationchange', onWindowResize);
 document.addEventListener('DOMContentLoaded', () => {
     init();
     animate();
-    ScrollReveal({ reset: true }).reveal(".event", {
+    ScrollReveal({ reset: false }).reveal(".event", {
         delay: 50,
         distance: "120%" ,
         origin: 'left',

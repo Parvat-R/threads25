@@ -65,7 +65,7 @@ input[type="submit"] {
 
     <div id="online-container" class="option-container online-payment">
         <div class="qrcode">
-            <img src="{{ url_for('static', filename='qrcode.png') }}" alt="GPay Qr Code Image.">
+            <img src="{{ url_for('static', filename='pament_qr.png') }}" alt="GPay Qr Code Image.">
         </div>
         <form action="{{ url_for('payment_post') }}" method="post" id="online-form">
             <div class="form-group">

@@ -31,45 +31,53 @@ stop_event = threading.Event()
 def email_worker():
     """Worker thread that processes emails from the queue with rate limiting"""
     server = None
-    try:
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        # server = smtplib.SMTP('smtp.office365.com', 587)
-        server.starttls()
-        server.login(EMAIL, EMAIL_PASSWORD)
-        logger.info("Email worker started and logged in")
-        
-        while not stop_event.is_set() or not email_queue.empty():
+    while not stop_event.is_set() or not email_queue.empty():
+        # Try to establish connection if we don't have one
+        if server is None:
             try:
-                message = email_queue.get(timeout=1)
-                server.send_message(message)
-                logger.info(f"Sent email to {message['To']}")
-                email_queue.task_done()
-                
-                # Rate limiting - pause between emails
-                time.sleep(1)  # Adjust this value based on your needs
-                
-            except queue.Empty:
-                continue
+                server = smtplib.SMTP('smtp.gmail.com', 587)
+                server.starttls()
+                server.login(EMAIL, EMAIL_PASSWORD)
+                logger.info("Email worker connected to SMTP server")
             except Exception as e:
-                logger.error(f"Error sending email: {e}")
-                # If we encounter an error, try to reconnect
-                try:
-                    if server:
-                        server.quit()
-                    server = smtplib.SMTP('smtp.gmail.com', 587)
-                    server.starttls()
-                    server.login(EMAIL, EMAIL_PASSWORD)
-                    logger.info("Reconnected to SMTP server")
-                except Exception as reconnect_error:
-                    logger.error(f"Failed to reconnect: {reconnect_error}")
-                    time.sleep(30)  # Wait before trying again
-    finally:
-        if server:
+                logger.error(f"Failed to connect to SMTP server: {e}")
+                time.sleep(30)  # Wait before trying again
+                continue  # Skip to next iteration
+
+        # Process emails from the queue
+        try:
+            message = email_queue.get(timeout=1)
+            server.send_message(message)
+            logger.info(f"Sent email to {message['To']}")
+            email_queue.task_done()
+            
+            # Rate limiting - pause between emails
+            time.sleep(1)  # Adjust based on Gmail's rate limits
+            
+        except queue.Empty:
+            continue
+        except Exception as e:
+            logger.error(f"Error sending email: {e}")
+            # Close the broken connection
             try:
-                server.quit()
+                if server:
+                    server.quit()
             except:
                 pass
-        logger.info("Email worker stopped")
+            server = None  # Force reconnection on next iteration
+            
+            # Put the failed message back in the queue
+            if 'message' in locals():
+                email_queue.put(message)
+                logger.info(f"Requeued email to {message['To']}")
+                
+    # Clean up
+    if server:
+        try:
+            server.quit()
+        except:
+            pass
+    logger.info("Email worker stopped")
 
 # Start the email worker thread
 worker_thread = threading.Thread(target=email_worker)

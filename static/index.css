@@ -300,7 +300,7 @@ div#register_now a[href^="#"] {
 }
 
 #events:has( .active) .event:not(:has(.active)) {
-    opacity: .3;
+    opacity: .3 !important;
     scale: .9;
 }
 
