@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+{% block title %}Contact{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .contact-container {
+        min-height: 100vh;
+        padding: 8rem 2rem;
+        color: #fff;
+        font-family: "Satoshi", sans-serif;
+    }
+    
+    .contact-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+    }
+    
+    .contact-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+    
+    .contact-header h1 {
+        font-family: "Clash Grotesk", sans-serif;
+        font-size: 4rem;
+        background: linear-gradient(45deg, #ffe66c, #f86cff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+    }
+    
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+    
+    .contact-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s ease;
+        text-align: center;
+    }
+    
+    /* New styles for contact photo */
+    .contact-photo {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        position: relative;  /* Added for better image control */
+        background-color: #f5f5f5;  /* Added as fallback background */
+    }
+
+    /* Updated image styles */
+    .contact-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;  /* Adjusted to favor the top of the image */
+        display: block;  /* Removes any potential spacing issues */
+        position: relative;  /* Better positioning control */
+    }
+
+    /* Optional: Add a subtle scaling effect on hover */
+    .contact-photo:hover img {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+    }
+
+    /* Enhanced responsive styles */
+    @media (max-width: 768px) {
+        .contact-photo {
+            width: 140px;
+            height: 140px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .contact-photo {
+            width: 120px;
+            height: 120px;
+        }
+    }
+    
+    .contact-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .contact-card h3 {
+        color: #ffe66c;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        font-family: "Clash Grotesk", sans-serif;
+    }
+    
+    .contact-card h4 {
+        color: #f86cff;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        font-family: "Clash Grotesk", sans-serif;
+    }
+    
+    .contact-info {
+        color: #ffffffcc;
+        line-height: 1.6;
+    }
+    
+    .contact-info p {
+        margin: 0.5rem 0;
+    }
+    
+    .contact-info a {
+        color: #f86cff;
+        text-decoration: none;
+        transition: opacity 0.3s ease;
+    }
+    
+    .contact-info a:hover {
+        opacity: 0.8;
+    }
+    
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .social-links a {
+        color: #ffe66c;
+        font-size: 1.5rem;
+        transition: color 0.3s ease;
+    }
+    
+    .social-links a:hover {
+        color: #f86cff;
+    }
+    
+    @media (max-width: 768px) {
+        .contact-header h1 {
+            font-size: 2.5rem;
+        }
+        
+        .contact-photo {
+            width: 150px;
+            height: 150px;
+        }
+    }
+</style>
+{% endblock %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% block content %}
+<div class="contact-container">
+    <div class="contact-content">
+        <div class="contact-header">
+            <h1>Leadership</h1>
+        </div>
+        
+        <div class="contact-grid">
+            <div class="contact-card">
+                <div class="contact-photo">
+                    <img src="/static/Secretary.jpg" alt="Secretary">
+                </div>
+                <h3>Vedaprakash S</h3>
+                <h4>Secretary</h4>
+                <div class="contact-info">
+                    <p>Sona College of Technology</p>
+                    <p><a href="mailto:secretary@sonatech.ac.in">secretary.cse@sonatech.ac.in</a></p>
+                    <p><a href="tel:7806854324">+91 78068 54324</a></p>
+                </div>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-photo">
+                    <img src="/static/Chairperson.jpg" alt="Chairperson">
+                </div>
+                <h3>Md. Vasim</h3>
+                <h4>Chairperson</h4>
+                <div class="contact-info">
+                    <p>Department of Computer Science</p>
+                    <p><a href="mailto:hodcse@sonatech.ac.in">chairperson.cse@sonatech.ac.in</a></p>
+                    <p><a href="tel:9442741448">+91 94427 41448</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-container">
+    <div class="contact-content">
+        <div class="contact-header">
+            <h1>Contact Us</h1>
+        </div>
+
+
+        <div class="contact-header">
+            <h1>Technical Events Co-ordinators</h1>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-card">
+                <h3>Capture The Flag</h3>
+                <div class="contact-info">
+                    <p>Kishore Kumar</p>
+                    <p>Harshini S</p>
+
+                    <p><a href="mailto:kishorekumar.21cse@sonatech.ac.in">kishorekumar.21cse@sonatech.ac.in</a></p>
+                    <p><a href="tel:8838582534">+91 88385 82534</a></p>
+                </div>
+            </div>
+            <div class="contact-card">
+                <h3>LogiX</h3>
+                <div class="contact-info">
+                    <p>Megha R</p>
+                    <p>Keerthi R</p>
+
+                    <p><a href="mailto:megha.22cse@sonatech.ac.in">megha.22cse@sonatech.ac.in</a></p>
+                    <p><a href="tel:9345565198">+91 93455 65198</a></p>
+                </div>
+            </div>
+            <div class="contact-card">
+                <h3>Technova</h3>
+                <div class="contact-info">
+                    <p>Sharmila Banu A</p>
+                    <p>Sangeetha J</p>
+
+                    <p><a href="mailto:sharmilabanu.22cse@sonatech.ac.in">sharmilabanu.22cse@sonatech.ac.in</a></p>
+                    <p><a href="tel:8148874372">+91 81488 74372</a></p>
+                </div>
+            </div>
+            <div class="contact-card">
+                <h3>Paper Presentation</h3>
+                <div class="contact-info">
+                    <p>XXXXXXX</p>
+                    <p>YYYYYYY</p>
+
+                    <p><a href="mailto:xxx.22cse@sonatech.ac.in">sharmilabanu.22cse@sonatech.ac.in</a></p>
+                    <p><a href="tel:1234567890">+91 12345 67890</a></p>
+                </div>
+            </div>
+            <div class="contact-card">
+                <h3>Neural Nexus</h3>
+                <div class="contact-info">
+                    <p>Yogapraveen R</p>
+                    <p>Tarun R</p>
+
+                    <p><a href="mailto:yogapraveen.22aml@sonatech.ac.in">yogapraveen.22aml@sonatech.ac.in</a></p>
+                    <p><a href="tel:6381650926">+91 63816 50926</a></p>
+                </div>
+            </div>
+            <div class="contact-card">
+                <h3>Event 6</h3>
+                <div class="contact-info">
+                    <p>XXXXXXX</p>
+                    <p>YYYYYYY</p>
+
+                    <p><a href="mailto:xxx.22aml@sonatech.ac.in">yogapraveen.22aml@sonatech.ac.in</a></p>
+                    <p><a href="tel:1234567890">+91 12345 67890</a></p>
+                </div>
+            </div>
+            </div>
+            <div class="contact-header">
+                <br>
+                <h1>Non-Technical Events Co-ordinators</h1>
+            </div>
+            <div class="contact-grid">
+            <div class="contact-card">
+                <h3>MovieVerse</h3>
+                <div class="contact-info">
+                    <p>Girish M</p>
+                    <p>Arun A M</p>
+
+                    <p><a href="mailto:girish.22aml@sonatech.ac.in">yogapraveen.22aml@sonatech.ac.in</a></p>
+                    <p><a href="tel:9342943992">+91 93429 43992</a></p>
+                </div>
+            </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
