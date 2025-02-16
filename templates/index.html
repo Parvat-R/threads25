@@ -3,6 +3,14 @@
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+<script src="https://unpkg.com/scrollreveal"></script>
+<script defer>
+
+function toggleEventDetails(self) {
+    self.classList.toggle("active");
+}
+
+</script>
 
 {% endblock %}
 {% block content %}
@@ -40,6 +48,16 @@
 </div>
 
 <section id="events" class="horizontal-scroll-section">
+    <div id="workshops">
+        <h2>Workshops</h2>
+        <div class="events-track">
+            <div class="events-wrapper">
+                {% for event in workshops %}
+                    {%  include "event_card.html" %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
     <div id="tech-events">
         <h2>Technical Events</h2>
         <div class="events-track">
@@ -55,7 +73,7 @@
         <div class="events-track">
             <div class="events-wrapper">
                 {% for event in non_tech_events %}
-                {%  include "event_card.html" %}
+                    {%  include "event_card.html" %}
                 {% endfor %}
             </div>
         </div>

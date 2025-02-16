@@ -1,5 +1,5 @@
 <div class="event">
-    <div class="event-content">
+    <div class="event-content" onclick="toggleEventDetails(this)">
         <div class="title">
             <h3>{{ event.event_name }}</h3>
             <div class="icon">
@@ -17,6 +17,13 @@
                 <span class="value">₹{{ event.prize_pool }}</span>
             </div>
             {% endif %}
+            <!-- add the organizers names from list of organizers-->
+            <div class="organizers">
+                <span class="label">Organizers:</span>
+                {% for organizer in event.organizers %}
+                <span class="value">{{ organizer }}</span>
+                {% endfor %}
+            </div>
             {% if event.team_size %}
             <div class="team-size">
                 <span class="label">Team Size:</span>
@@ -25,5 +32,4 @@
             {% endif %}
         </div>
     </div>
-    <button class="learn-more">Learn More</button>
 </div>

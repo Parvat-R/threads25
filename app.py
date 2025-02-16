@@ -12,6 +12,7 @@ from werkzeug.utils import secure_filename
 import os
 from threading import Thread
 import tempfile
+from events import tech_events, non_tech_events, workshops
 
 UPLOAD_FOLDER = tempfile.gettempdir()  # Use system temp directory
 ALLOWED_EXTENSIONS = {'pdf'}
@@ -101,29 +102,6 @@ app.secret_key = "your_secret_key"
 # socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # List of workshops. Should be updated.
-workshops = [
-    "Workshop 1",
-    "Workshop 2",
-    "Workshop 3"
-]
-
-tech_events = [
-    {"event_name": "Capture the Flag (CTF) - Cybersecurity Showdown", "event_description": "Solve cybersecurity challenges, exploit vulnerabilities, and capture hidden flags. Compete in ethical hacking, cryptography, and forensics to claim victory!"},
-    {"event_name": "Logix - The Ultimate Logic Challenge", "event_description": "A two-round competition featuring a logic-based quiz followed by an interactive coding challenge with a unique twist! Roll the dice, solve problems, and climb to the top."},
-    {"event_name": "Tech-Quest - Decode, Quiz & Debug", "event_description": "Decode Morse code, tackle a rapid-fire tech quiz, and debug programs in record time! Compete in teams of two and prove your tech supremacy."},
-    {"event_name": "Paper Presentation - Innovate & Present", "event_description": "Showcase your research and innovative ideas in fields like AI, ML, Cybersecurity, IoT, Blockchain, and more. Present your findings in front of expert judges."},
-    {"event_name": "Pixel Perfect - UI/UX Design Challenge", "event_description": "Recreate a web page design with precision using Figma, Adobe XD, or Sketch—no coding required! The most accurate and aesthetic design wins."},
-    {"event_name": "Code Clash - Crack the Code", "event_description": "Analyze code snippets, predict outputs, and solve coding problems in a competitive MCQ format. Compete solo or in teams, and prove your coding prowess."}
-]
-
-non_tech_events = [
-    {"event_name": "Treasure Hunt - Solve & Conquer", "event_description": "Follow cryptic clues, decode puzzles, and race against time to uncover the hidden treasure. Strategy and teamwork will lead you to victory!"},
-    {"event_name": "Karaoke - Sing Your Heart Out", "event_description": "Step up to the mic and showcase your singing talent in a fun-filled music battle. No matter your genre, this is your chance to shine!"},
-    {"event_name": "Filmography - Movie Mania", "event_description": "Put your film knowledge to the test! Guess movies, identify iconic scenes, and reenact dialogues in this ultimate cinematic showdown."},
-    {"event_name": "Snap Fusion - Photography Challenge", "event_description": "Capture and creatively blend images based on a given theme. Show off your photography and editing skills to create stunning visual stories."},
-    {"event_name": "Snap Fusion - Photography Challenge", "event_description": "Capture and creatively blend images based on a given theme. Show off your photography and editing skills to create stunning visual stories."},
-    {"event_name": "Snap Fusion - Photography Challenge", "event_description": "Capture and creatively blend images based on a given theme. Show off your photography and editing skills to create stunning visual stories."}
-]
 
 
 events = [i["event_name"] for i in tech_events]+[i["event_name"] for i in non_tech_events]
