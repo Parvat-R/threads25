@@ -175,6 +175,7 @@ def send_id_mail(student_data, payment_data, event_url):
             .student-info {{
                 margin-top: 10px;
             }}
+            
         </style>
     </head>
     <body>
@@ -188,9 +189,9 @@ def send_id_mail(student_data, payment_data, event_url):
                 <p>Name: {student_data['name']}</p>
                 <p>Email: {student_data['email']}</p>
                 <p>Phone: {student_data['phone']}</p>             
-                <p>Phone: {student_data['events']}</p>             
-                <p>Phone: {payment_data['paid']}</p>             
-                <p>Phone: {payment_data['is_cash']}</p>             
+                <p>Events: {student_data['events']}</p>             
+                <p>Paid: {payment_data['paid']}</p>             
+                <p>Is Cash?: {payment_data['is_cash']}</p>             
             </div>
         </div>
     </body>

@@ -80,6 +80,17 @@ function toggleEventDetails(self) {
     </div>
 </section>
 
+<div id="people">
+    <h2>In The SpotLight</h2>
+    <div class="people-track">
+        <div class="people-wrapper">
+            {% for person in people %}
+                {%  include "person_card.html" %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 <script defer>
     // Set the target date (format: Year, Month (0-11), Day, Hour, Minute, Second)
     // Example: January 1, 2026 at 00:00:00

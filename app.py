@@ -12,7 +12,7 @@ from werkzeug.utils import secure_filename
 import os
 from threading import Thread
 import tempfile
-from events import tech_events, non_tech_events, workshops
+from events import tech_events, non_tech_events, workshops, person
 
 UPLOAD_FOLDER = tempfile.gettempdir()  # Use system temp directory
 ALLOWED_EXTENSIONS = {'pdf'}
