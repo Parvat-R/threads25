@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<script src=
+"https://code.jquery.com/jquery-3.6.0.min.js">
+	</script>
+	<style>
+		div {
+			color: white;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+		}
+		h2 {
+			color: black;
+		}
+		#grandparent {
+			background-color: green;
+			width: 300px;
+			height: 300px;
+		}
+		#parent {
+			background-color: blue;
+			width: 200px;
+			height: 200px;
+		}
+		#child {
+			background-color: red;
+			width: 100px;
+			height: 100px;
+		}
+	</style>
+</head>
+
+<body>
+	<div>
+		<h2>Welcome To GFG</h2>
+		<div id="grandparent">GrandParent
+			<div id="parent">Parent
+				<div id="child">Child</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+        function returnEvenList() {
+            var list = [];
+            for (i = 0; i < 10; i++) {
+                if (i % 2 == 0) {
+                    list.push(i);
+                }
+            }
+            return list;
+        }
+        function* returnEvenGen() {
+            for (i = 0; i < 10; i++) {
+                if (i % 2 == 0) {
+                    yield i;
+                }
+            }
+        }
+        numbers = returnEvenList();
+        console.log(numbers);
+        gen = returnEvenGen();
+        console.log(gen)
+        console.log(gen.next());
+        console.log(gen.next());
+        console.log(gen.next());
+        console.log(gen.next());
+        console.log(gen.next());
+	</script>
+</body>
+</html>

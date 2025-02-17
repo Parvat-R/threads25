@@ -186,7 +186,7 @@ Conducting Human Bingo in rounds allows participants to warm up, get to know eac
 
 person = [
     {
-        "name": "Mohamed Vaseem",
+        "name": "Mohamed Vasim B",
         "role": "Chair Person Of CSE, CSD & AIML",
         "contact": "9442741448",
         "profile_pic": "images/mohamed_vasim.jpg"
