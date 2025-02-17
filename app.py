@@ -117,7 +117,7 @@ def index():
         else:
             session.clear()
             name = None
-    return render_template("index.html", name=name, tech_events=tech_events, non_tech_events=non_tech_events)
+    return render_template("index.html", name=name, tech_events=tech_events, non_tech_events=non_tech_events, person=person)
 
 
 @app.route("/about")
