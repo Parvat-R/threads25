@@ -6,8 +6,8 @@ from flask import (
 import database as db
 import emails 
 from flask_socketio import SocketIO, emit, send, join_room
-import tabula
-import pandas as pd
+# import tabula
+# import pandas as pd
 from werkzeug.utils import secure_filename
 import os
 from threading import Thread

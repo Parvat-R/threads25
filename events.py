@@ -44,7 +44,15 @@ tech_events = [
         "event_description": "Showcase your research and innovative ideas in fields like AI, ML, Cybersecurity, IoT, Blockchain, and more. Present your findings in front of expert judges."},
     {
         "event_name": "Pixel Perfect - UI/UX Design Challenge",
-        "event_description": "Recreate a web page design with precision using Figma, Adobe XD, or Sketch—no coding required! The most accurate and aesthetic design wins."},
+        "event_description": """Participants in this UI/UX design challenge will create a Figma-based solution for a given problem statement within 1.5 hours, 
+        focusing on creativity, usability, and aesthetics, with an emphasis on a well-structured and visually appealing design. The most innovative and user-friendly design 
+        will win. The challenge rules specify that participants (individuals or teams) will receive a problem statement related to UI/UX design, and the objective is to 
+        design a user interface (UI) solution that best addresses the problem within the time limit. Pre-made templates, AI-generated designs, and auto-tracing tools 
+        are strictly prohibited. Participants will have 1 hour and 30 minutes to complete their designs, and final submissions must be sent before the deadline, as late 
+        submissions will not be considered. To submit, participants must email their Figma prototype link to [Specify Email Address] before the deadline, 
+        ensuring the Figma link is set to "Anyone with the link can view." The email body should include the participant's name, college name, phone number, and 
+        Figma prototype link.
+""" },
     {
         "event_name": "Code Clash - Crack the Code",
         "event_description": "Analyze code snippets, predict outputs, and solve coding problems in a competitive MCQ format. Compete solo or in teams, and prove your coding prowess."}
