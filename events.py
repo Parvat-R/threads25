@@ -22,11 +22,36 @@ non_tech_events = [
     },
 ]
 
-
 workshops = [
-    "Workshop 1",
-    "Workshop 2",
-    "Workshop 3"
+    {
+        "event_name": "Unity",
+        "event_description": "Learn Unity's interface, tools, and C# scripting for game development. Gain hands-on experience with player movement, physics, animations, UI design, and debugging. Build and export a simple Unity game.",
+        "organizers": []
+    },
+    {
+        "event_name": "INTELLIFUSION",
+        "event_description": "Beginner-friendly Machine Learning workshop covering fundamental concepts, Python libraries (NumPy, Pandas, Scikit-learn), data preprocessing, regression, classification, and algorithms like Decision Trees, KNN, and SVM. Includes a hands-on mini-project.",
+        "organizers": ["Rohith K", "Karthik Sriram M", "Venkatesan K J", "Vicknesh T"]
+    },
+    {
+        "event_name": "Full Stack Development",
+        "event_description": "Learn web development fundamentals including HTML, CSS, JavaScript, and responsive design. Work with React.js for front-end and Spring Boot with MongoDB for back-end. Gain experience with APIs, Git, and modern web technologies.",
+        "organizers": ["Shobhanaa R", "Surabhi S", "Vinu Devi T", "Senthamizh M", "Shivanikha A R", "Thisanthan M S"]
+    },
+    {
+        "event_name": "Cybersecurity Workshop",
+        "event_description": "Learn core cybersecurity concepts such as data protection, network security, encryption, authentication, and secure coding. Identify common threats like phishing, malware, and ransomware. Gain hands-on experience with security tools, vulnerability assessments, penetration testing, and risk management. Develop secure digital practices and an incident response strategy.",
+        "organizers": [
+            "Dhanu Sree B (Team Lead - 93429 30527)",
+            "Vaishnavi A S (Asst. Team Lead - 94861 90390)",
+            "Akshaya S D K (97504 20438)",
+            "Harini S (88388 59758)",
+            "Kanika S (88384 82431)",
+            "Dharsini S (90428 42500)",
+            "Hinduja E (97900 94339)",
+            "Kavishka S (93423 70148)"
+        ]
+    }
 ]
 
 tech_events = [

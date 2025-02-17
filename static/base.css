@@ -142,3 +142,46 @@ div#root {
         display: flex;
     }
 }
+
+div#footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0006;
+    backdrop-filter: blur(10px);
+    padding: 2em;
+    width: 100%;
+}
+
+#footer .container {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    width: 100%;
+    gap: 2em;
+    font-size: 18px;
+    opacity: .5;
+}
+
+#footer .left, #footer .right, #footer .links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+#footer .link {
+    text-decoration: none;
+    color: #ffff63;
+}
+
+.images img {
+    width: 50px;
+}
+
+.images {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    padding: 1em;
+}

@@ -2,65 +2,105 @@
 {% block title %}Your ID{% endblock %}
 {% block head %}
     {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='student.css') }}">
     <style>
-       /* Main container styling */
+        /* Main container styling */
         .student {
-            max-width: 500px;
+            max-width: 600px;
             margin: 2rem auto;
             padding: 2rem;
+            background: linear-gradient(135deg, rgba(26, 15, 46, 0.7) 0%, rgba(45, 27, 78, 0.7) 100%);
+            border: 2px solid #ff2e88;
             border-radius: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(124, 58, 237, 0.2);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(255, 46, 136, 0.2);
             backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.1);
+            animation: cardFloat 3s ease-in-out infinite;
+        }
+
+        .student::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 48%, rgba(255, 46, 136, 0.1) 50%, transparent 52%);
+            background-size: 20px 20px;
+            z-index: 1;
+            pointer-events: none;
         }
 
         /* Header styling */
         .student h2 {
+            color: #ffffff;
+            font-size: 2rem;
             text-align: center;
-            color: #c4b5fd;
-            font-size: 1.8rem;
             margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #7c3aed;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(255, 46, 136, 0.5);
             font-family: 'Space Grotesk', sans-serif;
+            position: relative;
+            z-index: 2;
         }
 
         /* Field container styling */
         .student > div {
             display: flex;
+            align-items: center;
             margin-bottom: 1rem;
-            padding: 0.8rem;
-            border-radius: 8px;
-            background: rgba(124, 58, 237, 0.05);
-            border: 1px solid rgba(124, 58, 237, 0.1);
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 46, 136, 0.2);
+            border-radius: 10px;
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
 
         .student > div:hover {
-            transform: translateX(5px);
-            background: rgba(124, 58, 237, 0.1);
-            border-color: rgba(124, 58, 237, 0.3);
+            transform: translateX(10px);
+            background: rgba(255, 46, 136, 0.1);
+            border-color: rgba(255, 46, 136, 0.4);
         }
 
         /* Field label styling */
         .field {
-            width: 140px;
+            width: 150px;
             font-weight: 500;
-            color: #7c3aed;
-            text-transform: capitalize;
-            padding-right: 1rem;
+            color: #ff2e88;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-right: 1.5rem;
             font-family: 'Space Grotesk', sans-serif;
         }
 
         /* Detail value styling */
         .detail {
             flex: 1;
-            color: #c4b5fd;
-            word-break: break-word;
+            color: #ffffff;
             font-family: 'Space Grotesk', sans-serif;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Payment status styling */
+        .student > div:has(.detail:contains("yes")) {
+            border-color: rgba(39, 174, 96, 0.4);
+        }
+
+        .student > div:has(.detail:contains("no")) {
+            border-color: rgba(231, 76, 60, 0.4);
+        }
+
+        .detail:contains("yes") {
+            color: #27ae60;
+            text-shadow: 0 0 10px rgba(39, 174, 96, 0.5);
+        }
+
+        .detail:contains("no") {
+            color: #e74c3c;
+            text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
         }
 
         /* Link styling */
@@ -68,35 +108,46 @@
             display: inline-block;
             margin: 1rem 1rem 0 0;
             padding: 0.8rem 1.5rem;
-            text-decoration: none;
             color: #ffffff;
-            background: rgba(124, 58, 237, 0.2);
-            border: 1px solid rgba(124, 58, 237, 0.3);
-            border-radius: 20px;
+            background: rgba(255, 46, 136, 0.1);
+            border: 1px solid rgba(255, 46, 136, 0.3);
+            border-radius: 25px;
+            text-decoration: none;
             transition: all 0.3s ease;
             font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
         }
 
         .student a:hover {
-            background: rgba(124, 58, 237, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.2);
+            background: rgba(255, 46, 136, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 46, 136, 0.3);
+        }
+
+        /* Animations */
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         /* Responsive design */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .student {
                 margin: 1rem;
-                padding: 1rem;
+                padding: 1.5rem;
             }
 
             .student > div {
                 flex-direction: column;
+                align-items: flex-start;
             }
 
             .field {
                 width: 100%;
-                margin-bottom: 0.3rem;
+                margin-bottom: 0.5rem;
             }
 
             .student a {
@@ -106,42 +157,35 @@
             }
         }
 
-        /* Special styling for payment status */
-        .student > div:nth-child(7) .detail {
-            font-weight: 600;
+        /* Scrollbar styling */
+        .student::-webkit-scrollbar {
+            width: 8px;
         }
 
-        .student > div:nth-child(7) .detail:contains("yes") {
-            color: #4ade80;
+        .student::-webkit-scrollbar-track {
+            background: rgba(255, 46, 136, 0.1);
+            border-radius: 4px;
         }
 
-        .student > div:nth-child(7) .detail:contains("no") {
-            color: #f87171;
+        .student::-webkit-scrollbar-thumb {
+            background: rgba(255, 46, 136, 0.3);
+            border-radius: 4px;
         }
 
-        /* Font import for consistent styling */
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
-
-        /* Add subtle animation to the card */
-        .student {
-            animation: cardFadeIn 0.5s ease-out;
+        .student::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 46, 136, 0.5);
         }
-
-        @keyframes cardFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .links {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
         }
     </style>
 {% endblock %}
+
 {% block content %}
     <div class="student">
-        <h2>My ID Card</h2>
+        <h2>Your Digital Identity</h2>
         <div>
             <div class="field">name</div>
             <div class="detail">{{ student.name }}</div>
@@ -163,28 +207,24 @@
             <div class="detail">{{ student.events }}</div>
         </div>
         <div>
-            <div class="field">college_name</div>
+            <div class="field">college</div>
             <div class="detail">{{ student.college_name }}</div>
         </div>
         <div>
-            <div class="field">paid</div>
-            <div class="detail">{{  "yes" if payment.paid else "no" }}</div>
+            <div class="field">payment verified</div>
+            <div class="detail">{{ "yes" if payment.paid else "no" }}</div>
         </div>
         <div>
-            <div class="field">is cash</div>
-            <div class="detail">{{  "yes" if payment.is_cash else "no" }}</div>
-        </div>
-        <div>
-            <div class="field">transaction_id</div>
+            <div class="field">transaction id</div>
             <div class="detail">{{ payment.transaction_id }}</div>
         </div>
         <div>
-            <div class="field">upi_id</div>
+            <div class="field">upi id</div>
             <div class="detail">{{ payment.upi_id }}</div>
         </div>
-
-        <a href="{{ url_for('verify_email') }}">Get ID in Email.</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
-        <a href="{{ url_for('index') }}">Back to Home</a>
+        <div class="links">
+            <a href="{{ url_for('logout') }}">Logout</a>
+            <a href="{{ url_for('index') }}">Home</a>
+        </div>
     </div>
 {% endblock %}

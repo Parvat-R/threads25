@@ -221,6 +221,11 @@ document.addEventListener('DOMContentLoaded', () => {
         origin: 'left',
         duration: 600
     });
+    ScrollReveal({ reset: false }).reveal(".contact-card", {
+        distance: "100%" ,
+        origin: 'left',
+        duration: 600
+    });
 });
 
 function cleanup() {

@@ -59,21 +59,8 @@ class StudentModel(BaseModel):
 class PaymentModel(BaseModel):
     email: EmailStr
     paid: bool = False
-    is_cash: bool = False  # New field for cash payments
     transaction_id: str | None = None
     upi_id: str | None = None
-    @field_validator('transaction_id', 'upi_id')
-    def validate_payment_details(cls, v, info: ValidationInfo):
-        # Get the data from ValidationInfo
-        data = info.data
-        
-        if data.get('is_cash', False):
-            return f"cash-{str(ObjectId())}"  # If cash payment, these fields should be None
-        
-        if data.get('paid', False) and not data.get('is_cash', False) and not v:
-            raise ValueError('transaction_id and upi_id are required for non-cash payments')
-        
-        return v
 
 class LoginOtpModel(BaseModel):
     email: EmailStr
@@ -229,11 +216,6 @@ def get_student_by_email(email: str):
 def create_payment_entry(payment_data: dict):
     if not payment_and_otp_collection:
         return None
-    
-    payment_data['transaction_id'] = f"cash-{str(ObjectId())}"
-    # Handle cash payments
-    if payment_data.get('is_cash', False):
-        payment_data['upi_id'] = None
 
     payment = PaymentModel(**payment_data)
     inserted_id = payment_and_otp_collection.insert_one(payment.model_dump()).inserted_id
@@ -245,21 +227,15 @@ def get_payment_by_email(email: str):
     payment = payment_and_otp_collection.find_one({"email": email})
     return bson_to_json(payment)
 
-def update_payment_status(email: str, transaction_id: str | None = None, upi_id: str | None = None, is_cash: bool = False):
+def update_payment_status(email: str, transaction_id: str, upi_id: str):
     if not payment_and_otp_collection:
         return None
     
     update_data = {
-        "paid": True,
-        "is_cash": is_cash
+        "paid": False,
+        "transaction_id": transaction_id,
+        "upi_id": upi_id
     }
-    
-    if not is_cash:
-        update_data.update({
-            "transaction_id": transaction_id,
-            "upi_id": upi_id
-        })
-    
     payment_and_otp_collection.update_one(
         {"email": email},
         {"$set": update_data}
@@ -358,9 +334,11 @@ def edit_payment(email: str, payment_data: dict):
     if "_id" in payment_data:
         del payment_data["_id"]
 
-    # Handle cash payments
-    if payment_data.get('is_cash', False):
-        payment_data['transaction_id'] = f"cash-{str(ObjectId())}"
+
+    # check if the email belongs to sona tech domain:
+    # it: @sonatech.ac.in
+    if email.endswith("@sonatech.ac.in"):
+        payment_data['transaction_id'] = f"sona-{str(ObjectId())}"
         payment_data['upi_id'] = None
 
     # Convert to Pydantic model for validation

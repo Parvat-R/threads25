@@ -37,7 +37,6 @@
                             <th scope="col" class="px-6 py-3">College</th>
                             <th scope="col" class="px-6 py-3">Workshop</th>
                             <th scope="col" class="px-6 py-3">Paid?</th>
-                            <th scope="col" class="px-6 py-3">Cash?</th>
                             <th scope="col" class="px-6 py-3">Transaction ID</th>
                             <th scope="col" class="px-6 py-3">UPI ID</th>
                             <th scope="col" class="px-6 py-3">Actions</th>
@@ -55,11 +54,6 @@
                                 <input type="checkbox" 
                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 payment-status"
                                        {% if payments[student.email].paid %}checked{% endif %}>
-                            </td>
-                            <td class="px-6 py-4">
-                                <input type="checkbox" 
-                                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 payment-method"
-                                       {% if payments[student.email].is_cash %}checked{% endif %}>
                             </td>
                             <td class="px-6 py-4">
                                 <input type="text" 
@@ -102,8 +96,6 @@
                     text = row.textContent.toLowerCase();
                 } else if (filterValue === 'paid') {
                     text = row.querySelector('.payment-status').checked ? 'paid' : 'unpaid';
-                } else if (filterValue === 'is_cash') {
-                    text = row.querySelector('.payment-method').checked ? 'cash' : 'upi';
                 } else {
                     text = row.children[getColumnIndex(filterValue)].textContent.toLowerCase();
                 }
@@ -130,7 +122,6 @@
                 const row = this.closest('.student-row');
                 const studentId = row.dataset.studentId;
                 const paid = row.querySelector('.payment-status').checked;
-                const method = row.querySelector('.payment-method').checked;
                 const transactionId = row.querySelector('.transaction-id').value;
                 const upiId = row.querySelector('.upi-id').value;
 
@@ -142,7 +133,6 @@
                         },
                         body: new URLSearchParams({
                             'paid': paid,
-                            'is_cash': method,
                             'transaction_id': transactionId,
                             'upi_id': upiId
                         })

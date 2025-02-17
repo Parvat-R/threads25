@@ -8,7 +8,7 @@
 <div class="container">
     <div class="content">
         <h2>Register Now!</h2>
-        <div class="desc">Register your details and then proceed to payment. You will get your Event Ticket to your email immediately upon registeration. <span>Details cant be changed later, enter carefully.</span></div>
+        <div class="desc">Register your details and then proceed to payment. You will be asked to pay email immediately upon registeration. <span>You can also register onsite. For that no need to register here.</span></div>
     </div>
     <form action="" method="post">
         <div class="form-group">
@@ -31,7 +31,7 @@
             <select id="workshops" name="workshop">        
                 <option value="none">None</option>
                 {% for workshop in workshops %}
-                <option value="{{ workshop }}">{{ workshop }}</option>
+                <option value="{{ workshop.event_name }}">{{ workshop.event_name }}</option>
                 {% endfor %}
             </select>
         </div>

@@ -64,12 +64,11 @@
     <div id="nav">
         <div class="nav_bar">
             <div class="logo">
-                <h3>Threads25</h3>
+                <h3>Threads'25</h3>
             </div>
             <div class="right">
                 <a href="{{ url_for('index') }}" class="link">home</a>
                 <a href="{{ url_for('about') }}" class="link">about</a>
-                <a href="{{ url_for('contact') }}" class="link">contact</a>
                 {% if "student_id" in session %}
                 <a href="{{ url_for('myid') }}" class="link">my id</a>
                 {% else %}
@@ -82,7 +81,28 @@
     <div id="canvas"></div>
     <div id="root">{% block content %}{% endblock %}</div>
 
-    <div id="footer"></div>
+    <div id="footer">
+        <div class="container">
+            <div class="left">
+                <div class="title">Threads 2025</div>
+                <div class="desc">Grand Symposium</div>
+                <div class="from">Sona College Of Technology</div>
+                <div class="images">
+                    <img src="/static/logos/Ellipse 93.png" alt="" class="">
+                    <img src="/static/logos/Ellipse 94.png" alt="" class="">
+                    <img src="/static/logos/Ellipse 96.png" alt="" class="">
+                    <img src="/static/logos/Group 167.png" alt="" class="">
+                </div>
+            </div>
+            <div class="right">
+                <div class="links">
+                    <a href="/about" class="link">about</a>
+                    <a href="/login" class="link">login</a>
+                    <a href="/register" class="link">register</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="{{ url_for('static', filename='another2.js') }}"></script>

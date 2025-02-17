@@ -29,9 +29,6 @@
         .online-payment {
             display: block;
         }
-        .cash-payment {
-            display: none;
-        }
 
         .form-group:has( input[type="submit"]) {
     align-items: center;
@@ -51,25 +48,14 @@ input[type="submit"] {
     </style>
 {% endblock %}
 {% block content %}
-    <div class="payment-options">
-        <h3>Select Payment Method</h3>
-        <div>
-            <input type="radio" id="online-option" name="payment-type" value="online" checked>
-            <label for="online-option">Online Payment (UPI)</label>
-        </div>
-        <div>
-            <input type="radio" id="cash-option" name="payment-type" value="cash">
-            <label for="cash-option">Cash Payment</label>
-        </div>
-    </div>
 
     <div id="online-container" class="option-container online-payment">
         <div class="qrcode">
-            <img src="{{ url_for('static', filename='pament_qr.png') }}" alt="GPay Qr Code Image.">
+            <img src="{{ url_for('static', filename='payment_qr.png') }}" alt="GPay Qr Code Image.">
         </div>
         <form action="{{ url_for('payment_post') }}" method="post" id="online-form">
             <div class="form-group">
-                <p>Enter Transaction Details for {{ student.email }}</p>
+                <h3>Enter Transaction Details for {{ student.email }}</h3>
             </div>
             
             <div class="form-group">
@@ -81,50 +67,10 @@ input[type="submit"] {
                 <label for="upi_id">UPI ID:</label>
                 <input type="text" id="upi_id" name="upi_id" required>
             </div>
-            
-            <input type="hidden" name="is_cash" value="false">
-            
+
             <div class="form-group">
                 <input type="submit" value="Submit Transaction">
             </div>
         </form>
     </div>
-
-    <div id="cash-container" class="option-container cash-payment">
-        <form action="{{ url_for('payment_post') }}" method="post" id="cash-form">
-            <div class="form-group">
-                <p>Cash Payment for {{ student.email }}</p>
-                <p>Please submit your cash payment to the designated staff member at the registration desk.</p>
-            </div>
-            
-            <input type="hidden" name="is_cash" value="true">
-            
-            <div class="form-group">
-                <input type="submit" value="Record Cash Payment">
-            </div>
-        </form>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const onlineOption = document.getElementById('online-option');
-            const cashOption = document.getElementById('cash-option');
-            const onlineContainer = document.getElementById('online-container');
-            const cashContainer = document.getElementById('cash-container');
-            
-            onlineOption.addEventListener('change', function() {
-                if (this.checked) {
-                    onlineContainer.style.display = 'block';
-                    cashContainer.style.display = 'none';
-                }
-            });
-            
-            cashOption.addEventListener('change', function() {
-                if (this.checked) {
-                    onlineContainer.style.display = 'none';
-                    cashContainer.style.display = 'block';
-                }
-            });
-        });
-    </script>
 {% endblock %}

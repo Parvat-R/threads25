@@ -1,11 +1,10 @@
 from flask import (
-    Flask, render_template, request, 
+    Flask, render_template, request,
     session, redirect, url_for,
     flash, get_flashed_messages
 )
 import database as db
-import emails 
-from flask_socketio import SocketIO, emit, send, join_room
+import emails
 import tabula
 import pandas as pd
 from werkzeug.utils import secure_filename
@@ -18,93 +17,18 @@ UPLOAD_FOLDER = tempfile.gettempdir()  # Use system temp directory
 ALLOWED_EXTENSIONS = {'pdf'}
 
 
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def process_bank_statement(filepath, admin_email):
-    try:
-        # Read PDF using tabula
-        tables = tabula.read_pdf(filepath, pages='all')
-        
-        # Combine all tables into one DataFrame
-        combined_df = pd.concat(tables, ignore_index=True)
-        
-        # Get all payments from database
-        all_payments = db.get_all_payments()
-        verified_count = 0
-        unverified_count = 0
-        
-        # Process each payment
-        for payment in all_payments:
-            if payment.get('paid') and not payment.get('is_cash'):
-                transaction_id = payment.get('transaction_id')
-                upi_id = payment.get('upi_id')
-                
-                # Search for transaction in the bank statement
-                transaction_found = combined_df.apply(
-                    lambda row: any(
-                        str(transaction_id) in str(cell) or 
-                        str(upi_id) in str(cell) 
-                        for cell in row
-                    ),
-                    axis=1
-                ).any()
-                
-                if transaction_found:
-                    db.add_payment_verified(payment['email'])
-                    verified_count += 1
-                else:
-                    unverified_count += 1
-        
-        # Send email to admin with results
-        email_body = f"""
-        Bank Statement Processing Complete
-
-        Results:
-        - Total payments processed: {len(all_payments)}
-        - Verified transactions: {verified_count}
-        - Unverified transactions: {unverified_count}
-
-        Please check the admin dashboard for detailed results.
-        """
-        
-        emails.send_mail(
-            to_email=admin_email,
-            subject="Bank Statement Processing Complete",
-            body=email_body
-        )
-        
-    except Exception as e:
-        error_message = f"""
-        Error Processing Bank Statement
-
-        An error occurred while processing the bank statement:
-        {str(e)}
-
-        Please try uploading the statement again.
-        """
-        
-        emails.send_mail(
-            to_email=admin_email,
-            subject="Bank Statement Processing Error",
-            body=error_message
-        )
-    
-    finally:
-        # Clean up the temporary file
-        if os.path.exists(filepath):
-            os.remove(filepath)
 
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
-# socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # List of workshops. Should be updated.
 
 
-events = [i["event_name"] for i in tech_events]+[i["event_name"] for i in non_tech_events]
+events = [i["event_name"] for i in tech_events] + \
+    [i["event_name"] for i in non_tech_events]
 
 
 @app.route("/")
@@ -117,7 +41,13 @@ def index():
         else:
             session.clear()
             name = None
-    return render_template("index.html", name=name, tech_events=tech_events, non_tech_events=non_tech_events, person=person)
+    return render_template("index.html",
+                           name=name,
+                           tech_events=tech_events,
+                           non_tech_events=non_tech_events,
+                           person=person,
+                           workshops=workshops
+                           )
 
 
 @app.route("/about")
@@ -131,6 +61,7 @@ def about():
             session.clear()
             name = None
     return render_template("about.html")
+
 
 @app.route("/contact")
 def contact():
@@ -174,7 +105,7 @@ def register():
 #     }
 
 #     db.create_student(student_data)
-    
+
 #     session["student_id"] = db.get_student_by_email(email)["_id"]
 #     flash("Registration successful!", "success")
 
@@ -200,7 +131,8 @@ def register_post():
         email = request.form.get("email", "").strip().lower()
         phone = request.form["phone"]
         workshop = request.form.get("workshop", None)
-        selected_events = request.form.getlist("events")  # Changed to getlist for multiple events
+        # Changed to getlist for multiple events
+        selected_events = request.form.getlist("events")
         college_name = request.form["college_name"]
 
         if db.student_exists(email, phone):
@@ -217,7 +149,7 @@ def register_post():
         }
 
         db.create_student(student_data)
-        
+
         session["student_id"] = db.get_student_by_email(email)["_id"]
         flash("Registration successful!", "success")
 
@@ -225,11 +157,11 @@ def register_post():
         db.create_payment_entry({
             "email": email,
             "paid": False,
-            "is_cash": False  # Default to non-cash payment
+            "transaction_id": f'not-paid-{session["student_id"]}',
+            "upi_id": None
         })
         db.create_login_otp(email, str(otp))
         payment_data = db.get_payment_by_email(email)
-        emails.send_id_mail(student_data, payment_data , request.url_root + "/admin/student/" + session["student_id"])
         if otp:
             flash("OTP sent successfully!", "success")
             return redirect("verify_email")
@@ -240,6 +172,7 @@ def register_post():
     except Exception as e:
         flash(f"Error registering [{e}]! Try again.", "danger")
         return redirect("register")
+
 
 @app.get("/login")
 def login():
@@ -257,11 +190,11 @@ def login_post():
     if not db.student_exists(email):
         flash("Error: Email does not exist!", "danger")
         return redirect(url_for("login"))
-    
+
     session["student_id"] = db.get_student_by_email(email)["_id"]
     otp = emails.send_otp(email)
-    
-    # if the otp was sent through the mail, 
+
+    # if the otp was sent through the mail,
     # redirect to the verify email page
     if otp:
         if db.get_login_otp_status(email):
@@ -271,10 +204,10 @@ def login_post():
 
         # send the otp
         # unverify the user
-        db.unverify_email(email)    
+        db.unverify_email(email)
         flash("OTP sent successfully!", "success")
         return redirect("verify_email")
-    
+
     # if unable to send the otp
     flash("Error sending OTP! Try logging in.", "danger")
     return redirect("login")
@@ -290,18 +223,17 @@ def verify_email():
             return redirect(url_for("login"))
 
         email = db.get_student_by_id(session["student_id"])["email"]
-        
+
         # check if the email is already verified
         if db.email_is_verified(email):
             student_data = db.get_student_by_email(email)
             payment_data = db.get_payment_by_email(email)
-            emails.send_id_mail(student_data, payment_data, request.url_root + "/admin/student/" + session["student_id"])
-            flash("Email already verified. ID sent to you mail.", "success")
+            flash("Email already verified ", "success")
             return redirect("myid")
-        
+
         # display the enter otp page
         return render_template("verify_email.html", email=email)
-    
+
     # ask the user to login first.
     flash("Login to verify your email!", "danger")
     return redirect(url_for("login"))
@@ -310,6 +242,7 @@ def verify_email():
 @app.post("/verify_email")
 def verify_email_post():
     # the email field should be prefilled and disabled in the html
+
     email = request.form["email"]
     otp = request.form["otp"]
 
@@ -323,23 +256,24 @@ def verify_email_post():
     # if the email is already verified
     if db.email_is_verified(email):
         payment_data = db.get_payment_by_email(email)
-        emails.send_id_mail(student_data, payment_data, request.url_root + "/admin/student/" + session["student_id"])
-        flash("Email already verified! ID sent to you mail.", "success")
+        # emails.send_id_mail(student_data, payment_data,
+                            # request.url_root + "/admin/student/" + session["student_id"])
+        flash("Email already verified! We will verify your payment and send PASS to you mail.", "success")
         return redirect("myid")
 
     if db.verify_email(email, otp):
         flash("Email verified successfully!", "success")
-        payment_detail = db.get_payment_by_email(email) 
+        payment_detail = db.get_payment_by_email(email)
         if payment_detail is None:
-        # ask the student for payment if they are not
-        # from sona college of technology 
+            # ask the student for payment if they are not
+            # from sona college of technology
             if not email.endswith("@sonatech.ac.in"):
                 db.create_payment_entry({"email": email, "paid": False})
                 return redirect(url_for("payment"))
-            
+
             # make the paid column true
             # if they are from sona college
-            db.create_payment_entry({"email": email, "paid": True})
+            db.create_payment_entry({"email": email, "paid": False})
         else:
             if email.endswith("@sonatech.ac.in") or payment_detail["paid"]:
                 payment_data = db.get_payment_by_email(email)
@@ -348,15 +282,17 @@ def verify_email_post():
                     db.create_payment_entry(payment_data)
                 elif not payment_data["paid"]:
                     payment_data["paid"] = True
-                    db.update_payment(payment_data)
-                emails.send_id_mail(student_data, payment_data, request.url_root + "/admin/student/" + session["student_id"])
+                    db.edit_payment(email, payment_data)
+                emails.send_id_mail(
+                    student_data, payment_data, request.url_root + "/admin/student/" + session["student_id"])
                 return redirect(url_for("myid"))
             else:
                 return redirect(url_for("payment"))
-            
-        emails.send_id_mail(student_data, request.url_root + "/admin/student/" + session["student_id"])
+
+        # emails.send_id_mail(student_data, request.url_root +
+                            # "/admin/student/" + session["student_id"])
         return redirect(url_for("myid"))
-    
+
     # if the otp is invalid
     flash("Invalid OTP!", "danger")
     return render_template("verify_email.html", email=email)
@@ -372,20 +308,19 @@ def resend_otp():
     if not db.student_exists(email):
         flash("Error: Email does not exist!", "danger")
         return redirect(url_for("login"))
-    
 
     otp = emails.send_otp(email)
     if not db.get_login_otp_status(email):
         db.create_login_otp(email, str(otp))
     else:
         db.update_otp(email, otp)
-    
+
     if otp:
         return {
             "success": True,
             "message": "OTP sent!"
         }
-    
+
     return {
         "success": False,
         "message": "Error sending OTP! Try logging in."
@@ -399,7 +334,7 @@ def myid():
     if "student_id" not in session:
         flash("You are not logged in!", "danger")
         return redirect(url_for("login"))
-    
+
     student_id = session["student_id"]
     student = db.get_student_by_id(student_id)
 
@@ -408,7 +343,7 @@ def myid():
         flash("Error: Student not found!", "danger")
         session.clear()
         return redirect(url_for("register"))
-    
+
     # if the student is not verified
     if not db.email_is_verified(student["email"]):
         flash("You are not verified!", "danger")
@@ -419,17 +354,19 @@ def myid():
     # or is from sona college
     payment = db.get_payment_by_email(student["email"])
     if (
-        student["email"].endswith("@sonatech.ac.in") or 
-        (   
-            payment and (
-                (payment["upi_id"] and payment["transaction_id"]) 
-                or payment["paid"]
-            )
+        student["email"].endswith("@sonatech.ac.in") or
+        (
+            payment and payment["paid"]
         )
     ):
         return render_template("myid.html", student=student, payment=payment)
 
-    return redirect(url_for("payment"))
+    if payment and payment["transaction_id"].startswith("not-paid"):
+        flash("You need to enter you payment details first.", "danger")
+        return redirect(url_for("payment"))
+
+    flash("Your payment is not yet verified. We will email you once verified.", "danger")
+    return redirect(url_for("index"))
 
 
 @app.get("/payment")
@@ -437,7 +374,7 @@ def payment():
     if "student_id" not in session:
         flash("You are not logged in!", "danger")
         return redirect(url_for("login"))
-    
+
     student_id = session["student_id"]
     student = db.get_student_by_id(student_id)
 
@@ -445,12 +382,12 @@ def payment():
     if not student:
         flash("Error: Student not found!", "danger")
         return redirect(url_for("register"))
-    
+
     # if the student is not verified
     if not db.email_is_verified(student["email"]):
         flash("You are not verified!", "danger")
         return redirect(url_for("verify_email"))
-    
+
     # if the paid is true in the payment_and_otp collection
     if db.get_payment_by_email(student["email"])["paid"]:
         flash("You have already paid!", "danger")
@@ -458,48 +395,12 @@ def payment():
 
     return render_template("payment.html", student=student)
 
-
-# this page will get the transaction id and
-# the upi id of the student from the payment form
-# @app.post("/payment")
-# def payment_post():
-#     if "student_id" not in session:
-#         flash("You are not logged in!", "danger")
-#         return redirect(url_for("login"))
-    
-#     student_id = session["student_id"]
-#     student = db.get_student_by_id(student_id)
-
-#     # if the student id is not in the database
-#     if not student:
-#         flash("Error: Student not found!", "danger")
-
-#     # if the student is not verified
-#     if not db.email_is_verified(student["email"]):
-#         flash("You are not verified!", "danger")
-#         return redirect(url_for("verify_email"))
-    
-#     # if the paid is true in the payment_and_otp collection
-#     detail = db.get_payment_by_email(student["email"])
-#     if detail["paid"]:
-#         flash("You have already paid!", "success")
-#         return redirect(url_for("myid"))
-    
-#     transaction_id = request.form.get("transaction_id")
-#     upi_id = request.form.get("upi_id")
-
-#     db.update_payment_status(student["email"], transaction_id, upi_id)
-    
-#     flash("Payment successful!", "success")
-#     return redirect(url_for("myid"))
-
-
 @app.post("/payment")
 def payment_post():
     if "student_id" not in session:
         flash("You are not logged in!", "danger")
         return redirect(url_for("login"))
-    
+
     student_id = session["student_id"]
     student = db.get_student_by_id(student_id)
 
@@ -510,22 +411,20 @@ def payment_post():
     if not db.email_is_verified(student["email"]):
         flash("You are not verified!", "danger")
         return redirect(url_for("verify_email"))
-    
+
     detail = db.get_payment_by_email(student["email"])
     if detail["paid"]:
         flash("You have already paid!", "success")
         return redirect(url_for("myid"))
-    
-    is_cash = request.form.get("is_cash") == "true"
+
     transaction_id = request.form.get("transaction_id")
     upi_id = request.form.get("upi_id")
 
-    # Handle cash and non-cash payments differently
-    if is_cash:
-        db.update_payment_status(student["email"], is_cash=True)
-    else:
-        db.update_payment_status(student["email"], transaction_id, upi_id, is_cash=False)
-    
+
+    db.update_payment_status(
+        student["email"], transaction_id, upi_id
+    )
+
     flash("Payment successful!", "success")
     return redirect(url_for("myid"))
 
@@ -560,11 +459,12 @@ def admin_login_post():
 def admin_students():
     if "admin_username" in session and db.admin_exists(session["admin_username"]):
         students = db.get_all_students()
-        payments = {payment["email"]: payment for payment in db.get_all_payments()}
+        payments = {payment["email"]                    : payment for payment in db.get_all_payments()}
         # print(students, payments, db.get_all_payments())
         return render_template("admin_students.html", students=students, payments=payments)
-    
+
     return redirect(url_for("index"))
+
 
 @app.get("/admin/student/<student_id>")
 def admin_student(student_id):
@@ -605,16 +505,10 @@ def admin_student_edit(student_id):
         if student:
             # Handle payment updates
             payment_detail["paid"] = request.form.get("paid") == "true"
-            payment_detail["is_cash"] = request.form.get("is_cash") == "true"
-            
-            # Only update transaction_id and upi_id for non-cash payments
-            if not payment_detail["is_cash"]:
-                payment_detail["transaction_id"] = request.form.get("transaction_id")
-                payment_detail["upi_id"] = request.form.get("upi_id")
-            else:
-                payment_detail["transaction_id"] = None
-                payment_detail["upi_id"] = None
-            
+
+            if payment_detail["paid"]:
+                emails.send_id_mail(student, payment_detail, request.host_url + "/admin/student/" + student_id)
+
             # Handle events update if present in form
             if "events" in request.form:
                 student["events"] = request.form.getlist("events")
@@ -637,47 +531,49 @@ def admin_student_edit(student_id):
 
 @app.route('/admin/upload-bank-statement', methods=['GET', 'POST'])
 def upload_bank_statement():
+
     if "admin_username" not in session or not db.admin_exists(session["admin_username"]):
         return redirect(url_for("admin_login"))
-    
+
     if request.method == 'GET':
         return render_template('admin_upload_statement.html')
-    
+
     if 'bank_statement' not in request.files:
         flash('No file selected', 'danger')
         return redirect(request.url)
-    
+
     file = request.files['bank_statement']
-    
+
     if file.filename == '':
         flash('No file selected', 'danger')
         return redirect(request.url)
-    
+
     if file and allowed_file(file.filename):
         try:
             # Save file to temporary location
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
-            
+
             # Start background processing
-            admin_email = db.get_admin_email(session["admin_username"])  # You'll need to implement this
+            # You'll need to implement this
+            admin_email = db.get_admin_email(session["admin_username"])
             processing_thread = Thread(
                 target=process_bank_statement,
                 args=(filepath, admin_email)
             )
             processing_thread.start()
-            
+
             flash('File uploaded successfully. Processing started. You will receive an email when complete.', 'success')
             return redirect(url_for('admin'))
-            
+
         except Exception as e:
             flash(f'Error processing file: {str(e)}', 'danger')
             return redirect(request.url)
-    
+
     flash('Invalid file type. Please upload a PDF file.', 'danger')
     return redirect(request.url)
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     app.run(debug=True)
