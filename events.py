@@ -32,16 +32,32 @@ workshops = [
 tech_events = [
     {
         "event_name": "Capture the Flag (CTF) - Cybersecurity Showdown",
-        "event_description": "Solve cybersecurity challenges, exploit vulnerabilities, and capture hidden flags. Compete in ethical hacking, cryptography, and forensics to claim victory!"},
+        "event_description": """
+        Dive into the world of cybersecurity with this hands-on Capture the Flag (CTF) challenge! Compete in teams of three to solve real-world 
+        security vulnerabilities across categories like web security, Linux forensics, network analysis, and reverse engineering. Each challenge 
+        requires critical thinking and technical expertise to uncover hidden flags and earn points. Whether you're a beginner or a cybersecurity enthusiast, 
+        this competition is designed to enhance your hacking skills and strategic problem-solving. Teams must submit flags in the correct format within the time limit, 
+        with the highest scorers claiming the title of CTF Champions. Strict fair play rules apply—only the best will prevail!
+        """
+        },
     {
         "event_name": "Logix - The Ultimate Logic Challenge",
-        "event_description": "A two-round competition featuring a logic-based quiz followed by an interactive coding challenge with a unique twist! Roll the dice, solve problems, and climb to the top."},
+        "event_description": """
+LogiX is a thrilling two-round competition 
+designed to test your logical reasoning and coding speed. Round 1 features a time-based technical quiz, 
+where participants answer logic and programming questions, earning bonus points for quick responses. 
+The top 10 scorers advance to Round 2—a Snakes & Ladders-style coding battle on HackerRank! Roll the dice to unlock coding challenges, 
+solve them to advance, climb ladders for extra points, and avoid moving back when landing on snake tiles. Participants have three skips for tough problems, 
+but the fastest and most strategic coder wins. Compete solo or in pairs and prove your problem-solving prowess!
+"""},
     {
         "event_name": "Tech-Quest - Decode, Quiz & Debug",
-        "event_description": "Decode Morse code, tackle a rapid-fire tech quiz, and debug programs in record time! Compete in teams of two and prove your tech supremacy."},
+        "event_description": """
+Gear up for Tech-Quest, a high-energy three-round competition where teams of two participants battle through coding, puzzles, and debugging. The first round, MORZE MAZE, tests your ability to decode Morse messages under time pressure. In BRAIN BRAWL, answer rapid-fire tech quiz questions on Java, Python, C, and tech trivia. The final round, BUG BLAST, challenges you to debug five programs in just 30 minutes—fix them fast to score points! With each round pushing your problem-solving, programming, and speed to the limit, only the most skilled tech duo will claim victory!
+"""},
     {
         "event_name": "Paper Presentation - Innovate & Present",
-        "event_description": "Showcase your research and innovative ideas in fields like AI, ML, Cybersecurity, IoT, Blockchain, and more. Present your findings in front of expert judges."},
+        "event_description": "Showcase your technical knowledge and research skills in this Paper Presentation event, where teams of up to three present their insights on cutting-edge topics like AI, Machine Learning, Cybersecurity, Blockchain, IoT, AR/VR, and Quantum Computing. Participants must submit a 200-word abstract and prepare a 7-slide presentation to be delivered in 5 minutes. Judges will evaluate clarity, originality, technical depth, and presentation skills. Submissions must be emailed in advance, and participants should also bring a hard copy. Impress the panel with your research and innovative thinking—your ideas could be the next big breakthrough!"},
     {
         "event_name": "Pixel Perfect - UI/UX Design Challenge",
         "event_description": """Participants in this UI/UX design challenge will create a Figma-based solution for a given problem statement within 1.5 hours, 
@@ -55,7 +71,7 @@ tech_events = [
 """ },
     {
         "event_name": "Code Clash - Crack the Code",
-        "event_description": "Analyze code snippets, predict outputs, and solve coding problems in a competitive MCQ format. Compete solo or in teams, and prove your coding prowess."}
+        "event_description": "Compete in CodeClash, a high-stakes two-round coding challenge designed to test your logic, speed, and programming expertise. Round 1: Code Decoder presents 15 code snippet questions, where participants must analyze and select the correct output. The top performers advance to Round 2: Code Mastery, featuring 15 complex coding problems requiring in-depth analysis and quick thinking. Compete solo or in teams of three, with cash prizes and certificates for top scorers. With a one-minute time limit per question, precision and speed are key. Whether you're a beginner or an expert, this is your chance to prove your coding mastery!"}
 ]
 
 non_tech_events = [
