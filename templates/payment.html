@@ -56,6 +56,16 @@ input[type="submit"] {
         <form action="{{ url_for('payment_post') }}" method="post" id="online-form">
             <div class="form-group">
                 <h3>Enter Transaction Details for {{ student.email }}</h3>
+                <div class="desc">
+                    <strong>Note:</strong>
+                    <ul>
+                        <li>ONLY WORKSHOP - Rs. 300</li>
+                        <li>ONLY EVENT - Rs. 200</li>
+                        <li>BOTH WORKSHOP AND EVENT - Rs. 500</li>
+                    </ul>
+                    <p>You will be able to attend only one workshop, because all the workshops are conducted on 27th Feb at the same time.</p>
+                    <p>You can attend any number of events for just Rs. 200 on 28th Feb.</p>
+                </div>
             </div>
             
             <div class="form-group">

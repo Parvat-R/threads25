@@ -10,12 +10,14 @@ from dotenv import load_dotenv
 
 # Load MongoDB URI from .env
 load_dotenv()
-MONGO_URI = os.environ.get("MONGO_URI", "mongodb+srv://cyberspace212005:68myd2wFrhLwhHfd@test-threads-1.tv8j0.mongodb.net/symposium_db?retryWrites=true&w=majority")
+uri = "mongodb+srv://threads25cse:aAlBJxpockulLRWh@threads-1.nlete.mongodb.net/?retryWrites=true&w=majority&appName=threads-1"
+uri_2 = "mongodb+srv://cyberspace212005:68myd2wFrhLwhHfd@test-threads-1.tv8j0.mongodb.net/symposium_db?retryWrites=true&w=majority"
+MONGO_URI = os.environ.get("MONGO_URI", uri_2)
 print(MONGO_URI)
 
 # Connect to MongoDB with error handling
 try:
-    client = MongoClient(MONGO_URI, maxPoolSize=100, minPoolSize=10)
+    client = MongoClient(uri, maxPoolSize=100, minPoolSize=10)
     db = client.get_database("symposium_db")
     students_collection = db.students
     payment_and_otp_collection = db.payment_and_otp

@@ -18,12 +18,14 @@
             </div>
             {% endif %}
             <!-- add the organizers names from list of organizers-->
+            {%  if event.organizers %}
             <div class="organizers">
                 <span class="label">Organizers:</span>
                 {% for organizer in event.organizers %}
                 <span class="value">{{ organizer }}</span>
                 {% endfor %}
             </div>
+            {% endif %}
             {% if event.team_size %}
             <div class="team-size">
                 <span class="label">Team Size:</span>

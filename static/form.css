@@ -251,3 +251,12 @@ button:active {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.desc.note {
+    text-align: left;
+    padding: 1em 2em;
+    border: 1px solid #fff7;
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    color: #fffc;
+}

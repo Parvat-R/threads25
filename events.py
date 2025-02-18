@@ -1,27 +1,3 @@
-non_tech_events = [
-    {
-        "event_description": "",
-        "organizers": [
-            "Abinayashree M S",
-            "Vyshnavi K",
-            "Preethidevi S",
-            "Sahana G"
-        ],
-    },
-    {
-        "event_name": "",
-        "event_description": "",
-        "organizers": [
-            "Girish M   - 9342943992",
-            "Arun A M - 7305219401",
-            "Abinaya G M - 6381962060",
-            "Shanmithaa S - 9043044133",
-            "Anusyaa G -9842736770",
-            "Pranith M - 7708481974",
-        ]
-    },
-]
-
 workshops = [
     {
         "event_name": "Unity",
