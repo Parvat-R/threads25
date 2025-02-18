@@ -89,12 +89,15 @@ function toggleEventDetails(self) {
         <div class="not-over">
             <h2>Its Not Over Yet.</h2>
             <div class="desc">
-                Exciting stalls and cosmetics are waiting for you. And, more importantly, pool prize of <span class="prize">Rs. 50,000+</span> is waiting for you.
+                Exciting stalls and cosmetics are waiting for you. And, more importantly, pool prize of <p class="glitch"><span aria-hidden="true">₹ 50K+</span>₹ 50K+<span aria-hidden="true">₹ 50K+</span></p> is waiting for you.
             </div>
         </div>
         <div class="sponser">
             <h4>Sponsored By</h4>
             <div class="sponser-logos">
+                <div class="logo">
+                    <img src="/static/sponser2.jpeg" alt="sponser">
+                </div>
                 <div class="logo">
                     <img src="/static/sponser.jpeg" alt="sponser">
                 </div>
@@ -129,7 +132,7 @@ function toggleEventDetails(self) {
     </div>
 </div>
 
-<div class="contact-container">
+<div class="contact-container" id="contact">
     <div class="contact-content">
         <div class="contact-header">
             <h1>Student Leadership</h1>
