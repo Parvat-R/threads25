@@ -230,6 +230,9 @@ def send_otp(email: str) -> int:
             font-weight: bold;
             letter-spacing: 1px;
         }}
+        h6 {{
+            color: #fff6;
+        }}
     </style>
 </head>
 <body>
@@ -244,6 +247,7 @@ def send_otp(email: str) -> int:
             <p>Use the OTP above to complete your verification process. Do not share this code with anyone.</p>
             <div class="signature">
                 <p>THREADS'25 TEAM<br>HACK • CREATE • DOMINATE</p>
+                <h6>Dept. Of CSE (CSE, CSD, AI&ML)<br>Sona College Of Technology</h6>
             </div>
         </div>
     </div>
@@ -356,7 +360,7 @@ def send_id_mail(student_data, payment_data, event_url):
         .label {{
             font-weight: 600;
             color: #ff2e88;
-            text-align: right;
+            text-align: left;
             padding-right: 15px;
             text-transform: uppercase;
             font-size: 0.9em;
@@ -366,6 +370,7 @@ def send_id_mail(student_data, payment_data, event_url):
         .value {{
             color: #ffffff;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            margin-bottom: .5em;
         }}
 
         .status {{
@@ -407,6 +412,9 @@ def send_id_mail(student_data, payment_data, event_url):
             letter-spacing: 2px;
             border: 1px solid rgba(255, 46, 136, 0.3);
         }}
+        h6 {{
+            color: #fff6;
+        }}
     </style>
 </head>
 <body>
@@ -440,6 +448,7 @@ def send_id_mail(student_data, payment_data, event_url):
         <div class="id-number">
             ID: {event_id}
         </div>
+         <h6>Dept. Of CSE (CSE, CSD, AI&ML)<br>Sona College Of Technology</h6>
     </div>
 </body>
 </html>
