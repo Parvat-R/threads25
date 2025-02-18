@@ -85,9 +85,9 @@ section#events {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 10em;
-    padding: 3em 0;
-    background: linear-gradient(0, transparent, #120025aa 30% 70%, transparent);
+    gap: 8em;
+    padding: 3em 1em;
+    background: linear-gradient(0, transparent, #120025cc 30% 70%, transparent);
 }
 
 #tech-events, #nontech-events {
@@ -133,6 +133,9 @@ section#events {
 #events h2 {
     font-size: 3em;
     font-family: "Clash Grotesk";
+    align-items: center;
+    display: flex;
+    text-align: center;
 }
 #register_now a {
     border: 1px solid #fff3;
@@ -311,6 +314,10 @@ div#register_now a[href^="#"] {
 }
 
 #events .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: capitalize;
     border: none;
     transition: .3s;
     cursor: pointer;
@@ -504,4 +511,138 @@ div#register_now a[href^="#"] {
         width: 150px;
         height: 150px;
     }
+}
+div#workshops {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1em;
+    width: 100%;
+    padding: 1em;
+}
+
+div#more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 5em .5em;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 80%;
+    min-width: 400px;
+    max-width: 1000px;
+    padding: 1em;
+    border: 1px solid #fff7;
+    border-radius: 25px;
+    background: #0003;
+    backdrop-filter: blur(10px);
+    gap: 1em;
+}
+
+.sponser-logos img {
+    width: 300px;
+    border-radius: 25px;
+}
+
+.sponser {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    flex-direction: column;
+    text-transform: capitalize;
+    font-style: italic;
+    padding: 1em;
+    border: 1px solid #fff4;
+    border-radius: 25px;
+    backdrop-filter: blur(13px);
+    background: #fff2;
+}
+
+.not-over {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 2em;
+    margin-bottom: 2em;
+    border-bottom: 2px solid #fff4;
+}
+
+.not-over h2 {
+    font-size: 3em;
+    font-family: "Clash Grotesk";
+}
+
+.faculty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1em;
+    padding: 2em 0;
+    margin: 1em 0;
+    width: 100%;
+    border-top: 2px solid #fff4;
+    border-bottom: 2px solid #fff3;
+}
+
+.faculty h2 {
+    font-size: 2em;
+    font-family: "Clash Grotesk";
+}
+
+span.prize {
+    display: block;
+    text-align: center;
+    font-size: 30px;
+    font-family: "Satoshi";
+    font-weight: bold;
+    padding: .6em;
+}
+
+.not-over .desc {
+    text-align: center;
+}
+
+.name {
+    font-family: "Clash Grotesk";
+    font-size: 22px;
+}
+
+.more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.more .content {
+    min-height: auto;
+    padding: 1em;
+    gap: .5em;
+}
+
+.more .button {
+    padding: .7em 2em;
+    border-radius: 30px;
+    border: 1px solid #fff3;
+    text-decoration: none;
+    gap: 1em;
+}
+
+.button a {
+    text-decoration: none;
+    color: #ff0;
+}
+
+.more h3 {
+    font-size: 2.5em;
 }

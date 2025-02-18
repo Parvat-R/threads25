@@ -36,6 +36,7 @@
                             <th scope="col" class="px-6 py-3">Phone</th>
                             <th scope="col" class="px-6 py-3">College</th>
                             <th scope="col" class="px-6 py-3">Workshop</th>
+                            <th scope="col" class="px-6 py-3">Events</th>
                             <th scope="col" class="px-6 py-3">Paid?</th>
                             <th scope="col" class="px-6 py-3">Transaction ID</th>
                             <th scope="col" class="px-6 py-3">UPI ID</th>
@@ -50,6 +51,7 @@
                             <td class="px-6 py-4">{{ student.phone }}</td>
                             <td class="px-6 py-4">{{ student.college_name }}</td>
                             <td class="px-6 py-4">{{ student.workshop or 'N/A' }}</td>
+                            <td class="px-6 py-4">{{ student.events or 'N/A' }}</td>
                             <td class="px-6 py-4">
                                 <input type="checkbox" 
                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 payment-status"
