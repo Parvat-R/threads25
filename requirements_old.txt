@@ -1,0 +1,12 @@
+flask
+pymongo
+pymongo
+pydantic
+pydantic[email]
+qrcode
+python-dotenv
+gunicorn
+gevent
+flask_socketio
+waitress
+uvicorn

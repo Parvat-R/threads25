@@ -5,7 +5,8 @@ workshops = [
         "organizers": []
     },
     {
-        "event_name": "INTELLIFUSION",
+        # "event_name": "INTELLIFUSION",
+        "event_name": "Intellifusion",
         "event_description": "Beginner-friendly Machine Learning workshop covering fundamental concepts, Python libraries (NumPy, Pandas, Scikit-learn), data preprocessing, regression, classification, and algorithms like Decision Trees, KNN, and SVM. Includes a hands-on mini-project.",
         "organizers": ["Rohith K", "Karthik Sriram M", "Venkatesan K J", "Vicknesh T"]
     },

@@ -35,6 +35,9 @@
             src: url("/static/fonts/Satoshi-VariableItalic.ttf");
             ;
         }
+        .sona-logo {
+            max-width: 200px;
+        }
     </style>
     <link rel="shortcut icon" href="/static/logo t25.png" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}" />
@@ -85,6 +88,7 @@
     <div id="footer">
         <div class="container">
             <div class="left">
+                <img src="/static/sona-logo.png" alt="Sona College Of Technology" class="logo sona-logo" >
                 <div class="title">Threads 2025</div>
                 <div class="desc">Grand Symposium</div>
                 <div class="from">Sona College Of Technology</div>
