@@ -15,7 +15,7 @@ from werkzeug.utils import secure_filename
 import os
 from threading import Thread
 import tempfile
-from events import tech_events, non_tech_events, workshops, person
+from events import tech_events, non_tech_events, workshops, person, dexters
 
 UPLOAD_FOLDER = tempfile.gettempdir()  # Use system temp directory
 ALLOWED_EXTENSIONS = {'pdf'}
@@ -50,7 +50,8 @@ def index():
                            tech_events=tech_events,
                            non_tech_events=non_tech_events,
                            person=person,
-                           workshops=workshops
+                           workshops=workshops,
+                           dexters=dexters
                            )
 
 

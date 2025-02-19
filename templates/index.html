@@ -81,6 +81,16 @@ function toggleEventDetails(self) {
             </div>
         </div>
     </div>
+    <div id="dexters-events">
+        <h2>Dexters Club Events - 28th</h2>
+        <div class="events-track">
+            <div class="events-wrapper">
+                {% for event in dexters %}
+                    {%  include "event_card.html" %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </section>
 
 
