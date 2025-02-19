@@ -10,7 +10,8 @@ from dotenv import load_dotenv
 
 # Load MongoDB URI from .env
 load_dotenv()
-uri = "mongodb+srv://threads25cse:aAlBJxpockulLRWh@threads-1.nlete.mongodb.net/?retryWrites=true&w=majority&appName=threads-1"
+# uri = "mongodb+srv://threads25cse:aAlBJxpockulLRWh@threads-1.nlete.mongodb.net/?retryWrites=true&w=majority&appName=threads-1"
+uri = "mongodb://localhost:27017/"
 MONGO_URI = os.environ.get("MONGO_URI", uri)
 print(MONGO_URI)
 
@@ -257,6 +258,10 @@ def verify_email(email: str, otp: str):
     # change the verified status in the login and otp collection
     if not login_otp_collection:
         return False
+    
+    if not verify_login_otp(email, otp):
+        return False
+
     login_otp_collection.update_one(
         {"email": email},
         {"$set": {"verified": True}}
