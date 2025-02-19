@@ -85,7 +85,7 @@ def create_login_otp(email: str, otp: str):
     
     login_otp_data = {
         "email": email,
-        "otp": otp,
+        "otp": str(otp),
     }
     
     login_otp = LoginOtpModel(**login_otp_data)
@@ -112,7 +112,7 @@ def verify_login_otp(email: str, otp: str) -> bool:
     if not otp_doc:
         return False
     
-    return otp_doc.get("otp") == otp
+    return str(otp_doc.get("otp")) == str(otp)
 
 def get_login_otp_status(email: str):
     """Get current login OTP status"""
