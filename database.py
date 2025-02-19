@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 
 # Load MongoDB URI from .env
 load_dotenv()
-# uri = "mongodb+srv://threads25cse:aAlBJxpockulLRWh@threads-1.nlete.mongodb.net/?retryWrites=true&w=majority&appName=threads-1"
-uri = "mongodb://localhost:27017/"
+uri = "mongodb+srv://threads25cse:aAlBJxpockulLRWh@threads-1.nlete.mongodb.net/?retryWrites=true&w=majority&appName=threads-1"
+# uri = "mongodb://localhost:27017/"
 MONGO_URI = os.environ.get("MONGO_URI", uri)
 print(MONGO_URI)
 
