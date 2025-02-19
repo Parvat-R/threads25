@@ -15,9 +15,8 @@ import threading
 import queue
 import dns.resolver
 
-dotenv.load_dotenv()
-EMAIL = os.getenv("GMAIL", "threads25.cse@gmail.com")
-EMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD", "yane ejmf nort oybl")
+EMAIL = "threads25.cse@gmail.com"
+EMAIL_PASSWORD = "yane ejmf nort oybl"
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
