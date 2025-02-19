@@ -41,27 +41,29 @@
     </style>
     <link rel="shortcut icon" href="/static/logo t25.png" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='notifications.css') }}" />
     <title>{% block title %}{% endblock %} | Threads 25 - Sona College Of Technology</title>
     {% endblock %}
 </head>
 
 <body>
 
-    {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages(True) %}
     {% if messages %}
-    <div id="notifications">
-        {% for message in messages %}
-        <div class="alert alert-success" role="alert">
-            {{ message }}
-        </div>
-        {% endfor %}
+    <section id="notifications">
+        <ul>
+            {% for category, message in messages %}
+                <li class="{{category}}">{{ message }}</li>
+            {% endfor %}
+        </ul>
         <script defer>
-            setTimeout(() => {
-                const notifications = document.getElementById('notifications');
-                notifications.remove();
-            }, 5000);
+            if (document.querySelector("#notifications>ul").children.length < 1) {
+                document.querySelector('#notifications').remove()
+            } else {
+                setTimeout(()=>{document.querySelector('#notifications').remove()}, 5000)
+            }
         </script>
-    </div>
+    </section>
     {% endif %}
     {% endwith %}
 
