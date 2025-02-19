@@ -23,6 +23,7 @@
                     <option value="email">Email</option>
                     <option value="phone">Phone</option>
                     <option value="paid">Payment Status</option>
+                    <option value="transaction">Transaction ID</option>
                 </select>
             </div>
 
@@ -51,7 +52,17 @@
                             <td class="px-6 py-4">{{ student.phone }}</td>
                             <td class="px-6 py-4">{{ student.college_name }}</td>
                             <td class="px-6 py-4">{{ student.workshop or 'N/A' }}</td>
-                            <td class="px-6 py-4">{{ student.events or 'N/A' }}</td>
+                            <td class="px-6 py-4">
+                                {% if student.events %}
+                                <ul class="list-disc pl-4">
+                                    {% for event in student.events %}
+                                    <li>{{ event }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                N/A
+                                {% endif %}
+                            </td>
                             <td class="px-6 py-4">
                                 <input type="checkbox" 
                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 payment-status"
@@ -98,6 +109,8 @@
                     text = row.textContent.toLowerCase();
                 } else if (filterValue === 'paid') {
                     text = row.querySelector('.payment-status').checked ? 'paid' : 'unpaid';
+                } else if (filterValue === 'transaction') {
+                    text = row.querySelector('.transaction-id').value.toLowerCase();
                 } else {
                     text = row.children[getColumnIndex(filterValue)].textContent.toLowerCase();
                 }
