@@ -398,7 +398,18 @@ def payment():
         flash("You have already paid!", "danger")
         return redirect(url_for("myid"))
 
-    return render_template("payment.html", student=student)
+    amount = 0
+
+    if (student["events"] and len(student["events"]) > 0) and (student["workshop"] and student["workshop"].lower() != "none"):
+        amount = 500
+    elif student["events"]:
+        amount = 200
+    elif student["workshop"]:
+        amount = 300
+    
+    file = f"/static/{amount}_rs_threads_QR_Code.png"
+
+    return render_template("payment.html", student=student, file = file)
 
 @app.post("/payment")
 def payment_post():
@@ -429,6 +440,8 @@ def payment_post():
     db.update_payment_status(
         student["email"], transaction_id, upi_id
     )
+
+
 
     flash("Payment successful!", "success")
     return redirect(url_for("myid"))

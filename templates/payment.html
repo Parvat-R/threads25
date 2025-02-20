@@ -28,6 +28,11 @@
         }
         .online-payment {
             display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1em;
         }
 
         .form-group:has( input[type="submit"]) {
@@ -45,13 +50,29 @@ input[type="submit"] {
     color: #ffe66c;
     cursor: pointer;
 }
+
+.qrcode {
+    max-width: 400px;
+    border-radius: 25px;
+    display : flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    border: 1px solid;
+    overflow: hidden;
+    & img {
+        position: relative;
+        max-width: 400px;
+        width: 100%;
+    }
+}
     </style>
 {% endblock %}
 {% block content %}
 
     <div id="online-container" class="option-container online-payment">
         <div class="qrcode">
-            <img src="{{ url_for('static', filename='payment_qr.png') }}" alt="GPay Qr Code Image.">
+            <img src="{{ file }}" alt="GPay Qr Code Image.">
         </div>
         <form action="{{ url_for('payment_post') }}" method="post" id="online-form">
             <div class="form-group">
@@ -59,12 +80,19 @@ input[type="submit"] {
                 <div class="desc">
                     <strong>Note:</strong>
                     <ul>
-                        <li>ONLY WORKSHOP - Rs. 300</li>
-                        <li>ONLY EVENT - Rs. 200</li>
-                        <li>BOTH WORKSHOP AND EVENT - Rs. 500</li>
+                        {% if "300" in file %}
+                        <li>YOU HAVE SELECTED ONLY WORKSHOP - Rs. 300</li>
+                        {% elif "200" in file %}
+                        <li>YOU HAVE SELECTED ONLY EVENT - Rs. 200</li>
+                        {% elif "500" in file %}
+                        <li>YOU HAVE SELECTED BOTH WORKSHOP AND EVENT - Rs. 500</li>
+                        {% else %}
+                        <li>YOU HAVE SELECTED INVALID OPTION</li>
+                        {% endif %}
                     </ul>
                     <p>If you are attending workshop, you will be able to attend only one workshop, because all the workshops are conducted on 27th Feb at the same time.</p>
                     <p>You can attend any number of events for just Rs. 200 on 28th Feb.</p>
+                    <p>For any changes, you can contact us. See <a href="/#contact">home</a> page.</p>
                 </div>
             </div>
             
