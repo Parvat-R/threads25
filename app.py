@@ -32,7 +32,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 events = [i["event_name"] for i in tech_events] + \
-    [i["event_name"] for i in non_tech_events]
+    [i["event_name"] for i in non_tech_events] + ["Code Trail", "Rapid Relfex"]
 
 
 @app.route("/")
@@ -272,7 +272,7 @@ def verify_email_post():
         if payment_detail is None:
             # ask the student for payment if they are not
             # from sona college of technology
-            if not email.endswith("@sonatech.ac.in"):
+            if not email.endswith("cse@sonatech.ac.in"):
                 db.create_payment_entry({"email": email, "paid": False})
                 return redirect(url_for("payment"))
 
@@ -280,7 +280,7 @@ def verify_email_post():
             # if they are from sona college
             db.create_payment_entry({"email": email, "paid": False})
         else:
-            if email.endswith("@sonatech.ac.in") or payment_detail["paid"]:
+            if email.endswith("cse@sonatech.ac.in") or payment_detail["paid"]:
                 payment_data = db.get_payment_by_email(email)
                 if payment_data is None:
                     payment_data = {"email": email, "paid": True}
@@ -359,7 +359,7 @@ def myid():
     # or is from sona college
     payment = db.get_payment_by_email(student["email"])
     if (
-        student["email"].endswith("@sonatech.ac.in") or
+        student["email"].endswith("cse@sonatech.ac.in") or
         (
             payment and payment["paid"]
         )

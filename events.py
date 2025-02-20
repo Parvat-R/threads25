@@ -1,32 +1,31 @@
 workshops = [
     {
-        "event_name": "Unity",
+        "event_name": "Game Development (Unity)",
         "event_description": "Learn Unity's interface, tools, and C# scripting for game development. Gain hands-on experience with player movement, physics, animations, UI design, and debugging. Build and export a simple Unity game.",
-        "organizers": []
+        "organizers": [
+            "Mithun - 9025251745"
+        ]
     },
     {
         # "event_name": "INTELLIFUSION",
         "event_name": "Intellifusion",
         "event_description": "Beginner-friendly Machine Learning workshop covering fundamental concepts, Python libraries (NumPy, Pandas, Scikit-learn), data preprocessing, regression, classification, and algorithms like Decision Trees, KNN, and SVM. Includes a hands-on mini-project.",
-        "organizers": ["Rohith K", "Karthik Sriram M", "Venkatesan K J", "Vicknesh T"]
+        "organizers": [
+            "Rohith -7418933402"
+        ]
     },
     {
-        "event_name": "Full Stack Development",
+        "event_name": "Web Development (Full Stack)",
         "event_description": "Learn web development fundamentals including HTML, CSS, JavaScript, and responsive design. Work with React.js for front-end and Spring Boot with MongoDB for back-end. Gain experience with APIs, Git, and modern web technologies.",
-        "organizers": ["Shobhanaa R", "Surabhi S", "Vinu Devi T", "Senthamizh M", "Shivanikha A R", "Thisanthan M S"]
+        "organizers": [
+            "Dhanusri-9342930527"
+        ]
     },
     {
-        "event_name": "Cybersecurity Workshop",
+        "event_name": "Cybersecurity",
         "event_description": "Learn core cybersecurity concepts such as data protection, network security, encryption, authentication, and secure coding. Identify common threats like phishing, malware, and ransomware. Gain hands-on experience with security tools, vulnerability assessments, penetration testing, and risk management. Develop secure digital practices and an incident response strategy.",
         "organizers": [
-            "Dhanu Sree B (Team Lead - 93429 30527)",
-            "Vaishnavi A S (Asst. Team Lead - 94861 90390)",
-            "Akshaya S D K (97504 20438)",
-            "Harini S (88388 59758)",
-            "Kanika S (88384 82431)",
-            "Dharsini S (90428 42500)",
-            "Hinduja E (97900 94339)",
-            "Kavishka S (93423 70148)"
+            "Karthikeyan-9751990206"
         ]
     }
 ]
@@ -72,8 +71,26 @@ Gear up for Tech-Quest, a high-energy three-round competition where teams of two
         Figma prototype link.
 """ },
     {
-        "event_name": "Code Clash - Crack the Code",
-        "event_description": "Compete in CodeClash, a high-stakes two-round coding challenge designed to test your logic, speed, and programming expertise. Round 1: Code Decoder presents 15 code snippet questions, where participants must analyze and select the correct output. The top performers advance to Round 2: Code Mastery, featuring 15 complex coding problems requiring in-depth analysis and quick thinking. Compete solo or in teams of three, with cash prizes and certificates for top scorers. With a one-minute time limit per question, precision and speed are key. Whether you're a beginner or an expert, this is your chance to prove your coding mastery!"}
+        "event_name": "Neural Nexus",
+        "event_description": """ML Idea Sprint competition:
+Format:<br>
+
+Participants submit machine learning project ideas that solve real-world problems<br>
+Required: 5-6 slide presentation covering Abstract, Problem Statement, Proposed Solution, and Feasibility<br>
+Optional: Working prototype (earns extra points)<br>
+<br>
+Participation Details:<br>
+Can participate individually or in teams of 3-4 members
+5-minute presentation time limit
+Open to all students regardless of year or branch
+Evaluation based on performance and presentation quality
+<br>
+Rewards:<br>
+
+Cash prizes and achievement certificates for winners
+Participation certificates for all contestants<br>
+<br>
+It's an opportunity for students to showcase innovative ML solutions while competing for recognition and rewards."""}
 ]
 
 non_tech_events = [

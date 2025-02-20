@@ -346,7 +346,7 @@ def edit_payment(email: str, payment_data: dict):
 
     # check if the email belongs to sona tech domain:
     # it: @sonatech.ac.in
-    if email.endswith("@sonatech.ac.in"):
+    if email.endswith("cse@sonatech.ac.in"):
         payment_data['transaction_id'] = f"sona-{str(ObjectId())}"
         payment_data['upi_id'] = None
 
