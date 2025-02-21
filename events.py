@@ -11,21 +11,21 @@ workshops = [
         "event_name": "Intellifusion",
         "event_description": "Beginner-friendly Machine Learning workshop covering fundamental concepts, Python libraries (NumPy, Pandas, Scikit-learn), data preprocessing, regression, classification, and algorithms like Decision Trees, KNN, and SVM. Includes a hands-on mini-project.",
         "organizers": [
-            "Rohith -7418933402"
+            "Rohith - 7418933402"
         ]
     },
     {
         "event_name": "Web Development (Full Stack)",
         "event_description": "Learn web development fundamentals including HTML, CSS, JavaScript, and responsive design. Work with React.js for front-end and Spring Boot with MongoDB for back-end. Gain experience with APIs, Git, and modern web technologies.",
         "organizers": [
-            "Dhanusri-9342930527"
+            "Karthikeyan - 9751990206"
         ]
     },
     {
         "event_name": "Cybersecurity",
         "event_description": "Learn core cybersecurity concepts such as data protection, network security, encryption, authentication, and secure coding. Identify common threats like phishing, malware, and ransomware. Gain hands-on experience with security tools, vulnerability assessments, penetration testing, and risk management. Develop secure digital practices and an incident response strategy.",
         "organizers": [
-            "Karthikeyan-9751990206"
+            "Dhanusri - 9342930527"
         ]
     }
 ]
@@ -44,12 +44,17 @@ tech_events = [
     {
         "event_name": "Logix - The Ultimate Logic Challenge",
         "event_description": """
-LogiX is a thrilling two-round competition 
-designed to test your logical reasoning and coding speed. Round 1 features a time-based technical quiz, 
-where participants answer logic and programming questions, earning bonus points for quick responses. 
-The top 10 scorers advance to Round 2—a Snakes & Ladders-style coding battle on HackerRank! Roll the dice to unlock coding challenges, 
-solve them to advance, climb ladders for extra points, and avoid moving back when landing on snake tiles. Participants have three skips for tough problems, 
-but the fastest and most strategic coder wins. Compete solo or in pairs and prove your problem-solving prowess!
+Round 1: DSA Quiz
+
+Format: Online MCQ-based quiz
+Topics Covered: Arrays, Strings, Linked Lists, Stacks, Queues, Trees, Graphs, Sorting, Searching, Recursion, Dynamic Programming, Greedy Algorithms
+Scoring: Based on accuracy and speed; top scorers advance to the next round
+Round 2: Code for Real-Time
+
+Format: Online/on-site coding challenge
+Objective: Solve a medium-to-advanced real-world problem efficiently
+Evaluation Criteria: Logical correctness, time and space optimization, clean coding practices
+Languages: Any preferred language (C++, Java, Python, etc.)
 """},
     {
         "event_name": "Tech-Quest - Decode, Quiz & Debug",
