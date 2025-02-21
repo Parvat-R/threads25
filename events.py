@@ -16,7 +16,7 @@ workshops = [
     },
     {
         "event_name": "Web Development (Full Stack)",
-        "event_description": "Learn web development fundamentals including HTML, CSS, JavaScript, and responsive design. Work with React.js for front-end and Spring Boot with MongoDB for back-end. Gain experience with APIs, Git, and modern web technologies.",
+        "event_description": "Learn web development fundamentals including HTML, CSS, JavaScript, and responsive design. Gain experience with Git, and modern web technologies.",
         "organizers": [
             "Karthikeyan - 9751990206"
         ]
@@ -25,7 +25,7 @@ workshops = [
         "event_name": "Cybersecurity",
         "event_description": "Learn core cybersecurity concepts such as data protection, network security, encryption, authentication, and secure coding. Identify common threats like phishing, malware, and ransomware. Gain hands-on experience with security tools, vulnerability assessments, penetration testing, and risk management. Develop secure digital practices and an incident response strategy.",
         "organizers": [
-            "Dhanusri - 9342930527"
+            "Dhanu Sree - 9486190390"
         ]
     }
 ]
