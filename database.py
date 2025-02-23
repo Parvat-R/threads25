@@ -336,6 +336,7 @@ def delete_admin(username):
     return result.deleted_count > 0
 
 def edit_payment(email: str, payment_data: dict):
+    email = email.lower()
     if payment_and_otp_collection == None:
         return None
 
@@ -346,7 +347,7 @@ def edit_payment(email: str, payment_data: dict):
 
     # check if the email belongs to sona tech domain:
     # it: @sonatech.ac.in
-    if email.endswith("cse@sonatech.ac.in"):
+    if email.endswith("cse@sonatech.ac.in") or email.endswith("csd@sonatech.ac.in") or email.endswith("aiml@sonatech.ac.in"):
         payment_data['transaction_id'] = f"sona-{str(ObjectId())}"
         payment_data['upi_id'] = None
 
@@ -362,5 +363,13 @@ def edit_payment(email: str, payment_data: dict):
 
     print(f"Matched: {res.matched_count}, Modified: {res.modified_count}")
     return res.modified_count > 0
+
+
+def get_workshop_registration_count(workshop_name: str):
+    if students_collection == None:
+        return 0
+    count = students_collection.count_documents({"workshop": workshop_name})
+    print(count)
+    return count
 
 # create_admin("admin", "admin")

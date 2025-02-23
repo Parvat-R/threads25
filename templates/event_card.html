@@ -1,3 +1,5 @@
+
+{% if "disabled" not in event or event["disabled"] == False %}
 <div class="event">
     <div class="event-content" onclick="toggleEventDetails(this)">
         <div class="title">
@@ -11,6 +13,18 @@
         </div>
         <div class="event-details">
             <div class="description">{{ event.event_description }}</div>
+            {% if event.seats %}
+            <div class="prize-pool">
+                <span class="label">Total Seats: </span>
+                <span class="value">{{ event.seats }}</span>
+            </div>
+            {% endif %}
+            {% if event.seats %}
+            <div class="prize-pool">
+                <span class="label">Seats Left: </span>
+                <span class="value">{{ event.seats - event.seats_filled }}</span>
+            </div>
+            {% endif %}
             {% if event.prize_pool %}
             <div class="prize-pool">
                 <span class="label">Prize Pool:</span>
@@ -35,3 +49,4 @@
         </div>
     </div>
 </div>
+{% endif %}

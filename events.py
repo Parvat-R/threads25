@@ -4,7 +4,10 @@ workshops = [
         "event_description": "Learn Unity's interface, tools, and C# scripting for game development. Gain hands-on experience with player movement, physics, animations, UI design, and debugging. Build and export a simple Unity game.",
         "organizers": [
             "Mithun - 9025251745"
-        ]
+        ],
+        "seats" : 100,
+        "seats_filled" : 0,
+        "disabled" : False
     },
     {
         # "event_name": "INTELLIFUSION",
@@ -12,21 +15,30 @@ workshops = [
         "event_description": "Beginner-friendly Machine Learning workshop covering fundamental concepts, Python libraries (NumPy, Pandas, Scikit-learn), data preprocessing, regression, classification, and algorithms like Decision Trees, KNN, and SVM. Includes a hands-on mini-project.",
         "organizers": [
             "Rohith - 7418933402"
-        ]
+        ],
+        "seats" : 50,
+        "seats_filled" : 0,
+        "disabled" : False
     },
     {
         "event_name": "Web Development (Full Stack)",
         "event_description": "Learn web development fundamentals including HTML, CSS, JavaScript, and responsive design. Gain experience with Git, and modern web technologies.",
         "organizers": [
             "Karthikeyan - 9751990206"
-        ]
+        ],
+        "seats" : 90,
+        "seats_filled" : 0,
+        "disabled" : False
     },
     {
         "event_name": "Cybersecurity",
         "event_description": "Learn core cybersecurity concepts such as data protection, network security, encryption, authentication, and secure coding. Identify common threats like phishing, malware, and ransomware. Gain hands-on experience with security tools, vulnerability assessments, penetration testing, and risk management. Develop secure digital practices and an incident response strategy.",
         "organizers": [
             "Dhanu Sree - 9486190390"
-        ]
+        ],
+        "seats" : 80,
+        "seats_filled" : 0,
+        "disabled" : False
     }
 ]
 

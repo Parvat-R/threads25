@@ -76,7 +76,7 @@ input[type="submit"] {
         </div>
         <form action="{{ url_for('payment_post') }}" method="post" id="online-form">
             <div class="form-group">
-                <h3>Enter Transaction Details for {{ student.email }}</h3>
+                <h4>Enter Transaction Details for {{ student.email }}</h4>
                 <div class="desc">
                     <strong>Note:</strong>
                     <ul>
@@ -86,6 +86,8 @@ input[type="submit"] {
                         <li>YOU HAVE SELECTED ONLY EVENT - Rs. 200</li>
                         {% elif "500" in file %}
                         <li>YOU HAVE SELECTED BOTH WORKSHOP AND EVENT - Rs. 500</li>
+                        {% elif "_sct" in file %}
+                        <li>YOU NEED TO PAY ONLY FOR WORKSHOP AND ITS JUST Rs. 200, BECAUSE YOU ARE UNDER CSE! ENJOY :)</li>
                         {% else %}
                         <li>YOU HAVE SELECTED INVALID OPTION</li>
                         {% endif %}

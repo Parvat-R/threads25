@@ -4,7 +4,7 @@ from flask import (
     flash, get_flashed_messages
 )
 import database as db
-import emails 
+import emails
 from flask_socketio import SocketIO, emit, send, join_room
 # import tabula
 # import pandas as pd
@@ -31,8 +31,11 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # List of workshops. Should be updated.
 
 
-events = [i["event_name"] for i in tech_events] + \
-    [i["event_name"] for i in non_tech_events] + ["Code Trail", "Rapid Relfex"]
+_tech_events = [i["event_name"] for i in tech_events]
+_non_tech_events = [i["event_name"] for i in non_tech_events]
+_dexturs = ["Code Trail", "Rapid Relfex"]
+
+events = _tech_events + _non_tech_events + _dexturs
 
 
 @app.route("/")
@@ -45,6 +48,12 @@ def index():
         else:
             session.clear()
             name = None
+
+    for i in workshops:
+        i["seats_filled"] = db.get_workshop_registration_count(i["event_name"])
+        if i["seats_filled"] >= i["seats"]:
+            i["disabled"] = True
+
     return render_template("index.html",
                            name=name,
                            tech_events=tech_events,
@@ -84,7 +93,17 @@ def register():
     if "student_id" in session:
         flash("You are already registered!", "danger")
         return redirect(url_for("myid"))
-    return render_template("register.html", workshops=workshops, events=events)
+    for i in workshops:
+        i["seats_filled"] = db.get_workshop_registration_count(i["event_name"])
+        if i["seats_filled"] >= i["seats"]:
+            i["disabled"] = True
+    return render_template(
+        "register.html",
+        workshops=workshops,
+        events=events,
+        _tech_events=_tech_events,
+        _non_tech_events=_non_tech_events,
+        _dexturs=_dexturs)
 
 
 # @app.post("/register")
@@ -262,7 +281,7 @@ def verify_email_post():
     if db.email_is_verified(email):
         payment_data = db.get_payment_by_email(email)
         # emails.send_id_mail(student_data, payment_data,
-                            # request.url_root + "/admin/student/" + session["student_id"])
+        # request.url_root + "/admin/student/" + session["student_id"])
         flash("Email already verified! We will verify your payment and send PASS to you mail.", "success")
         return redirect("myid")
 
@@ -272,7 +291,7 @@ def verify_email_post():
         if payment_detail is None:
             # ask the student for payment if they are not
             # from sona college of technology
-            if not email.endswith("cse@sonatech.ac.in"):
+            if not (email.endswith("cse@sonatech.ac.in") or email.endswith("csd@sonatech.ac.in") or email.endswith("aiml@sonatech.ac.in")):
                 db.create_payment_entry({"email": email, "paid": False})
                 return redirect(url_for("payment"))
 
@@ -280,22 +299,31 @@ def verify_email_post():
             # if they are from sona college
             db.create_payment_entry({"email": email, "paid": False})
         else:
-            if email.endswith("cse@sonatech.ac.in") or payment_detail["paid"]:
+            if (email.endswith("cse@sonatech.ac.in") or email.endswith("csd@sonatech.ac.in") or email.endswith("aiml@sonatech.ac.in")) or payment_detail["paid"]:
                 payment_data = db.get_payment_by_email(email)
                 if payment_data is None:
-                    payment_data = {"email": email, "paid": True}
+                    if student_data["workshop"] == "none":
+                        payment_data = {"email": email, "paid": True}
+                    else:
+                        payment_data = {"email": email, "paid": False}
                     db.create_payment_entry(payment_data)
                 elif not payment_data["paid"]:
-                    payment_data["paid"] = True
+                    if student_data["workshop"] == "none":
+                        payment_data["paid"] = True
+                    else:
+                        payment_data["paid"] = False
                     db.edit_payment(email, payment_data)
                 emails.send_id_mail(
                     student_data, payment_data, request.url_root + "/admin/student/" + session["student_id"])
+
+                if payment_data["paid"] == False:
+                    return redirect(url_for("payment"))
                 return redirect(url_for("myid"))
             else:
                 return redirect(url_for("payment"))
 
         # emails.send_id_mail(student_data, request.url_root +
-                            # "/admin/student/" + session["student_id"])
+                # "/admin/student/" + session["student_id"])
         return redirect(url_for("myid"))
 
     # if the otp is invalid
@@ -358,8 +386,13 @@ def myid():
     # or has submitted their payment status
     # or is from sona college
     payment = db.get_payment_by_email(student["email"])
+    email = student["email"].lower()
+
+    if (payment and payment["paid"] == False) or (student["workshop"] != "none" and (email.endswith("cse@sonatech.ac.in") or email.endswith("csd@sonatech.ac.in") or email.endswith("aiml@sonatech.ac.in"))):
+        return redirect(url_for("payment"))
+
     if (
-        student["email"].endswith("cse@sonatech.ac.in") or
+        (email.endswith("cse@sonatech.ac.in") or email.endswith("csd@sonatech.ac.in") or email.endswith("aiml@sonatech.ac.in")) or
         (
             payment and payment["paid"]
         )
@@ -406,10 +439,20 @@ def payment():
         amount = 200
     elif student["workshop"]:
         amount = 300
-    
+
     file = f"/static/{amount}_rs_threads_QR_Code.png"
 
-    return render_template("payment.html", student=student, file = file)
+    email = student["email"]
+
+    if (student["workshop"] and student["workshop"].lower() != "none") and (
+        email.endswith("cse@sonatech.ac.in") or
+        email.endswith("csd@sonatech.ac.in") or
+        email.endswith("aiml@sonatech.ac.in")
+    ):
+        file = f"/static/_sct_200_rs_threads_QR_Code.png"
+
+    return render_template("payment.html", student=student, file=file)
+
 
 @app.post("/payment")
 def payment_post():
@@ -436,12 +479,9 @@ def payment_post():
     transaction_id = request.form.get("transaction_id")
     upi_id = request.form.get("upi_id")
 
-
     db.update_payment_status(
         student["email"], transaction_id, upi_id
     )
-
-
 
     flash("Payment successful!", "success")
     return redirect(url_for("myid"))
@@ -477,7 +517,8 @@ def admin_login_post():
 def admin_students():
     if "admin_username" in session and db.admin_exists(session["admin_username"]):
         students = db.get_all_students()
-        payments = {payment["email"]                    : payment for payment in db.get_all_payments()}
+        payments = {payment["email"]
+            : payment for payment in db.get_all_payments()}
         # print(students, payments, db.get_all_payments())
         return render_template("admin_students.html", students=students, payments=payments)
 
@@ -496,25 +537,6 @@ def admin_student(student_id):
     return redirect(url_for("admin_login"))
 
 
-# @app.post("/admin/student/edit/<student_id>")
-# def admin_student_edit(student_id):
-#     if "admin_username" in session and db.admin_exists(session["admin_username"]):
-#         student = db.get_student_by_id(student_id)
-#         payment_detail = db.get_payment_by_email(student["email"])
-#         if student:
-#             payment_detail["paid"] = request.form.get("paid") == "true"
-#             payment_detail["transaction_id"] = request.form.get("transaction_id")
-#             payment_detail["upi_id"] = request.form.get("upi_id")
-#             print(student["email"], payment_detail)
-#             print(db.edit_payment(student["email"], payment_detail))
-#             return {
-#                 "success": True,
-#                 "message": "Student updated successfully!"
-#             }
-#         flash("Student not found!", "danger")
-#         return redirect(url_for("admin_students"))
-#     return redirect(url_for("index"))
-
 @app.post("/admin/student/edit/<student_id>")
 def admin_student_edit(student_id):
     if "admin_username" in session and db.admin_exists(session["admin_username"]):
@@ -525,7 +547,8 @@ def admin_student_edit(student_id):
             payment_detail["paid"] = request.form.get("paid") == "true"
 
             if payment_detail["paid"]:
-                emails.send_id_mail(student, payment_detail, request.host_url + "/admin/student/" + student_id)
+                emails.send_id_mail(
+                    student, payment_detail, request.host_url + "/admin/student/" + student_id)
 
             # Handle events update if present in form
             if "events" in request.form:
@@ -545,52 +568,6 @@ def admin_student_edit(student_id):
         flash("Student not found!", "danger")
         return redirect(url_for("admin_students"))
     return redirect(url_for("index"))
-
-
-@app.route('/admin/upload-bank-statement', methods=['GET', 'POST'])
-def upload_bank_statement():
-
-    if "admin_username" not in session or not db.admin_exists(session["admin_username"]):
-        return redirect(url_for("admin_login"))
-
-    if request.method == 'GET':
-        return render_template('admin_upload_statement.html')
-
-    if 'bank_statement' not in request.files:
-        flash('No file selected', 'danger')
-        return redirect(request.url)
-
-    file = request.files['bank_statement']
-
-    if file.filename == '':
-        flash('No file selected', 'danger')
-        return redirect(request.url)
-
-    if file and allowed_file(file.filename):
-        try:
-            # Save file to temporary location
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-
-            # Start background processing
-            # You'll need to implement this
-            admin_email = db.get_admin_email(session["admin_username"])
-            processing_thread = Thread(
-                target=process_bank_statement,
-                args=(filepath, admin_email)
-            )
-            processing_thread.start()
-
-            flash('File uploaded successfully. Processing started. You will receive an email when complete.', 'success')
-            return redirect(url_for('admin'))
-
-        except Exception as e:
-            flash(f'Error processing file: {str(e)}', 'danger')
-            return redirect(request.url)
-
-    flash('Invalid file type. Please upload a PDF file.', 'danger')
-    return redirect(request.url)
 
 
 if __name__ == "__main__":

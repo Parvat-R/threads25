@@ -1,14 +1,17 @@
 /* Container and Content Styles */
 .container {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     min-height: 100vh;
+    width: 100%;
     padding: 6em 0;
     position: relative;
     background: #1a1a1a00;
     color: #fff;
+    gap: 1em;
 }
 
 .container::before {
@@ -32,11 +35,13 @@
 
 .content {
     width: 100%;
-    max-width: 600px;
+    max-width: 500px;
     text-align: center;
     margin-bottom: 2em;
     position: relative;
     z-index: 1;
+    position: sticky;
+    top: 10vh;
 }
 
 h2 {
@@ -81,7 +86,7 @@ form {
     border-radius: 25px;
     border: 1px solid #ffffff1a;
     position: relative;
-    z-index: 1;
+    z-index: 2;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -259,4 +264,15 @@ button:active {
     border-radius: 25px;
     backdrop-filter: blur(10px);
     color: #fffc;
+}
+
+form .form-group.events_list {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+}
+form .form-group h3 {
+    align-self: stretch;
+    padding-top: 1em;
+    border-top: 1px solid #fff;
 }

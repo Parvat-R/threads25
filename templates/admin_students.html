@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,40 +8,124 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
 </head>
+
 <body class="bg-gray-50">
     <div class="p-4 sm:p-6 lg:p-8">
         <div class="mb-6">
-            <h2 class="text-2xl font-semibold mb-4">Student Management</h2>
-            
-            <!-- Search and Filter Section -->
-            <div class="mb-4 flex flex-wrap gap-4">
-                <input type="text" id="searchInput" placeholder="Search students..." 
-                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
-                
-                <select id="filterField" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
-                    <option value="all">Filter by</option>
-                    <option value="name">Name</option>
-                    <option value="email">Email</option>
-                    <option value="phone">Phone</option>
-                    <option value="paid">Payment Status</option>
-                    <option value="transaction">Transaction ID</option>
-                </select>
-            </div>
+            <div class="top flex flex-col">
+                <h2 class="text-2xl font-semibold mb-4">Student Management</h2>
+                <!-- Search and Filter Section -->
+                <div class="mb-4 flex flex-wrap flex-col gap-4">
+                    <input type="text" id="searchInput" placeholder="Search in selected fields..."
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 w-full max-w-md mb-3">
 
+                    <div class="filters flex flex-col">
+                        <h2>Filter By:</h2>
+
+                        <!-- Search Fields Selection -->
+                        <div class="flex flex-wrap gap-4 mb-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="toggleAll" checked
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="toggleAll" class="ml-2 text-sm font-medium text-gray-900">Toggle All</label>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="searchName" checked data-field="name"
+                                    class="search-field w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="searchName" class="ml-2 text-sm font-medium text-gray-900">Name</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="searchEmail" checked data-field="email"
+                                    class="search-field w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="searchEmail" class="ml-2 text-sm font-medium text-gray-900">Email</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="searchPhone" checked data-field="phone"
+                                    class="search-field w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="searchPhone" class="ml-2 text-sm font-medium text-gray-900">Phone</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="searchCollege" checked data-field="college"
+                                    class="search-field w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="searchCollege"
+                                    class="ml-2 text-sm font-medium text-gray-900">College</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="searchWorkshop" checked data-field="workshop"
+                                    class="search-field w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="searchWorkshop"
+                                    class="ml-2 text-sm font-medium text-gray-900">Workshop</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="searchEvents" checked data-field="events"
+                                    class="search-field w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="searchEvents" class="ml-2 text-sm font-medium text-gray-900">Events</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="searchPayment" checked data-field="payment"
+                                    class="search-field w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="searchPayment" class="ml-2 text-sm font-medium text-gray-900">Payment
+                                    Status</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="searchTransaction" checked data-field="transaction"
+                                    class="search-field w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="searchTransaction"
+                                    class="ml-2 text-sm font-medium text-gray-900">Transaction
+                                    ID</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="searchUpi" checked data-field="upi"
+                                    class="search-field w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="searchUpi" class="ml-2 text-sm font-medium text-gray-900">UPI ID</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Students Table -->
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left text-gray-500">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <table class="w-full text-sm text-left text-gray-500" style="max-height: 100vh; overflow: scroll;">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-10">
                         <tr>
-                            <th scope="col" class="px-6 py-3">Name</th>
-                            <th scope="col" class="px-6 py-3">Email</th>
-                            <th scope="col" class="px-6 py-3">Phone</th>
-                            <th scope="col" class="px-6 py-3">College</th>
-                            <th scope="col" class="px-6 py-3">Workshop</th>
-                            <th scope="col" class="px-6 py-3">Events</th>
-                            <th scope="col" class="px-6 py-3">Paid?</th>
-                            <th scope="col" class="px-6 py-3">Transaction ID</th>
-                            <th scope="col" class="px-6 py-3">UPI ID</th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer" data-sort="name">
+                                Name 
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer" data-sort="email">
+                                Email
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer" data-sort="phone">
+                                Phone
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer" data-sort="college">
+                                College
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer" data-sort="workshop">
+                                Workshop
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer" data-sort="events">
+                                Events
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer" data-sort="payment">
+                                Paid?
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer" data-sort="transaction">
+                                Transaction ID
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
+                            <th scope="col" class="px-6 py-3 cursor-pointer" data-sort="upi">
+                                UPI ID
+                                <span class="sort-icon ml-1">↕</span>
+                            </th>
                             <th scope="col" class="px-6 py-3">Actions</th>
                         </tr>
                     </thead>
@@ -64,24 +149,24 @@
                                 {% endif %}
                             </td>
                             <td class="px-6 py-4">
-                                <input type="checkbox" 
-                                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 payment-status"
-                                       {% if payments[student.email].paid %}checked{% endif %}>
+                                <input type="checkbox"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 payment-status"
+                                    {% if payments[student.email].paid %}checked{% endif %}>
                             </td>
                             <td class="px-6 py-4">
-                                <input type="text" 
-                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded p-1 transaction-id"
-                                       value="{{ payments[student.email].transaction_id or '' }}"
-                                       placeholder="Enter Transaction ID">
+                                <input type="text"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded p-1 transaction-id"
+                                    value="{{ payments[student.email].transaction_id or '' }}"
+                                    placeholder="Enter Transaction ID">
                             </td>
                             <td class="px-6 py-4">
-                                <input type="text" 
-                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded p-1 upi-id"
-                                       value="{{ payments[student.email].upi_id or '' }}"
-                                       placeholder="Enter UPI ID">
+                                <input type="text"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded p-1 upi-id"
+                                    value="{{ payments[student.email].upi_id or '' }}" placeholder="Enter UPI ID">
                             </td>
                             <td class="px-6 py-4">
-                                <button class="save-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                                <button
+                                    class="save-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                                     Save
                                 </button>
                             </td>
@@ -94,79 +179,113 @@
     </div>
 
     <script>
-        // Search and Filter Functionality
         const searchInput = document.getElementById('searchInput');
-        const filterField = document.getElementById('filterField');
+        const toggleAll = document.getElementById('toggleAll');
+        const searchFields = document.querySelectorAll('.search-field');
         const studentRows = document.querySelectorAll('.student-row');
+        const tableHeaders = document.querySelectorAll('th[data-sort]');
 
-        function filterStudents() {
+        // Sorting state
+        let currentSort = {
+            column: null,
+            direction: 'asc'
+        };
+
+        // Toggle all checkboxes
+        toggleAll.addEventListener('change', (e) => {
+            searchFields.forEach(field => {
+                field.checked = e.target.checked;
+            });
+            searchStudents();
+        });
+
+        // Update "Toggle All" when individual fields are changed
+        searchFields.forEach(field => {
+            field.addEventListener('change', () => {
+                const allChecked = Array.from(searchFields).every(f => f.checked);
+                const noneChecked = Array.from(searchFields).every(f => !f.checked);
+                toggleAll.checked = allChecked;
+                toggleAll.indeterminate = !allChecked && !noneChecked;
+                searchStudents();
+            });
+        });
+
+        function getFieldContent(row, fieldName) {
+            switch (fieldName) {
+                case 'name': return row.children[0].textContent.toLowerCase();
+                case 'email': return row.children[1].textContent.toLowerCase();
+                case 'phone': return row.children[2].textContent.toLowerCase();
+                case 'college': return row.children[3].textContent.toLowerCase();
+                case 'workshop': return row.children[4].textContent.toLowerCase();
+                case 'events': return row.children[5].textContent.toLowerCase();
+                case 'payment': return row.querySelector('.payment-status').checked ? 'paid' : 'unpaid';
+                case 'transaction': return row.querySelector('.transaction-id').value.toLowerCase();
+                case 'upi': return row.querySelector('.upi-id').value.toLowerCase();
+                default: return '';
+            }
+        }
+
+        function searchStudents() {
             const searchTerm = searchInput.value.toLowerCase();
-            const filterValue = filterField.value;
 
             studentRows.forEach(row => {
-                let text = '';
-                if (filterValue === 'all') {
-                    text = row.textContent.toLowerCase();
-                } else if (filterValue === 'paid') {
-                    text = row.querySelector('.payment-status').checked ? 'paid' : 'unpaid';
-                } else if (filterValue === 'transaction') {
-                    text = row.querySelector('.transaction-id').value.toLowerCase();
+                const selectedFields = Array.from(searchFields)
+                    .filter(field => field.checked)
+                    .map(field => field.dataset.field);
+
+                const matchFound = selectedFields.some(field => {
+                    const content = getFieldContent(row, field);
+                    return content.includes(searchTerm);
+                });
+
+                row.style.display = matchFound || searchTerm === '' ? '' : 'none';
+            });
+        }
+
+        // Sort table
+        function sortTable(column) {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            // Update sort direction
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = 'asc';
+            }
+
+            // Update sort icons
+            tableHeaders.forEach(header => {
+                const icon = header.querySelector('.sort-icon');
+                if (header.dataset.sort === column) {
+                    icon.textContent = currentSort.direction === 'asc' ? '↑' : '↓';
                 } else {
-                    text = row.children[getColumnIndex(filterValue)].textContent.toLowerCase();
+                    icon.textContent = '↕';
                 }
+            });
+
+            // Sort rows
+            const sortedRows = rows.sort((a, b) => {
+                const aValue = getFieldContent(a, column);
+                const bValue = getFieldContent(b, column);
                 
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
+                if (aValue < bValue) return currentSort.direction === 'asc' ? -1 : 1;
+                if (aValue > bValue) return currentSort.direction === 'asc' ? 1 : -1;
+                return 0;
             });
+
+            // Clear and append sorted rows
+            tbody.innerHTML = '';
+            sortedRows.forEach(row => tbody.appendChild(row));
         }
 
-        function getColumnIndex(field) {
-            const fieldMap = {
-                'name': 0,
-                'email': 1,
-                'phone': 2
-            };
-            return fieldMap[field] || 0;
-        }
-
-        searchInput.addEventListener('input', filterStudents);
-        filterField.addEventListener('change', filterStudents);
-
-        // Save Button Functionality
-        document.querySelectorAll('.save-btn').forEach(btn => {
-            btn.addEventListener('click', async function() {
-                const row = this.closest('.student-row');
-                const studentId = row.dataset.studentId;
-                const paid = row.querySelector('.payment-status').checked;
-                const transactionId = row.querySelector('.transaction-id').value;
-                const upiId = row.querySelector('.upi-id').value;
-
-                try {
-                    const response = await fetch(`/admin/student/edit/${studentId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: new URLSearchParams({
-                            'paid': paid,
-                            'transaction_id': transactionId,
-                            'upi_id': upiId
-                        })
-                    });
-
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        // Show success message
-                        alert('Changes saved successfully!');
-                    } else {
-                        alert('Error saving changes. Please try again.');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Error saving changes. Please try again.');
-                }
-            });
+        // Add event listeners
+        searchInput.addEventListener('input', searchStudents);
+        tableHeaders.forEach(header => {
+            header.addEventListener('click', () => sortTable(header.dataset.sort));
         });
     </script>
 </body>
+
 </html>

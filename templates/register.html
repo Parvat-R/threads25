@@ -8,7 +8,7 @@
 <div class="container">
     <div class="content">
         <h2>Register Now!</h2>
-        <div class="desc">Register your details and then proceed to payment. You will be asked to pay email immediately upon registeration. You will get the pass in 24 hours. <span>You can also register onsite. For that no need to register here.</span> Already registered? Login <a href="/login">here</a> to get your PASS</div>
+        <div class="desc">Register your details and then proceed to payment. You will be asked to pay immediately upon registeration. You will get the pass in email within 48 hours. <span>You can also register onsite. For that no need to register here.</span> Already registered? Login <a href="/login">here</a> to get your PASS</div>
         <div class="desc note">
             <strong>Note:</strong>
             <ul>
@@ -41,13 +41,30 @@
             <select id="workshops" name="workshop">        
                 <option value="none">None</option>
                 {% for workshop in workshops %}
-                <option value="{{ workshop.event_name }}">{{ workshop.event_name }}</option>
+                    {% if workshop.disabled == False %}
+                        <option value="{{ workshop.event_name }}">{{ workshop.event_name }}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
         </div>
         
-        <div class="form-group">
-            {%  for event in events %}
+        <div class="form-group events_list">
+            <h3>Tech Events:</h3>
+            {%  for event in _tech_events %}
+                <label>
+                    <input type="checkbox" name="events" value="{{ event }}">
+                    {{ event }}
+                </label>
+            {% endfor %}
+            <h3>Non Tech Events:</h3>
+            {%  for event in _non_tech_events %}
+                <label>
+                    <input type="checkbox" name="events" value="{{ event }}">
+                    {{ event }}
+                </label>
+            {% endfor %}
+            <h3>Dextures Club:</h3>
+            {%  for event in _dexturs %}
                 <label>
                     <input type="checkbox" name="events" value="{{ event }}">
                     {{ event }}
