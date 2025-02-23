@@ -316,7 +316,7 @@ def verify_email_post():
                 emails.send_id_mail(
                     student_data, payment_data, request.url_root + "/admin/student/" + session["student_id"])
 
-                if payment_data["paid"] == False:
+                if payment_data["paid"] == False and payment["transaction_id"].startswith("not-paid"):
                     return redirect(url_for("payment"))
                 return redirect(url_for("myid"))
             else:
@@ -388,11 +388,12 @@ def myid():
     payment = db.get_payment_by_email(student["email"])
     email = student["email"].lower()
 
-    if (payment and payment["paid"] == False) or (student["workshop"] != "none" and (email.endswith("cse@sonatech.ac.in") or email.endswith("csd@sonatech.ac.in") or email.endswith("aiml@sonatech.ac.in"))):
+
+    if (payment and payment["paid"] == False and payment["transaction_id"].startswith("not-paid")) or (student["workshop"] != "none" and (email.endswith("cse@sonatech.ac.in") or email.endswith("csd@sonatech.ac.in") or email.endswith("aiml@sonatech.ac.in"))):
         return redirect(url_for("payment"))
 
     if (
-        (email.endswith("cse@sonatech.ac.in") or email.endswith("csd@sonatech.ac.in") or email.endswith("aiml@sonatech.ac.in")) or
+        (email.endswith("cse@sonatech.ac.in") or email.endswith("csd@sonatech.ac.in") or email.endswith("aiml@sonatech.ac.in")) and
         (
             payment and payment["paid"]
         )
@@ -415,6 +416,15 @@ def payment():
 
     student_id = session["student_id"]
     student = db.get_student_by_id(student_id)
+
+    payment_data = db.get_payment_by_email(student["email"])
+
+    if payment_data and payment_data["paid"]:
+        flash("You have already paid!", "success")
+        return redirect(url_for("myid"))
+    elif payment_data and not payment_data["transaction_id"].startswith("not-paid"):
+        flash("Your payment details were recieved. You will recieve the PASS in mail.", "danger")
+        return redirect(url_for("index"))
 
     # if the student id is not in the database
     if not student:
