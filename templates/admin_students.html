@@ -91,7 +91,7 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-10">
                         <tr>
                             <th scope="col" class="px-6 py-3 cursor-pointer" data-sort="name">
-                                Name 
+                                Name
                                 <span class="sort-icon ml-1">↕</span>
                             </th>
                             <th scope="col" class="px-6 py-3 cursor-pointer" data-sort="email">
@@ -246,7 +246,7 @@
         function sortTable(column) {
             const tbody = document.querySelector('tbody');
             const rows = Array.from(tbody.querySelectorAll('tr'));
-            
+
             // Update sort direction
             if (currentSort.column === column) {
                 currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
@@ -269,7 +269,7 @@
             const sortedRows = rows.sort((a, b) => {
                 const aValue = getFieldContent(a, column);
                 const bValue = getFieldContent(b, column);
-                
+
                 if (aValue < bValue) return currentSort.direction === 'asc' ? -1 : 1;
                 if (aValue > bValue) return currentSort.direction === 'asc' ? 1 : -1;
                 return 0;
@@ -280,10 +280,47 @@
             sortedRows.forEach(row => tbody.appendChild(row));
         }
 
-        // Add event listeners
-        searchInput.addEventListener('input', searchStudents);
-        tableHeaders.forEach(header => {
-            header.addEventListener('click', () => sortTable(header.dataset.sort));
+        // Save Button Functionality
+        document.querySelectorAll('.save-btn').forEach(btn => {
+            btn.addEventListener('click', async function () {
+                const row = this.closest('.student-row');
+                const studentId = row.dataset.studentId;
+                const paid = row.querySelector('.payment-status').checked;
+                const transactionId = row.querySelector('.transaction-id').value;
+                const upiId = row.querySelector('.upi-id').value;
+
+                try {
+                    const response = await fetch(`/admin/student/edit/${studentId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            'paid': paid,
+                            'transaction_id': transactionId,
+                            'upi_id': upiId
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Show success message
+                        alert('Changes saved successfully!');
+                    } else {
+                        alert('Error saving changes. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error saving changes. Please try again.');
+                }
+            });
+
+            // Add event listeners
+            searchInput.addEventListener('input', searchStudents);
+            tableHeaders.forEach(header => {
+                header.addEventListener('click', () => sortTable(header.dataset.sort));
+            });
         });
     </script>
 </body>

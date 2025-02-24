@@ -558,7 +558,7 @@ def admin_student_edit(student_id):
 
             if payment_detail["paid"]:
                 emails.send_id_mail(
-                    student, payment_detail, request.host_url + "/admin/student/" + student_id)
+                    student, payment_detail, "https://threadscse.co.in" + "/admin/student/" + student_id)
 
             # Handle events update if present in form
             if "events" in request.form:
