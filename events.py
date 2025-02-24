@@ -75,7 +75,7 @@ Gear up for Tech-Quest, a high-energy three-round competition where teams of two
 """},
     {
         "event_name": "Paper Presentation - Innovate & Present",
-        "event_description": "Showcase your technical knowledge and research skills in this Paper Presentation event, where teams of up to three present their insights on cutting-edge topics like AI, Machine Learning, Cybersecurity, Blockchain, IoT, AR/VR, and Quantum Computing. Participants must submit a 200-word abstract and prepare a 7-slide presentation to be delivered in 5 minutes. Judges will evaluate clarity, originality, technical depth, and presentation skills. Submissions must be emailed in advance, and participants should also bring a hard copy. Impress the panel with your research and innovative thinking—your ideas could be the next big breakthrough!"},
+        "event_description": "Showcase your technical knowledge and research skills in this Paper Presentation event, where teams of up to two present their insights on cutting-edge topics like AI, Machine Learning, Cybersecurity, Blockchain, IoT, AR/VR, and Quantum Computing. Participants must submit a 200-word abstract and prepare a 7-slide presentation to be delivered in 5 minutes. Judges will evaluate clarity, originality, technical depth, and presentation skills. Submissions must be emailed in advance, and participants should also bring a hard copy. Impress the panel with your research and innovative thinking—your ideas could be the next big breakthrough!"},
     {
         "event_name": "Pixel Perfect - UI/UX Design Challenge",
         "event_description": """Participants in this UI/UX design challenge will create a Figma-based solution for a given problem statement within 1.5 hours, 
