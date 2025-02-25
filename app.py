@@ -555,6 +555,11 @@ def admin_student_edit(student_id):
         if student:
             # Handle payment updates
             payment_detail["paid"] = request.form.get("paid") == "true"
+            transaction_id = request.form.get("transaction_id")
+            upi_id = request.form.get("upi_id", "none")
+
+            payment_detail["transaction_id"] = transaction_id
+            payment_detail["upi_id"] = upi_id
 
             if payment_detail["paid"]:
                 emails.send_id_mail(
