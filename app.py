@@ -537,14 +537,13 @@ def admin_students():
 
 @app.get("/admin/student/<student_id>")
 def admin_student(student_id):
-    if "admin_username" in session and db.admin_exists(session["admin_username"]):
-        student = db.get_student_by_id(student_id)
-        if student:
-            payment = db.get_payment_by_email(student["email"])
-            return render_template("myid.html", student=student, payment=payment)
-        flash("Student not found!", "danger")
-        return redirect(url_for("admin_students"))
-    return redirect(url_for("admin_login"))
+    # if "admin_username" in session and db.admin_exists(session["admin_username"]):
+    student = db.get_student_by_id(student_id)
+    if student:
+        payment = db.get_payment_by_email(student["email"])
+        return {"student": student, "payment": payment}
+    flash("Student not found!", "danger")
+    return redirect(url_for("admin_students"))
 
 
 @app.post("/admin/student/edit/<student_id>")

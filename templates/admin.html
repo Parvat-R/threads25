@@ -3,10 +3,252 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #reader {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        #results-container {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .result-item {
+            padding: 15px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .json-display {
+            white-space: pre-wrap;
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            overflow: auto;
+            max-height: 200px;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .scanning {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        .qr-url {
+            font-weight: bold;
+            word-break: break-all;
+        }
+        .timestamp {
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0069d9;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .scanning-indicator {
+            display: inline-block;
+            margin-left: 10px;
+            height: 10px;
+            width: 10px;
+            background-color: #28a745;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+    </style>
 {% endblock %}
 {% block content %}
-    <h1>admin</h1>
-    <p class="important">
-      Hey Admin!
-    </p>
+  <h1>Continuous QR Code Scanner</h1>
+  <div class="status scanning" id="status">
+      Ready to scan. Please grant camera permissions.
+  </div>
+  <div class="controls">
+      <button id="start-button">Start Scanning</button>
+      <button id="clear-button">Clear Results</button>
+  </div>
+  <div id="reader"></div>
+  <h2>Scan Results <span id="result-count">(0)</span></h2>
+  <div id="results-container"></div>
+
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          const html5QrCode = new Html5Qrcode("reader");
+          const statusElement = document.getElementById('status');
+          const resultsContainer = document.getElementById('results-container');
+          const startButton = document.getElementById('start-button');
+          const clearButton = document.getElementById('clear-button');
+          const resultCountElement = document.getElementById('result-count');
+          
+          let scanning = false;
+          let lastScanned = "";
+          let lastScannedTime = 0;
+          let resultCount = 0;
+          let scannedUrls = new Set();
+
+          function onScanSuccess(decodedText) {
+              // Prevent duplicate scans within 3 seconds
+              const now = Date.now();
+              if (decodedText === lastScanned && (now - lastScannedTime < 3000)) {
+                  return;
+              }
+              
+              lastScanned = decodedText;
+              lastScannedTime = now;
+              
+              // Process the QR code
+              statusElement.innerHTML = `Scanning... <span class="scanning-indicator"></span> Last detected: ${decodedText}`;
+              
+              // Make fetch request to the scanned URL
+              fetchData(decodedText);
+          }
+
+          function onScanFailure(error) {
+              // Just log the error but don't display it to keep the UI clean
+              console.warn(`QR code scanning failed: ${error}`);
+          }
+
+          function formatTimestamp() {
+              const now = new Date();
+              return now.toLocaleTimeString() + ' ' + now.toLocaleDateString();
+          }
+
+          function fetchData(url) {
+              const resultId = `result-${Date.now()}`;
+              
+              // Create a new result item
+              const resultItem = document.createElement('div');
+              resultItem.className = 'result-item';
+              resultItem.id = resultId;
+              
+              resultItem.innerHTML = `
+                  <div class="qr-url">${url}</div>
+                  <div class="timestamp">Scanned at: ${formatTimestamp()}</div>
+                  <div class="status scanning">Fetching data...</div>
+                  <div class="json-display" style="display: none;"></div>
+              `;
+              
+              // Add the new result at the top
+              resultsContainer.insertBefore(resultItem, resultsContainer.firstChild);
+              resultCount++;
+              resultCountElement.textContent = `(${resultCount})`;
+              
+              const statusDiv = resultItem.querySelector('.status');
+              const jsonDisplay = resultItem.querySelector('.json-display');
+              
+              fetch(url)
+                  .then(response => {
+                      if (!response.ok) {
+                          throw new Error(`Network response was not ok: ${response.status}`);
+                      }
+                      return response.json();
+                  })
+                  .then(data => {
+                      // Display the JSON result
+                      statusDiv.className = 'status success';
+                      statusDiv.innerText = 'Data fetched successfully!';
+                      jsonDisplay.textContent = JSON.stringify(data, null, 2);
+                      jsonDisplay.style.display = 'block';
+                      
+                      // Add to scanned URLs set
+                      scannedUrls.add(url);
+                  })
+                  .catch(error => {
+                      statusDiv.className = 'status error';
+                      statusDiv.innerText = `Error fetching data: ${error.message}`;
+                  });
+          }
+
+          startButton.addEventListener('click', function() {
+              if (!scanning) {
+                  startButton.textContent = 'Stop Scanning';
+                  
+                  // Get all cameras
+                  Html5Qrcode.getCameras().then(devices => {
+                      if (devices && devices.length) {
+                          // Use the last camera (usually the back camera on mobile devices)
+                          const cameraId = devices[devices.length - 1].id;
+                          
+                          // Start scanning
+                          html5QrCode.start(
+                              cameraId, 
+                              {
+                                  fps: 10,
+                                  qrbox: { width: 250, height: 250 }
+                              },
+                              onScanSuccess,
+                              onScanFailure
+                          ).then(() => {
+                              scanning = true;
+                              statusElement.innerHTML = `Scanning... <span class="scanning-indicator"></span>`;
+                          }).catch(err => {
+                              statusElement.className = 'status error';
+                              statusElement.innerText = `Error starting camera: ${err}`;
+                              startButton.textContent = 'Start Scanning';
+                          });
+                      } else {
+                          statusElement.className = 'status error';
+                          statusElement.innerText = 'No cameras found on your device.';
+                      }
+                  }).catch(err => {
+                      statusElement.className = 'status error';
+                      statusElement.innerText = `Error accessing cameras: ${err}`;
+                  });
+              } else {
+                  // Stop scanning
+                  html5QrCode.stop().then(() => {
+                      scanning = false;
+                      statusElement.className = 'status';
+                      statusElement.innerText = 'Scanner stopped.';
+                      startButton.textContent = 'Start Scanning';
+                  }).catch((err) => {
+                      console.error("Failed to stop camera:", err);
+                  });
+              }
+          });
+
+          clearButton.addEventListener('click', function() {
+              resultsContainer.innerHTML = '';
+              resultCount = 0;
+              resultCountElement.textContent = `(${resultCount})`;
+              scannedUrls.clear();
+          });
+      });
+  </script>
+</script>
 {% endblock %}
