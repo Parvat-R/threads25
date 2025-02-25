@@ -198,7 +198,7 @@ dexters = [
         "event_description": "Code Trail is an interactive team-based coding event where participants navigate a maze by solving logic and programming challenges. The catch? The only way to move is by correctly solving coding problems. You get one or more moves after solving each problem. The team that reaches the exit in the least amount of time wins."
     },
     {
-        "event_name": "Rapid Relfex",
+        "event_name": "Rapid Reflex",
         "event_description": "thrilling, fast-paced event that puts participants' quick thinking, memory, and communication skills to the test. Teams will go through five intense rounds, each designed to challenge different aspects of their cognitive abilities. With only six minutes per team to complete all rounds, strategy and teamwork are key. The top three teams with the highest scores will be crowned winners."
     }
 ]
