@@ -68,11 +68,11 @@ Objective: Solve a medium-to-advanced real-world problem efficiently
 Evaluation Criteria: Logical correctness, time and space optimization, clean coding practices
 Languages: Any preferred language (C++, Java, Python, etc.)
 """},
-    {
-        "event_name": "Tech-Quest - Decode, Quiz & Debug",
-        "event_description": """
-Gear up for Tech-Quest, a high-energy three-round competition where teams of two participants battle through coding, puzzles, and debugging. The first round, MORZE MAZE, tests your ability to decode Morse messages under time pressure. In BRAIN BRAWL, answer rapid-fire tech quiz questions on Java, Python, C, and tech trivia. The final round, BUG BLAST, challenges you to debug five programs in just 30 minutes—fix them fast to score points! With each round pushing your problem-solving, programming, and speed to the limit, only the most skilled tech duo will claim victory!
-"""},
+#     {
+#         "event_name": "Tech-Quest - Decode, Quiz & Debug",
+#         "event_description": """
+# Gear up for Tech-Quest, a high-energy three-round competition where teams of two participants battle through coding, puzzles, and debugging. The first round, MORZE MAZE, tests your ability to decode Morse messages under time pressure. In BRAIN BRAWL, answer rapid-fire tech quiz questions on Java, Python, C, and tech trivia. The final round, BUG BLAST, challenges you to debug five programs in just 30 minutes—fix them fast to score points! With each round pushing your problem-solving, programming, and speed to the limit, only the most skilled tech duo will claim victory!
+# """},
     # {
     #     "event_name": "Paper Presentation - Innovate & Present",
     #     "event_description": "Showcase your technical knowledge and research skills in this Paper Presentation event, where teams of up to three present their insights on cutting-edge topics like AI, Machine Learning, Cybersecurity, Blockchain, IoT, AR/VR, and Quantum Computing. Participants must submit a 200-word abstract and prepare a 7-slide presentation to be delivered in 5 minutes. Judges will evaluate clarity, originality, technical depth, and presentation skills. Submissions must be emailed in advance, and participants should also bring a hard copy. Impress the panel with your research and innovative thinking—your ideas could be the next big breakthrough!"},
@@ -111,9 +111,9 @@ It's an opportunity for students to showcase innovative ML solutions while compe
 ]
 
 non_tech_events = [
-    {
-        "event_name": "Treasure Hunt - Solve & Conquer",
-        "event_description": "Follow cryptic clues, decode puzzles, and race against time to uncover the hidden treasure. Strategy and teamwork will lead you to victory!"},
+    # {
+    #     "event_name": "Treasure Hunt - Solve & Conquer",
+    #     "event_description": "Follow cryptic clues, decode puzzles, and race against time to uncover the hidden treasure. Strategy and teamwork will lead you to victory!"},
     {
         "event_name": "Karaoke - Sing Your Heart Out",
         "event_description": """The event consists of multiple music-based rounds, mostly in a buzzer quiz format. Teams must identify songs from BGMs, find connections between images and songs, and participate in challenges like singing one line each, bad singing, and singing with different emotions. In Round 2, teams must also name the composer and singer. The Kollywood round involves identifying actors, actresses, movies, and songs, while the Missing Word round tests lyrical accuracy. Phones are not allowed, discussions between teams are prohibited, answers must be given within 10 seconds, and one team member must take the initiative per round. Teams making noise will lose marks.
