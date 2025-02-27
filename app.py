@@ -541,7 +541,9 @@ def admin_student(student_id):
     student = db.get_student_by_id(student_id)
     if student:
         payment = db.get_payment_by_email(student["email"])
+        print(student, payment)
         return {"student": student, "payment": payment}
+    print("Student not found!")
     flash("Student not found!", "danger")
     return redirect(url_for("admin_students"))
 

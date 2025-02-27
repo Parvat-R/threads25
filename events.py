@@ -17,7 +17,7 @@ workshops = [
             "Rohith - 7418933402"
         ],
         "seats" : 50,
-        "seats_filled" : 0,
+        "seats_filled" : 0, 
         "disabled" : False
     },
     {

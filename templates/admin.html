@@ -27,7 +27,7 @@
         }
         .json-display {
             white-space: pre-wrap;
-            background-color: #eee;
+            background-color: #5c5c5c;
             padding: 10px;
             border-radius: 5px;
             overflow: auto;
@@ -182,7 +182,8 @@
                       // Display the JSON result
                       statusDiv.className = 'status success';
                       statusDiv.innerText = 'Data fetched successfully!';
-                      jsonDisplay.textContent = JSON.stringify(data, null, 2);
+                      alert(data);
+                      jsonDisplay.innerHTML = `id: ${data.student._id}<br>Name: ${data.student.name}<br>Email: ${data.student.email}<br>Paid: ${data.payment.paid}<br>Workshop: ${data.student.workshop}<br>Events: ${data.student.events.join(', ')}`;
                       jsonDisplay.style.display = 'block';
                       
                       // Add to scanned URLs set
