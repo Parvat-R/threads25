@@ -97,13 +97,7 @@ def register():
         i["seats_filled"] = db.get_workshop_registration_count(i["event_name"])
         if i["seats_filled"] >= i["seats"]:
             i["disabled"] = True
-    return render_template(
-        "register.html",
-        workshops=workshops,
-        events=events,
-        _tech_events=_tech_events,
-        _non_tech_events=_non_tech_events,
-        _dexturs=_dexturs)
+    return "Registrations closed"
 
 
 # @app.post("/register")
